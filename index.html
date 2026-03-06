@@ -6,13 +6,17 @@
 <title>可拖动的名片</title>
 <style>
     body {
-        font-family: sans-serif;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
         background-color: #f0f0f0;
-        overflow: hidden; /* 防止拖动时出现滚动条 */
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
     }
+
+    /* --- 核心卡片容器 --- */
     .card-wrapper {
         position: absolute;
-        top: 50px;
+        top: 100px;
         left: 50px;
         cursor: grab;
         perspective: 1000px;
@@ -27,10 +31,10 @@
         position: relative;
         width: 100%;
         height: 100%;
-        transition: transform 0.6s;
+        transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
         transform-style: preserve-3d;
         border-radius: 15px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
     }
     .card-inner.is-flipped {
         transform: rotateY(180deg);
@@ -42,193 +46,172 @@
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
         border-radius: 15px;
-        display: flex;
-    }
-    /* --- 正面样式 (全新斜边设计) --- */
-    .card-front {
-        background-color: white; /* 整体底色改为白色 */
-        position: relative;
-        overflow: hidden; /* 防止内容超出圆角 */
-        display: block; /* 取消原来的flex布局 */
+        background-color: white;
+        overflow: hidden;
     }
 
-    /* 1. 青色斜边背景图层 */
-    .front-bg-green {
+    /* ================================== */
+    /*          名片正面样式                */
+    /* ================================== */
+    
+    /* 1. 将原本的青色斜边改为了你要求的 #d32f2f 红色 */
+    .front-bg-red {
         position: absolute;
         top: 0;
         left: 0;
-        width: 65%; /* 绿色区域的宽度 */
+        width: 65%;
         height: 100%;
-        background-color: #2c7a7b; /* 恢复青绿色 */
-        /* 核心技巧：使用 polygon 裁剪出一个斜边多边形 (左上, 右上, 右下, 左下) */
-        clip-path: polygon(0 0, 100% 0, 55% 100%, 0 100%);
-        /* 添加原图那种淡淡的网格底纹背景 */
-        background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-                          linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
-        background-size: 15px 15px;
+        background-color: #d32f2f; /* 已经修改为红色 */
+        clip-path: polygon(0 0, 100% 0, 50% 100%, 0 100%);
+        background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+                          linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+        background-size: 10px 10px;
     }
-
     .star-logo {
         position: absolute;
-        top: 15px;
+        top: 10px;
         left: 15px;
         color: white;
         font-size: 20px;
     }
-
     .tiny-text {
         position: absolute;
-        bottom: 10px;
+        bottom: 15px;
         left: 15px;
-        color: rgba(255,255,255,0.5);
-        font-size: 6px;
-        transform: scale(0.8);
+        color: rgba(255,255,255,0.6);
+        font-size: 10px;
+        transform: scale(0.6);
         transform-origin: left bottom;
+        white-space: nowrap;
     }
 
-    /* 2. 人物立绘图层 */
+    /* 2. 人物立绘 (春香) */
     .front-character {
         position: absolute;
         bottom: 0;
-        left: -5%; /* 稍微往左移一点，留出右边文字的空间 */
-        width: 60%; /* 因为人物手臂伸开，所以把宽度稍微加大一点 */
+        left: -5%; 
+        width: 60%; 
         height: 95%;
-        /* 把图片名字换成你刚才上传的 1.png */
         background-image: url('1.png'); 
         background-size: contain;
-        background-position: bottom left;
+        background-position: bottom center;
         background-repeat: no-repeat;
-        z-index: 2; /* 确保人物显示在背景之上 */
-        filter: drop-shadow(5px 5px 5px rgba(0,0,0,0.2)); /* 加上一点立体阴影 */
+        z-index: 2;
+        filter: drop-shadow(4px 4px 4px rgba(0,0,0,0.25));
     }
 
-
-    /* 3. 右侧文字内容图层 */
+    /* 3. 右侧文字信息 (排版调整以适应长链接) */
     .front-content {
         position: absolute;
         top: 0;
         right: 0;
-        width: 60%;
+        width: 60%; /* 稍微加宽一点，给B站链接留空间 */
         height: 100%;
-        padding: 20px 20px 15px 0;
+        padding: 15px 15px 15px 0;
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
-        align-items: flex-end; /* 让所有内容靠右对齐 */
+        justify-content: center;
+        align-items: flex-end;
         text-align: right;
         z-index: 3;
     }
-
-    .name-section h2 {
-        margin: 0 0 8px 0;
-        font-size: 26px;
-        color: #111;
-        font-weight: 900;
-        letter-spacing: 1px;
-    }
-
-    .name-section p {
-        margin: 3px 0;
-        font-size: 10px;
-        color: #888;
-        font-weight: bold;
-    }
-
+    .name-section h2 { margin: 0 0 5px 0; font-size: 24px; color: #111; font-weight: 900; }
+    .name-section p { margin: 2px 0; font-size: 9px; color: #777; font-weight: bold; }
+    
     .nfc-section {
         font-size: 8px;
-        color: #bbb;
-        letter-spacing: 1.5px;
-        margin-top: 15px;
+        color: #999;
+        margin-top: 10px;
+        margin-bottom: 10px;
         display: flex;
         align-items: center;
         gap: 5px;
-    }
-
-    .nfc-icon {
-        color: #111;
-        font-size: 14px;
         font-weight: bold;
     }
+    .nfc-icon { color: #111; font-size: 12px; }
 
-    .socials {
-        margin-top: auto; /* 把社交信息推到最底部 */
-        font-size: 11px;
-        color: #333;
-        line-height: 1.8;
-    }
+    /* 社交信息区：缩小了一点字号以免超出屏幕 */
+    .socials { font-size: 9px; color: #444; line-height: 1.6; }
+    .socials div { display: flex; justify-content: flex-end; align-items: center; gap: 5px; }
+    .socials span { font-weight: bold; font-style: italic; }
 
-    .socials div {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        gap: 8px; /* 图标和文字的间距 */
-    }
-
-    .socials i {
-        font-style: normal;
-        font-size: 14px;
-        width: 16px;
-        text-align: center;
-    }
-
-    .back-top { padding: 15px; border-bottom: 1px solid #eee; }
-    .back-top p { margin: 2px 0; font-size: 10px; color: #666; }
-    .qr-code {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        width: 50px;
-        height: 50px;
-        /* TODO: 替换成你的二维码图片URL */
-        background-image: url('https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=https://example.com');
-    }
-       .back-bottom {
-        flex-grow: 1;
-        background-color: #d32f2f; /* 这里保留你刚才改的红色 */
-        color: white;
-        border-radius: 0 0 15px 15px;
-        
-        /* 1. 排版调整：靠左对齐并垂直居中 */
+    /* ================================== */
+    /*          名片背面样式                */
+    /* ================================== */
+    .card-back {
+        transform: rotateY(180deg);
         display: flex;
         flex-direction: column;
-        justify-content: center; 
-        align-items: flex-start; 
-        padding-left: 10px;
-        overflow: hidden; 
-
-        /* 2. 艺术字效果设置 */
-        font-family: 'Arial Black', Impact, sans-serif; 
-        font-size: 55px; 
-        font-weight: 900; 
-        font-style: italic; 
-        line-height: 0.85; 
-        letter-spacing: -1px; 
-        text-shadow: 4px 4px 0px #1a1a1a; 
     }
-
-
+    .qr-code {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        width: 45px;
+        height: 45px;
+        /* 这里如果你有B站主页的二维码，可以替换掉 */
+        background-image: url('https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=https://space.bilibili.com/488509701');
+        background-size: cover;
+    }
+    .back-top { 
+        padding: 15px; 
+        height: 40%;
+        box-sizing: border-box;
+    }
+    .back-top p { margin: 3px 0; font-size: 9px; color: #555; font-weight: bold; }
+    
+    .back-bottom {
+        height: 60%;
+        background-color: #d32f2f; /* 背面也是红色 */
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        padding-left: 20px;
+        font-family: 'Arial Black', Impact, sans-serif;
+        font-size: 40px;
+        font-weight: 900;
+        font-style: italic;
+        line-height: 0.85;
+        letter-spacing: -1px;
+        text-shadow: 4px 4px 0px #1a1a1a;
+    }
 </style>
 </head>
 <body>
 
 <div class="card-wrapper" id="draggableCard">
     <div class="card-inner" id="cardInner">
+        
         <!-- 名片正面 -->
         <div class="card-face card-front">
-            <div class="front-left"></div>
-            <div class="front-right">
-                <h2>SuigyokuP</h2>
-                <p>765プロデューサー科</p>
-                <p>天海春香担当プロデューサー</p>
+            <div class="front-bg-red">
+                <div class="star-logo">★</div>
+                <!-- 左下角的英文小字我也顺手帮你改成765专属了 -->
+                <div class="tiny-text">765 PRODUCTION PRODUCER CARD</div>
+            </div>
+            
+            <div class="front-character"></div>
+            
+            <div class="front-content">
+                <div class="name-section">
+                    <h2>SuigyokuP</h2>
+                    <p>765プロデューサー科</p>
+                    <p>天海春香担当プロデューサー</p>
+                </div>
+                <div class="nfc-section">
+                    TAP TO START <span class="nfc-icon">N))</span>
+                </div>
                 <div class="socials">
                     <div><span>@:</span> Rain Grain</div>
                     <div><span>✉:</span> 1635786118@QQ.com</div>
-                    <div><span>B:</span>space.bilibili.com/488509701</div>
+                    <div><span>B:</span> space.bilibili.com/488509701</div>
                 </div>
-                <p class="tap-to-start">TAP TO START</p>
             </div>
         </div>
+
         <!-- 名片背面 -->
         <div class="card-face card-back">
             <div class="qr-code"></div>
@@ -242,6 +225,7 @@
                 PRODUCER<br>CARD
             </div>
         </div>
+        
     </div>
 </div>
 
@@ -257,6 +241,7 @@
         dragStartX = clientX - draggableElement.offsetLeft;
         dragStartY = clientY - draggableElement.offsetTop;
         draggableElement.style.transition = 'none';
+        document.body.style.cursor = 'grabbing';
     };
 
     const drag = (clientX, clientY) => {
@@ -272,17 +257,16 @@
         if (!isDragging) return;
         isDragging = false;
         draggableElement.style.transition = '';
+        document.body.style.cursor = 'default';
         if (Date.now() - clickStartTime < 200) {
             card.classList.toggle('is-flipped');
         }
     };
 
-    // 鼠标事件
     draggableElement.addEventListener('mousedown', (e) => startDrag(e.clientX, e.clientY));
     document.addEventListener('mousemove', (e) => { e.preventDefault(); drag(e.clientX, e.clientY); });
     document.addEventListener('mouseup', endDrag);
 
-    // 触摸事件 (适配移动端)
     draggableElement.addEventListener('touchstart', (e) => startDrag(e.touches[0].clientX, e.touches[0].clientY), { passive: false });
     document.addEventListener('touchmove', (e) => { if (isDragging) { e.preventDefault(); drag(e.touches[0].clientX, e.touches[0].clientY); } }, { passive: false });
     document.addEventListener('touchend', endDrag);
