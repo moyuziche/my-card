@@ -46,7 +46,9 @@
         overflow: hidden;
     }
 
+    /* ================================== */
     /*          名片正面样式                */
+    /* ================================== */
     .front-bg-red {
         position: absolute;
         top: 0;
@@ -60,12 +62,14 @@
         background-size: 10px 10px;
     }
     
+    /* 修改了 Logo 的样式，让它适应图片 */
     .star-logo {
         position: absolute;
         top: 12px;
         left: 15px;
-        width: 55px; /* 控制 Logo 的宽度 */
+        width: 55px; /* 控制 Logo 的宽度，你可以根据喜好微调 */
         height: auto;
+        /* 为了在深红色背景上更清晰，给 Logo 加了一层白色的发光阴影 */
         filter: drop-shadow(0px 0px 3px rgba(255,255,255,0.8)); 
     }
     
@@ -128,7 +132,9 @@
     .socials div { display: flex; justify-content: flex-end; align-items: center; gap: 5px; }
     .socials span { font-weight: bold; font-style: italic; }
 
+    /* ================================== */
     /*          名片背面样式                */
+    /* ================================== */
     .card-back {
         transform: rotateY(180deg);
         display: flex;
