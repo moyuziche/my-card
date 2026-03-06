@@ -6,7 +6,7 @@
 <title>可拖动的专属名片</title>
 <style>
     /* ================================== */
-    /*          网页整体星空背景设计         */
+    /*            星空背景设计           */
     /* ================================== */
     body {
         font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -276,7 +276,7 @@
                 <p>765 PRODUCTION</p>
                 <p>AMAMI HARUKA</p>
                 <p>AGE 17</p>
-                <p style="margin-top: 15px;">雨粒になって花を驚かすこの世界</p>
+                <p style="margin-top: 15px;">🌸雨粒になって花を驚かすこの世界🌸</p>
             </div>
             <div class="back-bottom">
                 PRODUCER<br>CARD
@@ -291,7 +291,6 @@
     let isDragging = false;
     let dragStartX, dragStartY, clickStartTime;
 
-    // 🔥关键修复：还原最稳健的事件定位逻辑
     const startDrag = (clientX, clientY) => {
         isDragging = true;
         clickStartTime = Date.now();
