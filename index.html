@@ -6,23 +6,25 @@
 <title>可拖动的专属名片</title>
 <style>
     /* ================================== */
-    /*            星空背景设计            */
+    /*            星空背景设计           */
     /* ================================== */
     body {
         font-family: 'Helvetica Neue', Arial, sans-serif;
         margin: 0;
         padding: 0;
-        height: 100vh;
+        /* 修复PC端高度问题：强制占满整个视口 */
+        min-height: 100vh;
+        width: 100vw;
         overflow: hidden;
-        /* 星空基础渐变色 */
-        background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+        /* 深色渐变天空 */
+        background: linear-gradient(to bottom, #090a0f 0%, #1b2735 100%);
     }
 
     /* 稳妥的星空背景层 */
     .starry-background {
-        position: fixed;
+        position: absolute;
         top: 0; left: 0; right: 0; bottom: 0;
-        z-index: -1;
+        z-index: -2; /* 放在最底层 */
         /* 纯 CSS 绘制星星 */
         background-image: 
             radial-gradient(1.5px 1.5px at 20px 30px, #fff, transparent),
@@ -38,7 +40,7 @@
             radial-gradient(1px 1px at 400px 220px, #fff, transparent);
         background-repeat: repeat;
         background-size: 350px 350px;
-        animation: twinkle 5s infinite alternate; /* 星星闪烁动画 */
+        animation: twinkle 5s infinite alternate;
     }
 
     @keyframes twinkle {
@@ -46,16 +48,43 @@
         100% { opacity: 1; }
     }
 
+    /* ================================== */
+    /*          底部群山剪影设计            */
+    /* ================================== */
+    .mountains {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 30vh; /* 山脉占屏幕高度的 30% */
+        z-index: -1; /* 在星星前面，但在名片后面 */
+        pointer-events: none; /* 防止挡住鼠标拖动 */
+        /* 使用多层重叠的半透明椭圆/波浪来模拟错落的群山 */
+        background-image: 
+            /* 最前面的山，最黑 */
+            radial-gradient(ellipse 150% 100% at 30% 100%, #05070a 40%, transparent 41%),
+            radial-gradient(ellipse 180% 120% at 80% 100%, #05070a 45%, transparent 46%),
+            /* 中间的山，稍微亮一点点透出层次 */
+            radial-gradient(ellipse 200% 100% at 50% 100%, #0a0d14 35%, transparent 36%),
+            radial-gradient(ellipse 150% 90% at 10% 100%, #0a0d14 40%, transparent 41%),
+            /* 远处的山，最淡 */
+            radial-gradient(ellipse 250% 80% at 70% 100%, #10151f 30%, transparent 31%);
+        background-position: bottom;
+        background-repeat: no-repeat;
+    }
+
     /* --- 核心卡片容器 --- */
     .card-wrapper {
         position: absolute;
-        top: 100px;
-        left: 50px;
+        top: 20%; /* 改用百分比定位，适应不同屏幕 */
+        left: 50%;
+        transform: translateX(-50%); /* 初始居中显示 */
         cursor: grab;
         perspective: 1000px;
         width: 350px;
         height: 200px;
         user-select: none;
+        z-index: 10; /* 确保名片在最上层 */
     }
     .card-wrapper:active { cursor: grabbing; }
     .card-inner {
@@ -65,7 +94,7 @@
         transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
         transform-style: preserve-3d;
         border-radius: 15px;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.5); /* 阴影加深，在星空中更立体 */
+        box-shadow: 0 15px 35px rgba(0,0,0,0.6); /* 加强了阴影 */
     }
     .card-inner.is-flipped { transform: rotateY(180deg); }
     .card-face {
@@ -133,7 +162,6 @@
         position: absolute;
         top: 0;
         right: 0;
-        /* 右侧文字容器加宽，防止被斜边撞到 */
         width: 65%; 
         height: 100%;
         padding: 15px 15px 15px 0;
@@ -192,8 +220,6 @@
         height: 60%;
         background-color: #d32f2f;
         color: white;
-        
-        /* 背面高级斜纹理 */
         background-image: 
             repeating-linear-gradient(
                 -45deg,
@@ -221,7 +247,10 @@
 </head>
 <body>
 
+<!-- 星空背景层 -->
 <div class="starry-background"></div>
+<!-- 底部群山剪影层 -->
+<div class="mountains"></div>
 
 <div class="card-wrapper" id="draggableCard">
     <div class="card-inner" id="cardInner">
@@ -278,8 +307,13 @@
     const startDrag = (clientX, clientY) => {
         isDragging = true;
         clickStartTime = Date.now();
-        dragStartX = clientX - draggableElement.offsetLeft;
-        dragStartY = clientY - draggableElement.offsetTop;
+        const rect = draggableElement.getBoundingClientRect();
+        draggableElement.style.transform = 'none';
+        draggableElement.style.left = rect.left + 'px';
+        draggableElement.style.top = rect.top + 'px';
+        
+        dragStartX = clientX - rect.left;
+        dragStartY = clientY - rect.top;
         draggableElement.style.transition = 'none';
         document.body.style.cursor = 'grabbing';
     };
@@ -308,9 +342,4 @@
     document.addEventListener('mouseup', endDrag);
 
     draggableElement.addEventListener('touchstart', (e) => startDrag(e.touches[0].clientX, e.touches[0].clientY), { passive: false });
-    document.addEventListener('touchmove', (e) => { if (isDragging) { e.preventDefault(); drag(e.touches[0].clientX, e.touches[0].clientY); } }, { passive: false });
-    document.addEventListener('touchend', endDrag);
-</script>
-
-</body>
-</html>
+    document.addEventListener('touchmove', (e) => { if (isDragging) { e.preventDefault(); drag(e.touches[0].clientX, e.touches[0].clientY); } }, { passive: fa
