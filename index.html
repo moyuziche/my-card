@@ -3,14 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>可拖动的名片</title>
+<title>可拖动的专属名片</title>
 <style>
+    /* ================================== */
+    /*          星空背景设计             */
+    /* ================================== */
     body {
         font-family: 'Helvetica Neue', Arial, sans-serif;
-        background-color: #f0f0f0;
+        /* 深邃的星空渐变底色 */
+        background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
         overflow: hidden;
         margin: 0;
         padding: 0;
+    }
+
+    /* 利用纯 CSS 绘制满天繁星，并让它们闪烁 */
+    body::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        z-index: -1;
+        pointer-events: none; /* 确保不阻挡拖动名片 */
+        /* 用几十个不同大小和位置的渐变圆点模拟星星 */
+        background-image: 
+            radial-gradient(1.5px 1.5px at 20px 30px, #fff, transparent),
+            radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.8), transparent),
+            radial-gradient(2px 2px at 50px 160px, rgba(255,255,255,0.9), transparent),
+            radial-gradient(1.5px 1.5px at 90px 40px, #fff, transparent),
+            radial-gradient(2px 2px at 130px 80px, rgba(255,255,255,0.7), transparent),
+            radial-gradient(1px 1px at 160px 120px, #fff, transparent),
+            radial-gradient(2.5px 2.5px at 200px 150px, rgba(255,255,255,0.6), transparent),
+            radial-gradient(1px 1px at 250px 50px, #fff, transparent),
+            radial-gradient(1.5px 1.5px at 300px 180px, #fff, transparent),
+            radial-gradient(2px 2px at 350px 90px, rgba(255,255,255,0.8), transparent),
+            radial-gradient(1px 1px at 400px 220px, #fff, transparent);
+        background-repeat: repeat;
+        background-size: 450px 450px; /* 让星星排列显得不规则 */
+        animation: twinkle 4s infinite alternate; /* 闪烁动画 */
+    }
+
+    /* 星星闪烁的关键帧动画 */
+    @keyframes twinkle {
+        0% { opacity: 0.4; }
+        100% { opacity: 1; }
     }
 
     /* --- 核心卡片容器 --- */
@@ -32,7 +67,7 @@
         transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
         transform-style: preserve-3d;
         border-radius: 15px;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.4); /* 加深了名片的外部阴影，让它在星空中更浮凸 */
     }
     .card-inner.is-flipped { transform: rotateY(180deg); }
     .card-face {
@@ -62,14 +97,12 @@
         background-size: 10px 10px;
     }
     
-    /* 修改了 Logo 的样式，让它适应图片 */
     .star-logo {
         position: absolute;
         top: 12px;
         left: 15px;
-        width: 55px; /* 控制 Logo 的宽度，你可以根据喜好微调 */
+        width: 55px;
         height: auto;
-        /* 为了在深红色背景上更清晰，给 Logo 加了一层白色的发光阴影 */
         filter: drop-shadow(0px 0px 3px rgba(255,255,255,0.8)); 
     }
     
@@ -160,6 +193,17 @@
         height: 60%;
         background-color: #d32f2f;
         color: white;
+    
+        background-image: 
+            repeating-linear-gradient(
+                -45deg,
+                rgba(0, 0, 0, 0.05),
+                rgba(0, 0, 0, 0.05) 3px,
+                transparent 3px,
+                transparent 8px
+            ),
+            radial-gradient(circle at bottom right, #a00000, transparent 80%);
+            
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -200,8 +244,8 @@
                 </div>
                 <div class="socials">
                     <div><span>@:</span> Rain Grain</div>
-                    <div><span>✉:</span> 1635786118</div>
-                    <div><span>📺:</span>bangumi.tv/user/922571</div>
+                    <div><span>✉:</span> 1635786118@QQ.com</div>
+                    <div><span>B:</span> space.bilibili.com/488509701</div>
                 </div>
             </div>
         </div>
@@ -213,7 +257,7 @@
                 <p>765 PRODUCTION</p>
                 <p>AMAMI HARUKA</p>
                 <p>AGE 17</p>
-                <p style="margin-top: 15px;">🌸雨粒になって花を驚かすこの世界🌸</p>
+                <p style="margin-top: 15px;">雨粒になって花を驚かすこの世界</p>
             </div>
             <div class="back-bottom">
                 PRODUCER<br>CARD
