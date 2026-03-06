@@ -24,9 +24,7 @@
         height: 200px;
         user-select: none;
     }
-    .card-wrapper:active {
-        cursor: grabbing;
-    }
+    .card-wrapper:active { cursor: grabbing; }
     .card-inner {
         position: relative;
         width: 100%;
@@ -36,9 +34,7 @@
         border-radius: 15px;
         box-shadow: 0 10px 20px rgba(0,0,0,0.15);
     }
-    .card-inner.is-flipped {
-        transform: rotateY(180deg);
-    }
+    .card-inner.is-flipped { transform: rotateY(180deg); }
     .card-face {
         position: absolute;
         width: 100%;
@@ -50,30 +46,29 @@
         overflow: hidden;
     }
 
-    /* ================================== */
     /*          名片正面样式                */
-    /* ================================== */
-    
-    /* 1. 将原本的青色斜边改为了你要求的 #d32f2f 红色 */
     .front-bg-red {
         position: absolute;
         top: 0;
         left: 0;
         width: 65%;
         height: 100%;
-        background-color: #d32f2f; /* 已经修改为红色 */
+        background-color: #d32f2f;
         clip-path: polygon(0 0, 100% 0, 50% 100%, 0 100%);
         background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
                           linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
         background-size: 10px 10px;
     }
+    
     .star-logo {
         position: absolute;
-        top: 10px;
+        top: 12px;
         left: 15px;
-        color: white;
-        font-size: 20px;
+        width: 55px; /* 控制 Logo 的宽度 */
+        height: auto;
+        filter: drop-shadow(0px 0px 3px rgba(255,255,255,0.8)); 
     }
+    
     .tiny-text {
         position: absolute;
         bottom: 15px;
@@ -85,7 +80,6 @@
         white-space: nowrap;
     }
 
-    /* 2. 人物立绘 (春香) */
     .front-character {
         position: absolute;
         bottom: 0;
@@ -100,12 +94,11 @@
         filter: drop-shadow(4px 4px 4px rgba(0,0,0,0.25));
     }
 
-    /* 3. 右侧文字信息 (排版调整以适应长链接) */
     .front-content {
         position: absolute;
         top: 0;
         right: 0;
-        width: 60%; /* 稍微加宽一点，给B站链接留空间 */
+        width: 60%;
         height: 100%;
         padding: 15px 15px 15px 0;
         box-sizing: border-box;
@@ -131,14 +124,11 @@
     }
     .nfc-icon { color: #111; font-size: 12px; }
 
-    /* 社交信息区：缩小了一点字号以免超出屏幕 */
     .socials { font-size: 9px; color: #444; line-height: 1.6; }
     .socials div { display: flex; justify-content: flex-end; align-items: center; gap: 5px; }
     .socials span { font-weight: bold; font-style: italic; }
 
-    /* ================================== */
     /*          名片背面样式                */
-    /* ================================== */
     .card-back {
         transform: rotateY(180deg);
         display: flex;
@@ -150,8 +140,7 @@
         right: 15px;
         width: 45px;
         height: 45px;
-        /* 这里如果你有B站主页的二维码，可以替换掉 */
-        background-image: url('https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=https://space.bilibili.com/488509701');
+        background-image: url('space.bilibili.com_488509701.png');
         background-size: cover;
     }
     .back-top { 
@@ -163,7 +152,7 @@
     
     .back-bottom {
         height: 60%;
-        background-color: #d32f2f; /* 背面也是红色 */
+        background-color: #d32f2f;
         color: white;
         display: flex;
         flex-direction: column;
@@ -188,8 +177,7 @@
         <!-- 名片正面 -->
         <div class="card-face card-front">
             <div class="front-bg-red">
-                <div class="star-logo">★</div>
-                <!-- 左下角的英文小字我也顺手帮你改成765专属了 -->
+                <img src="IDOLMASTER20THLogo.png" class="star-logo" alt="20th Logo">
                 <div class="tiny-text">765 PRODUCTION PRODUCER CARD</div>
             </div>
             
@@ -206,8 +194,8 @@
                 </div>
                 <div class="socials">
                     <div><span>@:</span> Rain Grain</div>
-                    <div><span>✉:</span> 1635786118@QQ.com</div>
-                    <div><span>B:</span> space.bilibili.com/488509701</div>
+                    <div><span>✉:</span> 1635786118</div>
+                    <div><span>📺:</span>bangumi.tv/user/922571</div>
                 </div>
             </div>
         </div>
@@ -219,7 +207,7 @@
                 <p>765 PRODUCTION</p>
                 <p>AMAMI HARUKA</p>
                 <p>AGE 17</p>
-                <p>雨粒になって花を驚かすこの世界</p>
+                <p style="margin-top: 15px;">🌸雨粒になって花を驚かすこの世界🌸</p>
             </div>
             <div class="back-bottom">
                 PRODUCER<br>CARD
