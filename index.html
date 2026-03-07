@@ -57,4 +57,361 @@
         background-image: 
             radial-gradient(ellipse 150% 100% at 30% 100%, #05070a 40%, transparent 41%),
             radial-gradient(ellipse 180% 120% at 80% 100%, #05070a 45%, transparent 46%),
-            radial-gradient(ellipse 200% 100% at 50% 100%, 
+            radial-gradient(ellipse 200% 100% at 50% 100%, #0a0d14 35%, transparent 36%),
+            radial-gradient(ellipse 150% 90% at 10% 100%, #0a0d14 40%, transparent 41%),
+            radial-gradient(ellipse 250% 80% at 70% 100%, #10151f 30%, transparent 31%);
+        background-position: bottom;
+        background-repeat: no-repeat;
+    }
+
+    /* ================================== */
+    /*          音乐播放按钮样式            */
+    /* ================================== */
+    .music-btn {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 22px;
+        color: white;
+        cursor: pointer;
+        z-index: 100;
+        backdrop-filter: blur(5px);
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    
+    .music-btn:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: scale(1.1);
+    }
+
+    .music-btn.playing {
+        background-color: rgba(211, 47, 47, 0.9); 
+        box-shadow: 0 0 15px rgba(211, 47, 47, 0.6);
+        animation: spin 4s linear infinite;
+    }
+
+    @keyframes spin { 
+        100% { transform: rotate(360deg); } 
+    }
+
+    /* ================================== */
+    /*          核心卡片容器                */
+    /* ================================== */
+    .card-wrapper {
+        position: absolute;
+        top: 20vh;
+        left: calc(50% - 175px); 
+        cursor: grab;
+        perspective: 1000px;
+        width: 350px;
+        height: 200px;
+        user-select: none;
+        z-index: 10;
+    }
+    .card-wrapper:active { cursor: grabbing; }
+    .card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+        transform-style: preserve-3d;
+        border-radius: 15px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+    }
+    .card-inner.is-flipped { transform: rotateY(180deg); }
+    .card-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        border-radius: 15px;
+        background-color: white;
+        overflow: hidden;
+    }
+
+    /* ================================== */
+    /*          名片正面样式                */
+    /* ================================== */
+    .front-bg-red {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 58%; 
+        height: 100%;
+        background-color: #d32f2f;
+        clip-path: polygon(0 0, 100% 0, 50% 100%, 0 100%);
+        background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+                          linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+        background-size: 10px 10px;
+    }
+    
+    .star-logo {
+        position: absolute;
+        top: 12px;
+        left: 10px; 
+        width: 55px;
+        height: auto;
+        filter: drop-shadow(0px 0px 3px rgba(255,255,255,0.8)); 
+    }
+    
+    .tiny-text {
+        position: absolute;
+        bottom: 15px;
+        left: 10px; 
+        color: rgba(255,255,255,0.6);
+        font-size: 10px;
+        transform: scale(0.6);
+        transform-origin: left bottom;
+        white-space: nowrap;
+    }
+
+    .front-character {
+        position: absolute;
+        bottom: 0;
+        left: -8%; 
+        width: 60%; 
+        height: 95%;
+        background-image: url('1.png'); 
+        background-size: contain;
+        background-position: bottom center;
+        background-repeat: no-repeat;
+        z-index: 2;
+        filter: drop-shadow(4px 4px 4px rgba(0,0,0,0.25));
+    }
+
+    .front-content {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 65%; 
+        height: 100%;
+        padding: 15px 15px 15px 0;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-end;
+        text-align: right;
+        z-index: 3;
+    }
+    .name-section h2 { margin: 0 0 5px 0; font-size: 24px; color: #111; font-weight: 900; }
+    .name-section p { margin: 2px 0; font-size: 9px; color: #777; font-weight: bold; }
+    
+    .nfc-section {
+        font-size: 8px;
+        color: #999;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-weight: bold;
+        animation: breathing 2.5s infinite;
+    }
+    @keyframes breathing {
+        0% { opacity: 0.5; }
+        50% { opacity: 1; transform: scale(1.02); }
+        100% { opacity: 0.5; }
+    }
+    .nfc-icon { color: #111; font-size: 12px; }
+
+    .socials { font-size: 9px; color: #444; line-height: 1.6; }
+    .socials div { display: flex; justify-content: flex-end; align-items: center; gap: 5px; }
+    .socials span { font-weight: bold; font-style: italic; }
+
+    /* ================================== */
+    /*          名片背面样式                */
+    /* ================================== */
+    .card-back {
+        transform: rotateY(180deg);
+        display: flex;
+        flex-direction: column;
+    }
+    .qr-code {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        width: 45px;
+        height: 45px;
+        background-image: url('space.bilibili.com_488509701.png');
+        background-size: cover;
+    }
+    
+    .back-top { 
+        padding: 15px; 
+        height: 44%; 
+        box-sizing: border-box;
+    }
+    .back-top p { margin: 3px 0; font-size: 9px; color: #555; font-weight: bold; }
+    
+    .back-bottom {
+        height: 56%; 
+        background-color: #d32f2f;
+        color: white;
+        background-image: 
+            repeating-linear-gradient(
+                -45deg,
+                rgba(0, 0, 0, 0.05),
+                rgba(0, 0, 0, 0.05) 3px,
+                transparent 3px,
+                transparent 8px
+            ),
+            radial-gradient(circle at bottom right, #a00000, transparent 80%);
+            
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        padding-left: 20px;
+        font-family: 'Arial Black', Impact, sans-serif;
+        font-size: 40px;
+        font-weight: 900;
+        font-style: italic;
+        line-height: 0.85;
+        letter-spacing: -1px;
+        text-shadow: 4px 4px 0px #1a1a1a;
+    }
+</style>
+</head>
+<body>
+
+<!-- 星空背景层 -->
+<div class="starry-background"></div>
+<!-- 底部群山剪影层 -->
+<div class="mountains"></div>
+
+<!-- 音乐播放器 -->
+<audio id="bgMusic" loop>
+    <source src="bgm.mp3" type="audio/mpeg">
+</audio>
+<div id="musicToggle" class="music-btn" title="播放/暂停音乐">🔇</div>
+
+<div class="card-wrapper" id="draggableCard">
+    <div class="card-inner" id="cardInner">
+        <!-- 名片正面 -->
+        <div class="card-face card-front">
+            <div class="front-bg-red">
+                <img src="IDOLMASTER20THLogo.png" class="star-logo" alt="20th Logo">
+                <div class="tiny-text">765 PRODUCTION PRODUCER CARD</div>
+            </div>
+            <div class="front-character"></div>
+            <div class="front-content">
+                <div class="name-section">
+                    <h2>SuigyokuP</h2>
+                    <p>765プロデューサー科</p>
+                    <p>天海春香担当プロデューサー</p>
+                </div>
+                <div class="nfc-section">
+                    TAP TO START <span class="nfc-icon">N))</span>
+                </div>
+                <div class="socials">
+                    <div><span>@:</span> Rain Grain</div>
+                    <div><span>✉:</span> 1635786118@QQ.com</div>
+                    <div><span>B:</span> space.bilibili.com/488509701</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 名片背面 -->
+        <div class="card-face card-back">
+            <div class="qr-code"></div>
+            <div class="back-top">
+                <p>765 PRODUCTION</p>
+                <p>AMAMI HARUKA</p>
+                <p>AGE 17</p>
+                <p style="margin-top: 15px;">雨粒になって花を驚かすこの世界</p>
+            </div>
+            <div class="back-bottom">
+                PRODUCER<br>CARD
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // === 音乐播放控制逻辑 ===
+    const musicToggle = document.getElementById('musicToggle');
+    const bgMusic = document.getElementById('bgMusic');
+    let isPlaying = false;
+
+    musicToggle.addEventListener('click', (e) => {
+        // 防止点击音乐按钮时触发卡片的翻转
+        e.stopPropagation(); 
+        
+        if (isPlaying) {
+            bgMusic.pause();
+            musicToggle.classList.remove('playing');
+            musicToggle.innerHTML = '🔇';
+        } else {
+            let playPromise = bgMusic.play();
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    musicToggle.classList.add('playing');
+                    musicToggle.innerHTML = '🎵';
+                }).catch(error => {
+                    console.log("Play failed: ", error);
+                });
+            }
+        }
+        isPlaying = !isPlaying;
+    });
+
+    // === 卡片拖拽与翻转逻辑 ===
+    const draggableElement = document.getElementById('draggableCard');
+    const card = document.getElementById('cardInner');
+    let isDragging = false;
+    let dragStartX, dragStartY, clickStartTime;
+
+    // 🔥关键修复：移除有兼容性问题的 event.target 判断
+    const startDrag = (e) => {
+        isDragging = true;
+        clickStartTime = Date.now();
+        dragStartX = e.clientX - draggableElement.offsetLeft;
+        dragStartY = e.clientY - draggableElement.offsetTop;
+        draggableElement.style.transition = 'none';
+        document.body.style.cursor = 'grabbing';
+    };
+
+    const drag = (e) => {
+        if (isDragging) {
+            e.preventDefault();
+            const newX = e.clientX - dragStartX;
+            const newY = e.clientY - dragStartY;
+            draggableElement.style.left = `${newX}px`;
+            draggableElement.style.top = `${newY}px`;
+        }
+    };
+
+    const endDrag = () => {
+        if (!isDragging) return;
+        isDragging = false;
+        draggableElement.style.transition = '';
+        document.body.style.cursor = 'default';
+        if (Date.now() - clickStartTime < 200) {
+            card.classList.toggle('is-flipped');
+        }
+    };
+
+    // 绑定鼠标事件
+    draggableElement.addEventListener('mousedown', startDrag);
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('mouseup', endDrag);
+
+    // 绑定触摸事件
+    draggableElement.addEventListener('touchstart', (e) => startDrag(e.touches[0]), { passive: false });
+    document.addEventListener('touchmove', (e) => { if (isDragging) { e.preventDefault(); drag(e.touches[0]); } }, { passive: false });
+    document.addEventListener('touchend', endDrag);
+</script>
+
+</body>
+</html>
