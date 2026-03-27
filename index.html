@@ -6,121 +6,84 @@
     <title>SuigyokuP的专属名片</title>
 <style>
     /* ================================== */
-    /*          网页整体星空背景设计         */
+    /*      全新：红蓝炫彩流体背景          */
     /* ================================== */
     body {
         font-family: 'Helvetica Neue', Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        width: 100vw;
+        margin: 0; padding: 0;
+        height: 100vh; width: 100vw;
         overflow: hidden;
-        background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+        background-color: #05050a; /* 极暗的深空底色 */
     }
 
-    /* 静态星空 - 放在最底层 (-2) */
-    .starry-background {
+    /* 背景容器，控制整体颜色的过渡 */
+    .bg-container {
         position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        z-index: -2; 
-        pointer-events: none; 
-        background-image: 
-            radial-gradient(1.5px 1.5px at 20px 30px, #fff, transparent),
-            radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.8), transparent),
-            radial-gradient(2px 2px at 50px 160px, rgba(255,255,255,0.9), transparent),
-            radial-gradient(1.5px 1.5px at 90px 40px, #fff, transparent),
-            radial-gradient(2px 2px at 130px 80px, rgba(255,255,255,0.7), transparent),
-            radial-gradient(1px 1px at 160px 120px, #fff, transparent),
-            radial-gradient(2.5px 2.5px at 200px 150px, rgba(255,255,255,0.6), transparent),
-            radial-gradient(1px 1px at 250px 50px, #fff, transparent),
-            radial-gradient(1.5px 1.5px at 300px 180px, #fff, transparent),
-            radial-gradient(2px 2px at 350px 90px, rgba(255,255,255,0.8), transparent),
-            radial-gradient(1px 1px at 400px 220px, #fff, transparent);
-        background-repeat: repeat;
-        background-size: 350px 350px;
-        animation: twinkle 5s infinite alternate;
-    }
-
-    @keyframes twinkle {
-        0% { opacity: 0.3; }
-        100% { opacity: 1; }
-    }
-
-    /* ================================== */
-    /*          ✨ 全新：意境流星效果 ✨      */
-    /* ================================== */
-    /* 流星层 - 放在星空上，群山下 (-1) */
-    .meteor-container {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        z-index: -1; 
+        top: 0; left: 0; width: 100%; height: 100%;
+        z-index: -2;
         overflow: hidden;
-        pointer-events: none;
+        /* 背景色微调，配合翻转 */
+        transition: background-color 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
     }
 
-    .meteor {
+    /* 炫彩光球通用属性 */
+    .orb {
         position: absolute;
-        width: 1.5px; /* 变小 */
-        height: 1.5px;
-        background: rgba(255, 255, 255, 0.9);
         border-radius: 50%;
-        box-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
-        opacity: 0;
-        animation: meteor-fall linear infinite;
+        filter: blur(90px); /* 核心：极度模糊产生流体融合感 */
+        transition: all 0.8s cubic-bezier(0.4, 0.2, 0.2, 1); /* 跟随卡片翻转的平滑动画 */
     }
 
-    /* 细长微弱的拖尾 */
-    .meteor::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        right: 0; 
-        transform: translateY(-50%);
-        width: 60px; /* 拖尾变短变细 */
-        height: 1px;
-        background: linear-gradient(to right, rgba(255, 255, 255, 0.7), transparent);
+    /* 红色光球（代表春香） */
+    .orb-red {
+        width: 70vw; height: 70vw;
+        background: rgba(229, 57, 53, 0.65); /* 春香红 */
+        top: -10%; left: -10%;
+        animation: float-red 12s infinite alternate ease-in-out;
     }
 
-    /* 坠落动画：斜向左下角，途中自然隐没 */
-    @keyframes meteor-fall {
-        0% { transform: rotate(-45deg) translateX(0); opacity: 0; }
-        5% { opacity: 1; }  /* 悄悄出现 */
-        20% { opacity: 0.8; } /* 保持亮度 */
-        35% { opacity: 0; } /* 在动画进行到1/3时隐没，营造掉入山谷的错觉 */
-        100% { transform: rotate(-45deg) translateX(-800px); opacity: 0; } /* 剩下的大量时间处于不可见状态，等待下一波爆发 */
+    /* 蓝色光球（代表千早） */
+    .orb-blue {
+        width: 80vw; height: 80vw;
+        background: rgba(30, 136, 229, 0.4); /* 千早蓝 */
+        bottom: -20%; right: -15%;
+        animation: float-blue 15s infinite alternate-reverse ease-in-out;
+    }
+    
+    /* 辅助紫红色光球，增加色彩过渡的层次感 */
+    .orb-purple {
+        width: 50vw; height: 50vw;
+        background: rgba(142, 36, 170, 0.4);
+        top: 40%; left: 30%;
+        animation: float-purple 10s infinite alternate ease-in-out;
     }
 
-    /* 错落有致、漫长的出现周期 */
-    .meteor:nth-child(1) { top: 5%; left: 70%; animation-duration: 14s; animation-delay: 2s; }
-    .meteor:nth-child(2) { top: 15%; left: 95%; animation-duration: 18s; animation-delay: 7s; }
-    .meteor:nth-child(3) { top: -5%; left: 45%; animation-duration: 12s; animation-delay: 11s; }
-    .meteor:nth-child(4) { top: 10%; left: 85%; animation-duration: 20s; animation-delay: 4s; }
+    /* 光球的自由浮动动画 */
+    @keyframes float-red { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(10%, 15%) scale(1.1); } }
+    @keyframes float-blue { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-15%, -10%) scale(1.05); } }
+    @keyframes float-purple { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-10%, 20%) scale(1.2); } }
 
-
-    /* 底部群山剪影 - 挡在流星前面 (0) */
-    .mountains {
-        position: absolute;
-        bottom: 0; left: 0;
-        width: 100%; height: 30vh;
-        z-index: 0; 
-        pointer-events: none;
-        background-image: 
-            radial-gradient(ellipse 150% 100% at 30% 100%, #05070a 40%, transparent 41%),
-            radial-gradient(ellipse 180% 120% at 80% 100%, #05070a 45%, transparent 46%),
-            radial-gradient(ellipse 200% 100% at 50% 100%, #0a0d14 35%, transparent 36%),
-            radial-gradient(ellipse 150% 90% at 10% 100%, #0a0d14 40%, transparent 41%),
-            radial-gradient(ellipse 250% 80% at 70% 100%, #10151f 30%, transparent 31%);
-        background-position: bottom;
-        background-repeat: no-repeat;
+    /* === 灵魂联动：当卡片翻转到背面（千早）时的背景状态 === */
+    .bg-container.is-flipped-bg {
+        background-color: #020b14; /* 底色变冷 */
+    }
+    .bg-container.is-flipped-bg .orb-red {
+        opacity: 0.2; /* 红色光球变暗 */
+        transform: translate(-20%, -20%) scale(0.8); /* 红色退缩 */
+    }
+    .bg-container.is-flipped-bg .orb-blue {
+        background: rgba(21, 101, 192, 0.75); /* 蓝色光球变亮、变深邃 */
+        transform: translate(-5%, -5%) scale(1.2); /* 蓝色扩张占据主导 */
+    }
+    .bg-container.is-flipped-bg .orb-purple {
+        background: rgba(57, 73, 171, 0.5); /* 紫色偏向深蓝 */
     }
 
     /* ================================== */
     /*          音乐播放按钮样式            */
     /* ================================== */
     .music-btn {
-        position: fixed;
-        top: 20px; right: 20px;
+        position: fixed; top: 20px; right: 20px;
         width: 45px; height: 45px;
         background-color: rgba(255, 255, 255, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.3);
@@ -128,17 +91,12 @@
         display: flex; justify-content: center; align-items: center;
         font-size: 22px; color: white;
         cursor: pointer; z-index: 100;
-        backdrop-filter: blur(5px);
+        backdrop-filter: blur(10px); /* 磨砂玻璃效果增强 */
         transition: all 0.3s ease;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
     }
-    
     .music-btn:hover { background-color: rgba(255, 255, 255, 0.2); transform: scale(1.1); }
-    .music-btn.playing {
-        background-color: rgba(211, 47, 47, 0.9); 
-        box-shadow: 0 0 15px rgba(211, 47, 47, 0.6);
-        animation: spin 4s linear infinite;
-    }
+    .music-btn.playing { background-color: rgba(211, 47, 47, 0.9); box-shadow: 0 0 15px rgba(211, 47, 47, 0.6); animation: spin 4s linear infinite; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
 
     /* ================================== */
@@ -149,24 +107,21 @@
         transform: translate(-50%, -50%);
         cursor: grab; perspective: 1000px;
         width: 350px; height: 200px;
-        user-select: none; z-index: 10;
-        touch-action: none;
+        user-select: none; z-index: 10; touch-action: none;
     }
     .card-wrapper:active { cursor: grabbing; }
 
     .card-inner {
         position: relative; width: 100%; height: 100%;
         transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
-        transform-style: preserve-3d;
-        border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+        transform-style: preserve-3d; border-radius: 15px; 
+        box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.1); /* 加强阴影让卡片浮现出来 */
     }
-
     .card-inner.is-flipped { transform: rotateY(180deg); }
 
     .card-face {
         position: absolute; width: 100%; height: 100%;
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden; backface-visibility: hidden;
         border-radius: 15px; background-color: white; overflow: hidden;
     }
 
@@ -174,57 +129,31 @@
     /*          名片正面样式                */
     /* ================================== */
     .front-bg-red {
-        position: absolute; top: 0; left: 0;
-        width: 58%; height: 100%;
+        position: absolute; top: 0; left: 0; width: 58%; height: 100%;
         background-color: #d32f2f;
         clip-path: polygon(0 0, 100% 0, 50% 100%, 0 100%);
-        background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-                          linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+        background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
         background-size: 10px 10px;
     }
-    
-    .star-logo {
-        position: absolute; top: 12px; left: 10px; 
-        width: 55px; height: auto;
-        filter: drop-shadow(0px 0px 3px rgba(255,255,255,0.8)); 
-    }
-    
+    .star-logo { position: absolute; top: 12px; left: 10px; width: 55px; height: auto; filter: drop-shadow(0px 0px 3px rgba(255,255,255,0.8)); }
     .tiny-text {
-        position: absolute; bottom: 15px; left: 10px; 
-        color: rgba(255,255,255,0.6); font-size: 10px;
-        transform: scale(0.6); transform-origin: left bottom;
-        white-space: nowrap;
+        position: absolute; bottom: 15px; left: 10px; color: rgba(255,255,255,0.6); font-size: 10px;
+        transform: scale(0.6); transform-origin: left bottom; white-space: nowrap;
     }
-
     .front-character {
-        position: absolute; bottom: 0; left: -8%; 
-        width: 60%; height: 95%;
-        background-image: url('1.png'); 
-        background-size: contain; background-position: bottom center;
-        background-repeat: no-repeat; z-index: 2;
+        position: absolute; bottom: 0; left: -8%; width: 60%; height: 95%;
+        background-image: url('1.png'); background-size: contain; background-position: bottom center; background-repeat: no-repeat; z-index: 2;
         filter: drop-shadow(4px 4px 4px rgba(0,0,0,0.25));
     }
-
     .front-content {
-        position: absolute; top: 0; right: 0;
-        width: 65%; height: 100%;
-        padding: 15px 15px 15px 0; box-sizing: border-box;
-        display: flex; flex-direction: column;
-        justify-content: center; align-items: flex-end;
-        text-align: right; z-index: 3;
+        position: absolute; top: 0; right: 0; width: 65%; height: 100%;
+        padding: 15px 15px 15px 0; box-sizing: border-box; display: flex; flex-direction: column;
+        justify-content: center; align-items: flex-end; text-align: right; z-index: 3;
     }
-
     .name-section h2 { margin: 0 0 5px 0; font-size: 24px; color: #111; font-weight: 900; }
     .name-section p { margin: 2px 0; font-size: 9px; color: #777; font-weight: bold; }
-    
-    .nfc-section {
-        font-size: 8px; color: #999;
-        margin-top: 10px; margin-bottom: 10px;
-        display: flex; align-items: center; gap: 5px; font-weight: bold;
-        animation: breathing 2.5s infinite;
-    }
+    .nfc-section { font-size: 8px; color: #999; margin-top: 10px; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; font-weight: bold; animation: breathing 2.5s infinite; }
     @keyframes breathing { 0% { opacity: 0.5; } 50% { opacity: 1; transform: scale(1.02); } 100% { opacity: 0.5; } }
-
     .nfc-icon { color: #111; font-size: 12px; }
     .socials { font-size: 9px; color: #444; line-height: 1.6; }
     .socials div { display: flex; justify-content: flex-end; align-items: center; gap: 5px; }
@@ -235,11 +164,18 @@
     /* ================================== */
     .card-back { transform: rotateY(180deg); display: flex; flex-direction: column; }
 
+    /* 优化后的二维码 + B站文字 */
     .qr-code {
         position: absolute; top: 15px; right: 15px;
         width: 45px; height: 45px;
         background-image: url('space.bilibili.com_488509701.png');
-        background-size: cover;
+        background-size: cover; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .qr-code::after {
+        content: 'bilibili'; position: absolute; top: 100%; left: 50%;
+        transform: translateX(-50%); margin-top: 3px; color: #fb7299; /* 猛男粉 */
+        font-size: 9px; font-weight: 900; letter-spacing: 0.5px;
+        text-shadow: 1px 1px 0px rgba(255,255,255,0.9);
     }
     
     .back-top { padding: 15px; height: 44%; box-sizing: border-box; }
@@ -247,44 +183,41 @@
     
     .back-bottom {
         height: 56%; background-color: #d32f2f; color: white;
-        background-image: 
-            repeating-linear-gradient(-45deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 3px, transparent 3px, transparent 8px),
-            radial-gradient(circle at bottom right, #a00000, transparent 80%);
-        display: flex; flex-direction: column;
-        justify-content: center; align-items: flex-start;
-        padding-left: 20px; font-family: 'Arial Black', Impact, sans-serif;
-        font-size: 40px; font-weight: 900; font-style: italic;
-        line-height: 0.85; letter-spacing: -1px;
-        text-shadow: 4px 4px 0px #1a1a1a; position: relative;
+        background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 3px, transparent 3px, transparent 8px), radial-gradient(circle at bottom right, #a00000, transparent 80%);
+        display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+        padding-left: 20px; font-family: 'Arial Black', Impact, sans-serif; font-size: 40px; font-weight: 900; font-style: italic;
+        line-height: 0.85; letter-spacing: -1px; text-shadow: 4px 4px 0px #1a1a1a; position: relative;
     }
 
-    /* === 天海春香标志性蝴蝶结 Logo === */
-    .haruka-bow {
+    /* === 全新：千早头像框 === */
+    .chihaya-avatar {
         position: absolute;
         bottom: 12px; right: 15px;
         width: 50px; height: 50px;
-        opacity: 0.5;
-        filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3));
+        border-radius: 50%;
+        /* 头像边框：白色带一点微透，很精致 */
+        border: 2px solid rgba(255, 255, 255, 0.9);
+        /* 请确保同一文件夹下有 chihaya.png 这张图 */
+        background-image: url('chihaya.png'); 
+        background-size: cover;
+        background-position: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.4); /* 立体悬浮感 */
+        transition: transform 0.3s ease;
     }
-    .haruka-bow svg { width: 100%; height: 100%; overflow: visible; }
+    .chihaya-avatar:hover {
+        transform: scale(1.1) rotate(5deg); /* 悬浮小彩蛋 */
+    }
 
 </style>
 </head>
 <body>
 
-<!-- 静态星空 -->
-<div class="starry-background"></div>
-
-<!-- 意境流星 -->
-<div class="meteor-container">
-    <div class="meteor"></div>
-    <div class="meteor"></div>
-    <div class="meteor"></div>
-    <div class="meteor"></div>
+<!-- 炫彩光球背景层 -->
+<div id="bgContainer" class="bg-container">
+    <div class="orb orb-red"></div>
+    <div class="orb orb-blue"></div>
+    <div class="orb orb-purple"></div>
 </div>
-
-<!-- 底部群山 -->
-<div class="mountains"></div>
 
 <!-- 音乐播放器 -->
 <audio id="bgMusic" loop>
@@ -295,7 +228,7 @@
 <!-- 名片本体 -->
 <div class="card-wrapper" id="draggableCard">
     <div class="card-inner" id="cardInner">
-        <!-- 正面 -->
+        <!-- 正面 (春香) -->
         <div class="card-face card-front">
             <div class="front-bg-red">
                 <img src="IDOLMASTER20THLogo.png" class="star-logo" alt="20th Logo">
@@ -312,13 +245,13 @@
                     TAP TO START <span class="nfc-icon">N))</span>
                 </div>
                 <div class="socials">
-                    <div><span>🐧QQ:</span>1635786118</div>
-                    <div><span>📮email:</span>moyuziche@Gmail.com</div>
-                    <div><span>📺bangumi:</span>922571</div>
+                    <div><span>@:</span> Rain Grain</div>
+                    <div><span>📮:</span> 1635786118@QQ.com</div>
+                    <div><span>📺:</span>bangumi.tv/user/922571</div>
                 </div>
             </div>
         </div>
-        <!-- 背面 -->
+        <!-- 背面 (千早) -->
         <div class="card-face card-back">
             <div class="qr-code"></div>
             <div class="back-top">
@@ -329,13 +262,10 @@
             </div>
             <div class="back-bottom">
                 PRODUCER<br>CARD
-                <!-- 蝴蝶结Logo -->
-                <div class="haruka-bow">
-                    <svg viewBox="0 0 100 100">
-                        <path d="M 50,50 C 10,80 10,20 50,50 C 90,20 90,80 50,50" fill="#F8BBD0" stroke="#E91E63" stroke-width="3"/>
-                        <circle cx="50" cy="50" r="8" fill="#E91E63"/>
-                    </svg>
-                </div>
+                
+                <!-- 替换为千早头像 (注意图片名字要是 chihaya.png，或者自己改) -->
+                <div class="chihaya-avatar"></div>
+
             </div>
         </div>
     </div>
@@ -372,9 +302,10 @@
         isPlaying = !isPlaying;
     });
 
-    // 拖拽与翻转逻辑
+    // 拖拽与联动翻转逻辑
     const dragItem = document.getElementById('draggableCard');
     const cardInner = document.getElementById('cardInner');
+    const bgContainer = document.getElementById('bgContainer'); // 获取背景容器
     
     let active = false; let currentX; let currentY; let initialX; let initialY;
     let xOffset = -175; let yOffset = -100;
@@ -398,7 +329,9 @@
         active = false; dragItem.style.transition = '';
         if (!hasDragged) {
             if(e.target && (dragItem.contains(e.target) || e.target === cardInner)){
+                 // 核心联动：卡片翻转的同时，背景也切换状态！
                  cardInner.classList.toggle('is-flipped');
+                 bgContainer.classList.toggle('is-flipped-bg'); 
             }
         }
     }
