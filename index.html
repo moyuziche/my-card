@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SuigyokuP的专属名片</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuigyokuP的专属名片</title>
 <style>
     /* ================================== */
     /*          网页整体星空背景设计         */
@@ -21,7 +21,7 @@
     .starry-background {
         position: absolute;
         top: 0; left: 0; right: 0; bottom: 0;
-        z-index: -2;
+        z-index: -1; /* 位于最底层 */
         pointer-events: none; 
         background-image: 
             radial-gradient(1.5px 1.5px at 20px 30px, #fff, transparent),
@@ -52,7 +52,7 @@
         left: 0;
         width: 100%;
         height: 30vh;
-        z-index: -1;
+        z-index: 0; /* 在星空之上 */
         pointer-events: none;
         background-image: 
             radial-gradient(ellipse 150% 100% at 30% 100%, #05070a 40%, transparent 41%),
@@ -63,6 +63,51 @@
         background-position: bottom;
         background-repeat: no-repeat;
     }
+    
+    /* ================================== */
+    /*            流星动画效果              */
+    /* ================================== */
+    .shooting-stars-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1; /* 在群山之上，卡片之下 */
+        overflow: hidden;
+    }
+
+    .star {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: #fff;
+        border-radius: 50%;
+        box-shadow: 0 0 6px 0 rgba(255, 255, 255, 0.8),
+                    0 0 10px 0 rgba(255, 255, 255, 0.4);
+        animation: shoot 3s linear infinite;
+    }
+
+    .star::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%) rotate(45deg);
+        width: 200px;
+        height: 1px;
+        background: linear-gradient(to left, rgba(255, 255, 255, 0.6), transparent);
+    }
+
+    @keyframes shoot {
+        0% { transform: translate(-20vw, -20vh); opacity: 1; }
+        100% { transform: translate(120vw, 120vh); opacity: 0; }
+    }
+
+    .shooting-stars-container .star:nth-child(1) { top: 10%; left: 20%; animation-duration: 3s; animation-delay: 0.5s; }
+    .shooting-stars-container .star:nth-child(2) { top: 30%; left: 80%; animation-duration: 4s; animation-delay: 1.2s; }
+    .shooting-stars-container .star:nth-child(3) { top: 60%; left: 5%; animation-duration: 3.5s; animation-delay: 2.5s; }
+    .shooting-stars-container .star:nth-child(4) { top: 80%; left: 90%; animation-duration: 5s; animation-delay: 3s; }
 
     /* ================================== */
     /*          音乐播放按钮样式            */
@@ -92,23 +137,18 @@
         background-color: rgba(255, 255, 255, 0.2);
         transform: scale(1.1);
     }
-
     .music-btn.playing {
         background-color: rgba(211, 47, 47, 0.9); 
         box-shadow: 0 0 15px rgba(211, 47, 47, 0.6);
         animation: spin 4s linear infinite;
     }
-
-    @keyframes spin { 
-        100% { transform: rotate(360deg); } 
-    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
 
     /* ================================== */
     /*          核心卡片容器                */
     /* ================================== */
     .card-wrapper {
         position: absolute;
-        /* 使用 transform 居中初始位置，后续通过 js 动态修改 translate */
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
@@ -118,9 +158,10 @@
         height: 200px;
         user-select: none;
         z-index: 10;
-        touch-action: none; /* 防止手机端默认滑动屏幕行为干扰拖拽 */
+        touch-action: none;
     }
     .card-wrapper:active { cursor: grabbing; }
+
     .card-inner {
         position: relative;
         width: 100%;
@@ -130,7 +171,9 @@
         border-radius: 15px;
         box-shadow: 0 15px 35px rgba(0,0,0,0.6);
     }
+
     .card-inner.is-flipped { transform: rotateY(180deg); }
+
     .card-face {
         position: absolute;
         width: 100%;
@@ -147,10 +190,8 @@
     /* ================================== */
     .front-bg-red {
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 58%; 
-        height: 100%;
+        top: 0; left: 0;
+        width: 58%; height: 100%;
         background-color: #d32f2f;
         clip-path: polygon(0 0, 100% 0, 50% 100%, 0 100%);
         background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
@@ -160,17 +201,14 @@
     
     .star-logo {
         position: absolute;
-        top: 12px;
-        left: 10px; 
-        width: 55px;
-        height: auto;
+        top: 12px; left: 10px; 
+        width: 55px; height: auto;
         filter: drop-shadow(0px 0px 3px rgba(255,255,255,0.8)); 
     }
     
     .tiny-text {
         position: absolute;
-        bottom: 15px;
-        left: 10px; 
+        bottom: 15px; left: 10px; 
         color: rgba(255,255,255,0.6);
         font-size: 10px;
         transform: scale(0.6);
@@ -180,10 +218,8 @@
 
     .front-character {
         position: absolute;
-        bottom: 0;
-        left: -8%; 
-        width: 60%; 
-        height: 95%;
+        bottom: 0; left: -8%; 
+        width: 60%; height: 95%;
         background-image: url('1.png'); 
         background-size: contain;
         background-position: bottom center;
@@ -194,10 +230,8 @@
 
     .front-content {
         position: absolute;
-        top: 0;
-        right: 0;
-        width: 65%; 
-        height: 100%;
+        top: 0; right: 0;
+        width: 65%; height: 100%;
         padding: 15px 15px 15px 0;
         box-sizing: border-box;
         display: flex;
@@ -207,27 +241,25 @@
         text-align: right;
         z-index: 3;
     }
+
     .name-section h2 { margin: 0 0 5px 0; font-size: 24px; color: #111; font-weight: 900; }
     .name-section p { margin: 2px 0; font-size: 9px; color: #777; font-weight: bold; }
     
     .nfc-section {
-        font-size: 8px;
-        color: #999;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        display: flex;
-        align-items: center;
-        gap: 5px;
+        font-size: 8px; color: #999;
+        margin-top: 10px; margin-bottom: 10px;
+        display: flex; align-items: center; gap: 5px;
         font-weight: bold;
         animation: breathing 2.5s infinite;
     }
+
     @keyframes breathing {
         0% { opacity: 0.5; }
         50% { opacity: 1; transform: scale(1.02); }
         100% { opacity: 0.5; }
     }
-    .nfc-icon { color: #111; font-size: 12px; }
 
+    .nfc-icon { color: #111; font-size: 12px; }
     .socials { font-size: 9px; color: #444; line-height: 1.6; }
     .socials div { display: flex; justify-content: flex-end; align-items: center; gap: 5px; }
     .socials span { font-weight: bold; font-style: italic; }
@@ -240,19 +272,17 @@
         display: flex;
         flex-direction: column;
     }
+
     .qr-code {
         position: absolute;
-        top: 15px;
-        right: 15px;
-        width: 45px;
-        height: 45px;
+        top: 15px; right: 15px;
+        width: 45px; height: 45px;
         background-image: url('space.bilibili.com_488509701.png');
         background-size: cover;
     }
     
     .back-top { 
-        padding: 15px; 
-        height: 44%; 
+        padding: 15px; height: 44%; 
         box-sizing: border-box;
     }
     .back-top p { margin: 3px 0; font-size: 9px; color: #555; font-weight: bold; }
@@ -262,15 +292,8 @@
         background-color: #d32f2f;
         color: white;
         background-image: 
-            repeating-linear-gradient(
-                -45deg,
-                rgba(0, 0, 0, 0.05),
-                rgba(0, 0, 0, 0.05) 3px,
-                transparent 3px,
-                transparent 8px
-            ),
+            repeating-linear-gradient(-45deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 3px, transparent 3px, transparent 8px),
             radial-gradient(circle at bottom right, #a00000, transparent 80%);
-            
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -283,15 +306,43 @@
         line-height: 0.85;
         letter-spacing: -1px;
         text-shadow: 4px 4px 0px #1a1a1a;
+        position: relative; /* 为了定位蝴蝶结 */
     }
+
+    /* === 新增：天海春香蝴蝶结Logo === */
+    .haruka-bow {
+        position: absolute;
+        bottom: 12px;
+        right: 15px;
+        width: 50px;
+        height: 50px;
+        opacity: 0.5;
+        filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3));
+    }
+
+    .haruka-bow svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+    }
+
 </style>
 </head>
 <body>
 
-<!-- 星空背景层 -->
+<!-- 星空背景 -->
 <div class="starry-background"></div>
-<!-- 底部群山剪影层 -->
+
+<!-- 底部群山 -->
 <div class="mountains"></div>
+
+<!-- 流星 -->
+<div class="shooting-stars-container">
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+</div>
 
 <!-- 音乐播放器 -->
 <audio id="bgMusic" loop>
@@ -299,6 +350,7 @@
 </audio>
 <div id="musicToggle" class="music-btn" title="播放/暂停音乐">🔇</div>
 
+<!-- 名片本体 -->
 <div class="card-wrapper" id="draggableCard">
     <div class="card-inner" id="cardInner">
         <!-- 名片正面 -->
@@ -324,7 +376,6 @@
                 </div>
             </div>
         </div>
-
         <!-- 名片背面 -->
         <div class="card-face card-back">
             <div class="qr-code"></div>
@@ -336,6 +387,20 @@
             </div>
             <div class="back-bottom">
                 PRODUCER<br>CARD
+
+                <!-- 新增：蝴蝶结Logo -->
+                <div class="haruka-bow">
+                    <svg viewBox="0 0 100 100">
+                        <path d="M 50,50 
+                                 C 10,80 10,20 50,50 
+                                 C 90,20 90,80 50,50" 
+                              fill="#F8BBD0" 
+                              stroke="#E91E63" 
+                              stroke-width="3"/>
+                        <circle cx="50" cy="50" r="8" fill="#E91E63"/>
+                    </svg>
+                </div>
+
             </div>
         </div>
     </div>
@@ -346,6 +411,15 @@
     const musicToggle = document.getElementById('musicToggle');
     const bgMusic = document.getElementById('bgMusic');
     let isPlaying = false;
+
+    // 首次用户交互后才能自动播放
+    const startAudioOnFirstInteraction = () => {
+        document.removeEventListener('click', startAudioOnFirstInteraction);
+        document.removeEventListener('touchstart', startAudioOnFirstInteraction);
+        // 只有在明确的点击事件之后才尝试播放
+    };
+    document.addEventListener('click', startAudioOnFirstInteraction);
+    document.addEventListener('touchstart', startAudioOnFirstInteraction);
 
     musicToggle.addEventListener('click', (e) => {
         e.stopPropagation(); 
@@ -360,7 +434,8 @@
                     musicToggle.classList.add('playing');
                     musicToggle.innerHTML = '🎵';
                 }).catch(error => {
-                    console.log("Play failed: ", error);
+                    console.log("用户需要先与页面交互才能播放音乐。", error);
+                    // 可以在这里提示用户需要点击页面
                 });
             }
         }
@@ -376,14 +451,13 @@
     let currentY;
     let initialX;
     let initialY;
-    // 初始居中的偏移量：x轴偏移 -50% (即 -175px)，y轴偏移 -50% (即 -100px)
-    let xOffset = -175; 
+    let xOffset = -175;
     let yOffset = -100;
     
     let clickStartTime;
+    let hasDragged = false;
 
     function dragStart(e) {
-        // 判断是触摸还是鼠标点击
         if (e.type === "touchstart") {
             initialX = e.touches[0].clientX - xOffset;
             initialY = e.touches[0].clientY - yOffset;
@@ -391,33 +465,39 @@
             initialX = e.clientX - xOffset;
             initialY = e.clientY - yOffset;
         }
-
-        if (e.target === dragItem || dragItem.contains(e.target)) {
+        
+        // 确保事件目标是卡片或其子元素
+        if (dragItem.contains(e.target)) {
             active = true;
             clickStartTime = Date.now();
+            hasDragged = false; // 重置拖拽标志
             dragItem.style.transition = 'none';
-            document.body.style.cursor = 'grabbing';
         }
     }
 
     function dragEnd(e) {
         if (!active) return;
         
-        initialX = currentX;
-        initialY = currentY;
         active = false;
         dragItem.style.transition = '';
-        document.body.style.cursor = 'default';
 
-        // 翻转判断 (点击时间极短，且位移极小)
-        if (Date.now() - clickStartTime < 200) {
-            cardInner.classList.toggle('is-flipped');
+        // 关键：只有在没有发生 significant 拖拽时才翻转
+        if (!hasDragged) {
+            // 确保点击事件发生在卡片上，而不是音乐按钮上
+            if(e.target && (dragItem.contains(e.target) || e.target === cardInner)){
+                 cardInner.classList.toggle('is-flipped');
+            }
         }
     }
 
     function drag(e) {
         if (active) {
-            e.preventDefault(); // 阻止手机端拖动时的默认滚动行为
+            // 标记已经发生拖拽
+            if (!hasDragged && (Math.abs(e.clientX - (initialX + xOffset)) > 5 || Math.abs(e.clientY - (initialY + yOffset)) > 5)) {
+                hasDragged = true;
+            }
+
+            e.preventDefault();
         
             if (e.type === "touchmove") {
                 currentX = e.touches[0].clientX - initialX;
@@ -426,10 +506,9 @@
                 currentX = e.clientX - initialX;
                 currentY = e.clientY - initialY;
             }
-
             xOffset = currentX;
             yOffset = currentY;
-            setTranslate(currentX, currentY, dragItem);
+            setTranslate(currentX, yOffset, dragItem);
         }
     }
 
@@ -437,16 +516,16 @@
         el.style.transform = `translate(${xPos}px, ${yPos}px)`;
     }
 
-    // 绑定所有的事件 (Mouse + Touch 全端制霸)
+    // 绑定事件
     document.addEventListener("touchstart", dragStart, { passive: false });
     document.addEventListener("touchend", dragEnd, false);
     document.addEventListener("touchmove", drag, { passive: false });
-
     document.addEventListener("mousedown", dragStart, false);
     document.addEventListener("mouseup", dragEnd, false);
     document.addEventListener("mousemove", drag, false);
 
 </script>
-
 </body>
 </html>
+
+
