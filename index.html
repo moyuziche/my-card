@@ -6,7 +6,7 @@
     <title>SuigyokuP的专属名片</title>
 <style>
     /* ================================== */
-    /*      全新：红蓝炫彩流体背景          */
+    /*      全新：红蓝炫彩流体背景 & 动态星尘   */
     /* ================================== */
     body {
         font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -22,7 +22,6 @@
         top: 0; left: 0; width: 100%; height: 100%;
         z-index: -2;
         overflow: hidden;
-        /* 背景色微调，配合翻转 */
         transition: background-color 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
     }
 
@@ -30,38 +29,82 @@
     .orb {
         position: absolute;
         border-radius: 50%;
-        filter: blur(90px); /* 核心：极度模糊产生流体融合感 */
-        transition: all 0.8s cubic-bezier(0.4, 0.2, 0.2, 1); /* 跟随卡片翻转的平滑动画 */
+        filter: blur(100px); /* 进一步模糊，更柔和 */
+        transition: all 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
+        animation-iteration-count: infinite;
+        animation-timing-function: ease-in-out;
+        opacity: 0.8; /* 默认半透明 */
     }
 
-    /* 红色光球（代表春香） */
+    /* 红色光球（春香）*/
     .orb-red {
         width: 70vw; height: 70vw;
-        background: rgba(229, 57, 53, 0.65); /* 春香红 */
+        background: rgba(229, 57, 53, 0.7); /* 春香红 */
         top: -10%; left: -10%;
-        animation: float-red 12s infinite alternate ease-in-out;
+        animation-name: float-red, breathe-orb;
+        animation-duration: 15s, 8s;
+        animation-delay: 0s, 0s;
+        animation-direction: alternate, alternate;
     }
 
-    /* 蓝色光球（代表千早） */
+    /* 蓝色光球（千早）*/
     .orb-blue {
         width: 80vw; height: 80vw;
-        background: rgba(30, 136, 229, 0.4); /* 千早蓝 */
+        background: rgba(30, 136, 229, 0.5); /* 千早蓝 */
         bottom: -20%; right: -15%;
-        animation: float-blue 15s infinite alternate-reverse ease-in-out;
+        animation-name: float-blue, breathe-orb;
+        animation-duration: 18s, 10s;
+        animation-delay: 0s, 2s; /* 错开呼吸 */
+        animation-direction: alternate-reverse, alternate;
     }
     
-    /* 辅助紫红色光球，增加色彩过渡的层次感 */
+    /* 辅助紫红色光球 */
     .orb-purple {
         width: 50vw; height: 50vw;
         background: rgba(142, 36, 170, 0.4);
         top: 40%; left: 30%;
-        animation: float-purple 10s infinite alternate ease-in-out;
+        animation-name: float-purple, breathe-orb;
+        animation-duration: 13s, 7s;
+        animation-delay: 0s, 4s; /* 错开呼吸 */
+        animation-direction: alternate, alternate;
     }
 
     /* 光球的自由浮动动画 */
     @keyframes float-red { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(10%, 15%) scale(1.1); } }
     @keyframes float-blue { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-15%, -10%) scale(1.05); } }
     @keyframes float-purple { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-10%, 20%) scale(1.2); } }
+    /* 光球的呼吸动画 */
+    @keyframes breathe-orb { 0% { opacity: 0.8; } 50% { opacity: 0.95; } 100% { opacity: 0.8; } }
+
+
+    /* === 动态星尘效果 === */
+    .dynamic-stars {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        z-index: -1; /* 在光球之上，群山之下 */
+        pointer-events: none;
+        background-image: 
+            radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.7), transparent),
+            radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.6), transparent),
+            radial-gradient(1.5px 1.5px at 50% 10%, rgba(255,255,255,0.8), transparent),
+            radial-gradient(0.8px 0.8px at 90% 40%, rgba(255,255,255,0.5), transparent),
+            radial-gradient(1.2px 1.2px at 10% 60%, rgba(255,255,255,0.7), transparent),
+            radial-gradient(1px 1px at 40% 90%, rgba(255,255,255,0.6), transparent);
+        background-repeat: repeat;
+        background-size: 200px 200px; /* 调整尺寸，让星星更密集 */
+        animation: subtle-drift 60s linear infinite, subtle-twinkle 4s infinite alternate;
+    }
+
+    @keyframes subtle-drift {
+        0% { background-position: 0% 0%; }
+        100% { background-position: 100% 100%; }
+    }
+    @keyframes subtle-twinkle {
+        0% { opacity: 0.8; }
+        50% { opacity: 1; }
+        100% { opacity: 0.8; }
+    }
+
 
     /* === 灵魂联动：当卡片翻转到背面（千早）时的背景状态 === */
     .bg-container.is-flipped-bg {
@@ -78,6 +121,16 @@
     .bg-container.is-flipped-bg .orb-purple {
         background: rgba(57, 73, 171, 0.5); /* 紫色偏向深蓝 */
     }
+    .bg-container.is-flipped-bg .dynamic-stars {
+        background-image: 
+            radial-gradient(1px 1px at 20% 30%, rgba(180,200,255,0.7), transparent),
+            radial-gradient(1px 1px at 70% 80%, rgba(180,200,255,0.6), transparent),
+            radial-gradient(1.5px 1.5px at 50% 10%, rgba(180,200,255,0.8), transparent),
+            radial-gradient(0.8px 0.8px at 90% 40%, rgba(180,200,255,0.5), transparent),
+            radial-gradient(1.2px 1.2px at 10% 60%, rgba(180,200,255,0.7), transparent),
+            radial-gradient(1px 1px at 40% 90%, rgba(180,200,255,0.6), transparent);
+    }
+
 
     /* ================================== */
     /*          音乐播放按钮样式            */
@@ -85,18 +138,18 @@
     .music-btn {
         position: fixed; top: 20px; right: 20px;
         width: 45px; height: 45px;
-        background-color: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background-color: rgba(255, 255, 255, 0.15); /* 略微提高透明度 */
+        border: 1px solid rgba(255, 255, 255, 0.4); /* 边框更明显 */
         border-radius: 50%;
         display: flex; justify-content: center; align-items: center;
         font-size: 22px; color: white;
         cursor: pointer; z-index: 100;
-        backdrop-filter: blur(10px); /* 磨砂玻璃效果增强 */
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        backdrop-filter: blur(12px); /* 磨砂玻璃效果增强 */
+        transition: all 0.3s cubic-bezier(0.4, 0.2, 0.2, 1);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* 阴影更深 */
     }
-    .music-btn:hover { background-color: rgba(255, 255, 255, 0.2); transform: scale(1.1); }
-    .music-btn.playing { background-color: rgba(211, 47, 47, 0.9); box-shadow: 0 0 15px rgba(211, 47, 47, 0.6); animation: spin 4s linear infinite; }
+    .music-btn:hover { background-color: rgba(255, 255, 255, 0.3); transform: scale(1.15); } /* 悬停反馈更明显 */
+    .music-btn.playing { background-color: rgba(211, 47, 47, 0.9); box-shadow: 0 0 18px rgba(211, 47, 47, 0.7); animation: spin 4s linear infinite; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
 
     /* ================================== */
@@ -113,9 +166,9 @@
 
     .card-inner {
         position: relative; width: 100%; height: 100%;
-        transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+        transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1); /* 翻转动画更长更柔和 */
         transform-style: preserve-3d; border-radius: 15px; 
-        box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.1); /* 加强阴影让卡片浮现出来 */
+        box-shadow: 0 25px 50px rgba(0,0,0,0.6), 0 0 30px rgba(255,255,255,0.15); /* 阴影更强，卡片浮动感更强 */
     }
     .card-inner.is-flipped { transform: rotateY(180deg); }
 
@@ -126,86 +179,132 @@
     }
 
     /* ================================== */
-    /*          名片正面样式                */
+    /*          名片正面样式 (春香主题)       */
     /* ================================== */
     .front-bg-red {
         position: absolute; top: 0; left: 0; width: 58%; height: 100%;
         background-color: #d32f2f;
         clip-path: polygon(0 0, 100% 0, 50% 100%, 0 100%);
-        background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
-        background-size: 10px 10px;
+        /* 音符/心跳图案，增加细节 */
+        background-image: 
+            linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), 
+            linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px),
+            url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path fill="%23fff" fill-opacity="0.1" d="M10 2a8 8 0 100 16 8 8 0 000-16zM10 0a10 10 0 110 20 10 10 0 010-20z"/></svg>'); /* 简单的圆形作为重复图案 */
+        background-size: 10px 10px, 10px 10px, 40px 40px; /* 网格和图案大小 */
+        background-position: 0 0, 0 0, 5px 5px; /* 调整图案位置 */
+        animation: pattern-pulse 10s infinite alternate; /* 图案微弱跳动 */
     }
-    .star-logo { position: absolute; top: 12px; left: 10px; width: 55px; height: auto; filter: drop-shadow(0px 0px 3px rgba(255,255,255,0.8)); }
+    @keyframes pattern-pulse {
+        0% { background-position: 5px 5px, 0 0, 0 0; opacity: 0.8; }
+        100% { background-position: 15px 15px, 0 0, 0 0; opacity: 1; }
+    }
+
+    .star-logo { position: absolute; top: 12px; left: 10px; width: 55px; height: auto; filter: drop-shadow(0px 0px 5px rgba(255,255,255,0.9)); } /* Logo更亮 */
     .tiny-text {
-        position: absolute; bottom: 15px; left: 10px; color: rgba(255,255,255,0.6); font-size: 10px;
-        transform: scale(0.6); transform-origin: left bottom; white-space: nowrap;
+        position: absolute; bottom: 15px; left: 10px; color: rgba(255,255,255,0.7); font-size: 10px;
+        transform: scale(0.6); transform-origin: left bottom; white-space: nowrap; letter-spacing: 0.5px;
     }
     .front-character {
         position: absolute; bottom: 0; left: -8%; width: 60%; height: 95%;
         background-image: url('1.png'); background-size: contain; background-position: bottom center; background-repeat: no-repeat; z-index: 2;
-        filter: drop-shadow(4px 4px 4px rgba(0,0,0,0.25));
+        filter: drop-shadow(6px 6px 8px rgba(0,0,0,0.4)); /* 阴影更深，人物更突出 */
     }
     .front-content {
         position: absolute; top: 0; right: 0; width: 65%; height: 100%;
         padding: 15px 15px 15px 0; box-sizing: border-box; display: flex; flex-direction: column;
         justify-content: center; align-items: flex-end; text-align: right; z-index: 3;
     }
-    .name-section h2 { margin: 0 0 5px 0; font-size: 24px; color: #111; font-weight: 900; }
-    .name-section p { margin: 2px 0; font-size: 9px; color: #777; font-weight: bold; }
-    .nfc-section { font-size: 8px; color: #999; margin-top: 10px; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; font-weight: bold; animation: breathing 2.5s infinite; }
-    @keyframes breathing { 0% { opacity: 0.5; } 50% { opacity: 1; transform: scale(1.02); } 100% { opacity: 0.5; } }
-    .nfc-icon { color: #111; font-size: 12px; }
-    .socials { font-size: 9px; color: #444; line-height: 1.6; }
+    .name-section h2 { margin: 0 0 5px 0; font-size: 28px; color: #0a0a0a; font-weight: 900; letter-spacing: -1px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); } /* 名字更大更醒目 */
+    .name-section p { margin: 2px 0; font-size: 10px; color: #555; font-weight: bold; letter-spacing: 0.2px; }
+    .nfc-section {
+        font-size: 9px; color: #999; margin-top: 10px; margin-bottom: 10px;
+        display: flex; align-items: center; gap: 5px; font-weight: bold;
+        animation: breathing-nfc 2.5s infinite; /* NFC光晕 */
+    }
+    @keyframes breathing-nfc {
+        0% { opacity: 0.7; text-shadow: none; }
+        50% { opacity: 1; text-shadow: 0 0 5px rgba(153,153,153,0.5); transform: scale(1.02); }
+        100% { opacity: 0.7; text-shadow: none; }
+    }
+    .nfc-icon { color: #111; font-size: 14px; } /* NFC图标更大 */
+    .socials { font-size: 10px; color: #444; line-height: 1.6; letter-spacing: 0.1px; }
     .socials div { display: flex; justify-content: flex-end; align-items: center; gap: 5px; }
-    .socials span { font-weight: bold; font-style: italic; }
+    .socials span { font-weight: bold; font-style: italic; color: #222; }
 
     /* ================================== */
-    /*          名片背面样式                */
+    /*          名片背面样式 (千早主题)       */
     /* ================================== */
     .card-back { transform: rotateY(180deg); display: flex; flex-direction: column; }
 
     /* 优化后的二维码 + B站文字 */
     .qr-code {
         position: absolute; top: 15px; right: 15px;
-        width: 45px; height: 45px;
+        width: 48px; height: 48px; /* 略微加大 */
         background-image: url('space.bilibili.com_488509701.png');
-        background-size: cover; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        background-size: cover; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); /* 增加白色描边 */
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
     }
     .qr-code::after {
         content: 'bilibili'; position: absolute; top: 100%; left: 50%;
-        transform: translateX(-50%); margin-top: 3px; color: #fb7299; /* 猛男粉 */
-        font-size: 9px; font-weight: 900; letter-spacing: 0.5px;
-        text-shadow: 1px 1px 0px rgba(255,255,255,0.9);
+        transform: translateX(-50%); margin-top: 5px; color: #fb7299;
+        font-size: 9px; font-weight: 900; letter-spacing: 0.8px; /* 间距更开 */
+        text-shadow: 0 0 5px rgba(255,100,150,0.7); /* 猛男粉发光 */
     }
     
     .back-top { padding: 15px; height: 44%; box-sizing: border-box; }
-    .back-top p { margin: 3px 0; font-size: 9px; color: #555; font-weight: bold; }
+    .back-top p { margin: 3px 0; font-size: 10px; color: #333; font-weight: bold; letter-spacing: 0.2px; }
+    .back-top p:last-child { /* 诗句样式 */
+        margin-top: 10px; 
+        font-size: 11px; 
+        color: #007bb6; /* 深邃的蓝色 */
+        font-style: italic;
+        text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.2);
+        animation: text-glow 3s infinite alternate; /* 诗句微光 */
+    }
+    @keyframes text-glow {
+        0% { text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.2); }
+        100% { text-shadow: 0 0 8px rgba(0,123,182,0.8), 0 0 5px rgba(0,123,182,0.5); }
+    }
     
     .back-bottom {
-        height: 56%; background-color: #d32f2f; color: white;
-        background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 3px, transparent 3px, transparent 8px), radial-gradient(circle at bottom right, #a00000, transparent 80%);
+        height: 56%; background-color: #007bb6; /* 统一为深蓝色 */
+        color: white;
+        /* 歌声/羽翼图案，增加细节 */
+        background-image: 
+            repeating-linear-gradient(-45deg, rgba(0,0,0,0.08), rgba(0,0,0,0.08) 3px, transparent 3px, transparent 8px),
+            url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"><path fill="%23fff" fill-opacity="0.1" d="M15 0L0 30h30L15 0zM15 10L5 25h20L15 10z"/></svg>'); /* 抽象的羽翼/音符图案 */
+        background-size: 10px 10px, 60px 60px; /* 网格和图案大小 */
+        background-position: 0 0, 10px 10px; /* 调整图案位置 */
+        animation: pattern-subtle-move 15s linear infinite; /* 图案缓慢移动 */
+            
         display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
-        padding-left: 20px; font-family: 'Arial Black', Impact, sans-serif; font-size: 40px; font-weight: 900; font-style: italic;
-        line-height: 0.85; letter-spacing: -1px; text-shadow: 4px 4px 0px #1a1a1a; position: relative;
+        padding-left: 20px; font-family: 'Arial Black', Impact, sans-serif;
+        font-size: 44px; font-weight: 900; font-style: italic; /* 字体更大 */
+        line-height: 0.8; letter-spacing: -2px; /* 间距更紧凑 */
+        text-shadow: 5px 5px 0px #0a0a0a; /* 阴影更深 */
+        position: relative;
     }
+    @keyframes pattern-subtle-move {
+        0% { background-position: 0 0, 10px 10px; }
+        100% { background-position: 100% 100%, 70px 70px; }
+    }
+
 
     /* === 全新：千早头像框 === */
     .chihaya-avatar {
         position: absolute;
-        bottom: 12px; right: 15px;
-        width: 50px; height: 50px;
+        bottom: 15px; right: 18px; /* 调整位置 */
+        width: 60px; height: 60px; /* 略微加大 */
         border-radius: 50%;
-        /* 头像边框：白色带一点微透，很精致 */
-        border: 2px solid rgba(255, 255, 255, 0.9);
-        /* 请确保同一文件夹下有 chihaya.png 这张图 */
+        border: 3px solid rgba(255, 255, 255, 0.95); /* 边框更粗更亮 */
         background-image: url('chihaya.png'); 
-        background-size: cover;
-        background-position: center;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.4); /* 立体悬浮感 */
-        transition: transform 0.3s ease;
+        background-size: cover; background-position: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5), 0 0 10px rgba(255,255,255,0.2); /* 阴影更强，增加光晕 */
+        transition: transform 0.3s ease-out;
     }
     .chihaya-avatar:hover {
-        transform: scale(1.1) rotate(5deg); /* 悬浮小彩蛋 */
+        transform: scale(1.15) rotate(7deg); /* 悬浮反馈更强烈 */
+        box-shadow: 0 5px 20px rgba(0,0,0,0.6), 0 0 15px rgba(255,255,255,0.4);
     }
 
 </style>
@@ -218,6 +317,9 @@
     <div class="orb orb-blue"></div>
     <div class="orb orb-purple"></div>
 </div>
+
+<!-- 动态星尘层 -->
+<div class="dynamic-stars"></div>
 
 <!-- 音乐播放器 -->
 <audio id="bgMusic" loop>
@@ -258,7 +360,7 @@
                 <p>765 PRODUCTION</p>
                 <p>AMAMI HARUKA</p>
                 <p>AGE 17</p>
-                <p style="margin-top: 15px;">🌸雨粒になって花を驚かすこの世界🌸</p>
+                <p style="margin-top: 15px;">🌸雨粒になって花を驚かす这个世界🌸</p>
             </div>
             <div class="back-bottom">
                 PRODUCER<br>CARD
@@ -319,7 +421,7 @@
             initialX = e.clientX - xOffset;
             initialY = e.clientY - yOffset;
         }
-        if (dragItem.contains(e.target)) {
+        if (dragItem.contains(e.target) && e.target.closest('.music-btn') === null) { /* 忽略音乐按钮 */
             active = true; hasDragged = false; dragItem.style.transition = 'none';
         }
     }
