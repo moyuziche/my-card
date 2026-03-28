@@ -108,7 +108,6 @@
     /* ================================== */
     .card-wrapper {
         position: absolute;
-        /* 使用 transform 居中初始位置，后续通过 js 动态修改 translate */
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
@@ -118,9 +117,11 @@
         height: 200px;
         user-select: none;
         z-index: 10;
-        touch-action: none; /* 防止手机端默认滑动屏幕行为干扰拖拽 */
+        touch-action: none;
     }
+
     .card-wrapper:active { cursor: grabbing; }
+
     .card-inner {
         position: relative;
         width: 100%;
@@ -130,7 +131,9 @@
         border-radius: 15px;
         box-shadow: 0 15px 35px rgba(0,0,0,0.6);
     }
+
     .card-inner.is-flipped { transform: rotateY(180deg); }
+
     .card-face {
         position: absolute;
         width: 100%;
@@ -207,6 +210,7 @@
         text-align: right;
         z-index: 3;
     }
+
     .name-section h2 { margin: 0 0 5px 0; font-size: 24px; color: #111; font-weight: 900; }
     .name-section p { margin: 2px 0; font-size: 9px; color: #777; font-weight: bold; }
     
@@ -221,11 +225,13 @@
         font-weight: bold;
         animation: breathing 2.5s infinite;
     }
+
     @keyframes breathing {
         0% { opacity: 0.5; }
         50% { opacity: 1; transform: scale(1.02); }
         100% { opacity: 0.5; }
     }
+
     .nfc-icon { color: #111; font-size: 12px; }
 
     .socials { font-size: 9px; color: #444; line-height: 1.6; }
@@ -240,6 +246,7 @@
         display: flex;
         flex-direction: column;
     }
+
     .qr-code {
         position: absolute;
         top: 15px;
@@ -255,6 +262,7 @@
         height: 44%; 
         box-sizing: border-box;
     }
+
     .back-top p { margin: 3px 0; font-size: 9px; color: #555; font-weight: bold; }
     
     .back-bottom {
@@ -270,7 +278,6 @@
                 transparent 8px
             ),
             radial-gradient(circle at bottom right, #a00000, transparent 80%);
-            
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -284,12 +291,66 @@
         letter-spacing: -1px;
         text-shadow: 4px 4px 0px #1a1a1a;
     }
+
+    /* ================================== */
+    /*       新增：星光舞台 Starlight       */
+    /* ================================== */
+    .starlight-background {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-color: #d32f2f; /* 主背景红色，与卡片呼应 */
+        z-index: -3; /* 保证在最底层 */
+        opacity: 0; /* 默认隐藏 */
+        transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1); /* 柔和的淡入效果 */
+        overflow: hidden;
+    }
+
+    .starlight-background.active {
+        opacity: 1; /* 激活时显示 */
+    }
+
+    /* 模拟舞台光线和粒子效果 */
+    .starlight-background::before,
+    .starlight-background::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 200vw;
+        height: 200vw;
+        background-image: 
+            radial-gradient(circle at center, rgba(255, 200, 200, 0.4) 0%, transparent 30%),
+            radial-gradient(circle at center, rgba(255, 150, 150, 0.3) 0%, transparent 50%);
+        transform-origin: center;
+        animation: rotate-light 20s linear infinite;
+    }
+
+    .starlight-background::after {
+        background-image: 
+            radial-gradient(ellipse, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+            radial-gradient(ellipse, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+        background-size: 20px 30px;
+        animation: move-particles 15s linear infinite;
+    }
+
+    @keyframes rotate-light {
+        from { transform: translate(-50%, -50%) rotate(0deg); }
+        to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    @keyframes move-particles {
+        from { background-position: 0 0; }
+        to { background-position: -200px -300px; }
+    }
 </style>
 </head>
 <body>
 
 <!-- 星空背景层 -->
 <div class="starry-background"></div>
+<!-- 新增：星光舞台背景层 -->
+<div id="starlightBackground" class="starlight-background"></div> 
+
 <!-- 底部群山剪影层 -->
 <div class="mountains"></div>
 
@@ -324,7 +385,6 @@
                 </div>
             </div>
         </div>
-
         <!-- 名片背面 -->
         <div class="card-face card-back">
             <div class="qr-code"></div>
@@ -342,48 +402,54 @@
 </div>
 
 <script>
-    // === 音乐播放控制 ===
+    // === 音乐播放与背景切换控制 ===
     const musicToggle = document.getElementById('musicToggle');
     const bgMusic = document.getElementById('bgMusic');
+    const starlightBackground = document.getElementById('starlightBackground');
     let isPlaying = false;
 
     musicToggle.addEventListener('click', (e) => {
         e.stopPropagation(); 
+
         if (isPlaying) {
+            // 暂停音乐（背景不切换回去，保持舞台效果）
             bgMusic.pause();
             musicToggle.classList.remove('playing');
             musicToggle.innerHTML = '🔇';
         } else {
+            // 播放音乐并切换到星光舞台背景
             let playPromise = bgMusic.play();
             if (playPromise !== undefined) {
                 playPromise.then(_ => {
                     musicToggle.classList.add('playing');
                     musicToggle.innerHTML = '🎵';
+                    // 激活 Starlight 背景
+                    starlightBackground.classList.add('active'); 
                 }).catch(error => {
                     console.log("Play failed: ", error);
+                    // 即使用户浏览器限制了自动播放，也尝试切换背景
+                    starlightBackground.classList.add('active');
                 });
             }
         }
         isPlaying = !isPlaying;
     });
 
+
     // === 🔥终极全端兼容拖拽引擎 🔥 ===
     const dragItem = document.getElementById('draggableCard');
     const cardInner = document.getElementById('cardInner');
-    
+
     let active = false;
     let currentX;
     let currentY;
     let initialX;
     let initialY;
-    // 初始居中的偏移量：x轴偏移 -50% (即 -175px)，y轴偏移 -50% (即 -100px)
     let xOffset = -175; 
     let yOffset = -100;
-    
     let clickStartTime;
 
     function dragStart(e) {
-        // 判断是触摸还是鼠标点击
         if (e.type === "touchstart") {
             initialX = e.touches[0].clientX - xOffset;
             initialY = e.touches[0].clientY - yOffset;
@@ -391,7 +457,6 @@
             initialX = e.clientX - xOffset;
             initialY = e.clientY - yOffset;
         }
-
         if (e.target === dragItem || dragItem.contains(e.target)) {
             active = true;
             clickStartTime = Date.now();
@@ -408,8 +473,6 @@
         active = false;
         dragItem.style.transition = '';
         document.body.style.cursor = 'default';
-
-        // 翻转判断 (点击时间极短，且位移极小)
         if (Date.now() - clickStartTime < 200) {
             cardInner.classList.toggle('is-flipped');
         }
@@ -417,8 +480,7 @@
 
     function drag(e) {
         if (active) {
-            e.preventDefault(); // 阻止手机端拖动时的默认滚动行为
-        
+            e.preventDefault();
             if (e.type === "touchmove") {
                 currentX = e.touches[0].clientX - initialX;
                 currentY = e.touches[0].clientY - initialY;
@@ -426,7 +488,6 @@
                 currentX = e.clientX - initialX;
                 currentY = e.clientY - initialY;
             }
-
             xOffset = currentX;
             yOffset = currentY;
             setTranslate(currentX, currentY, dragItem);
@@ -437,15 +498,12 @@
         el.style.transform = `translate(${xPos}px, ${yPos}px)`;
     }
 
-    // 绑定所有的事件 (Mouse + Touch 全端制霸)
     document.addEventListener("touchstart", dragStart, { passive: false });
     document.addEventListener("touchend", dragEnd, false);
     document.addEventListener("touchmove", drag, { passive: false });
-
     document.addEventListener("mousedown", dragStart, false);
     document.addEventListener("mouseup", dragEnd, false);
     document.addEventListener("mousemove", drag, false);
-
 </script>
 
 </body>
