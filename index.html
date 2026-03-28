@@ -3,295 +3,197 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SuigyokuP的专属名片</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-
+<title>765PRO - Amami Haruka Producer Card</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
     :root {
-        --card-red: #d32f2f;
-        --text-main: #212121;
-        --text-sub: #757575;
+        --haruka-red: #e22b30;
+        --shimmer-color: rgba(255, 255, 255, 0.4);
     }
 
     body {
-        font-family: 'Helvetica Neue', Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        width: 100vw;
-        overflow: hidden;
-        background-color: #02030A;
-    }
-    
-    /* ================================== */
-    /*   全新剧场舞台背景 (PC/移动端自适应)  */
-    /* ================================== */
-    .theater-background {
-        position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        z-index: -3;
-        overflow: hidden;
+        margin: 0; padding: 0; height: 100vh; width: 100vw;
+        background: #050505; overflow: hidden;
+        display: flex; justify-content: center; align-items: center;
+        perspective: 1000px;
     }
 
-    /* 默认：后台/待机状态 */
-    .standby-scene {
-        position: absolute; inset: 0;
+    /* ================================== */
+    /*   3D 舞台背景 - 拒绝一片漆黑        */
+    /* ================================== */
+    .stage-env {
+        position: absolute; width: 100%; height: 100%;
+        background: radial-gradient(circle at 50% -20%, #1a1a2e, #050505);
+        z-index: -1;
+    }
+    .stage-floor {
+        position: absolute; bottom: 0; width: 100%; height: 40vh;
         background: 
-            /* 顶部柔和的聚光灯光晕 */
-            radial-gradient(ellipse 80% 50% at 50% 0%, rgba(180, 190, 220, 0.1), transparent 70%),
-            /* 底部舞台地板的反光 */
-            radial-gradient(ellipse 150% 40% at 50% 100%, rgba(80, 90, 120, 0.15), transparent 70%);
-        transition: opacity 1.5s ease-out;
+            linear-gradient(to top, rgba(226, 43, 48, 0.1) 0%, transparent 80%),
+            repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 40px),
+            repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 40px);
+        transform: rotateX(60deg); transform-origin: bottom;
+        transition: 1s ease;
     }
-
-    /* 播放：Live开演状态 */
-    .live-scene {
-        position: absolute; inset: 0;
-        opacity: 0;
-        transition: opacity 2s ease-in;
-        /* 底部燃烧的红色应援海 */
-        background: radial-gradient(ellipse 150% 50% at 50% 100%, rgba(211, 47, 47, 0.35), transparent 70%);
+    body.is-playing .stage-floor {
+        background: 
+            linear-gradient(to top, rgba(226, 43, 48, 0.3) 0%, transparent 80%),
+            repeating-linear-gradient(90deg, rgba(226, 43, 48, 0.1) 0, rgba(226, 43, 48, 0.1) 1px, transparent 1px, transparent 40px);
+        box-shadow: 0 0 50px rgba(226, 43, 48, 0.2) inset;
     }
-    .live-scene.active {
-        opacity: 1;
-    }
-    /* 舞台上的全息粒子效果 */
-    .live-scene::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background-image: radial-gradient(rgba(255,180,180,0.4) 1px, transparent 1px);
-        background-size: 8px 8px;
-        opacity: 0;
-        animation: fadeInParticles 4s forwards;
-        animation-delay: 1s;
-    }
-
-    @keyframes fadeInParticles { to { opacity: 0.3; } }
-
 
     /* ================================== */
-    /*          音乐播放按钮样式            */
-    /* ================================== */
-    .music-btn {
-        position: fixed; top: 20px; right: 20px; width: 45px; height: 45px;
-        background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 50%; display: flex; justify-content: center; align-items: center;
-        font-size: 22px; color: white; cursor: pointer; z-index: 100;
-        backdrop-filter: blur(8px); transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    }
-    .music-btn:hover { background-color: rgba(255, 255, 255, 0.1); transform: scale(1.1); }
-    .music-btn.playing {
-        background-color: rgba(211, 47, 47, 0.8); box-shadow: 0 0 15px rgba(211, 47, 47, 0.5);
-        animation: spin 4s linear infinite;
-    }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-
-
-    /* ================================== */
-    /*          核心卡片容器                */
+    /*   核心卡片 - 液体炫彩流光纹理       */
     /* ================================== */
     .card-wrapper {
-        position: absolute; top: 50%; left: 50%;
-        transform: translate(-50%, -50%); cursor: grab; perspective: 1200px;
-        width: 350px; height: 200px; user-select: none; z-index: 10; touch-action: none;
+        width: 350px; height: 200px; cursor: grab;
+        transform-style: preserve-3d; transition: 0.1s linear;
+        z-index: 10;
     }
-    .card-wrapper:active { cursor: grabbing; }
     .card-inner {
         position: relative; width: 100%; height: 100%;
-        transition: transform 0.8s cubic-bezier(0.6, 0.05, 0.2, 1);
-        transform-style: preserve-3d; border-radius: 15px;
-        box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 100px rgba(255,255,255,0.1) inset;
+        transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     .card-inner.is-flipped { transform: rotateY(180deg); }
+
     .card-face {
         position: absolute; width: 100%; height: 100%;
-        -webkit-backface-visibility: hidden; backface-visibility: hidden;
-        border-radius: 15px; background-color: #F8F8F8; overflow: hidden;
+        backface-visibility: hidden; border-radius: 12px;
+        background: #fff; overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.5);
     }
 
-    /* ================================== */
-    /*          名片正面样式 (最终版)       */
-    /* ================================== */
+    /* 🌟 滚动的炫彩流光红色纹理 🌟 */
     .front-bg-red {
         position: absolute; top: 0; left: 0; width: 58%; height: 100%;
-        background-color: var(--card-red);
         clip-path: polygon(0 0, 100% 0, 50% 100%, 0 100%);
-        /* 真正高级的细腻纹理 */
-        background-image: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(255,255,255,0.02) 4px, rgba(255,255,255,0.02) 5px);
+        background: linear-gradient(
+            135deg, 
+            #b71c1c 0%, 
+            #e22b30 25%, 
+            #ff5252 50%, 
+            #e22b30 75%, 
+            #b71c1c 100%
+        );
+        background-size: 400% 400%;
+        animation: rollingLiquid 4s ease infinite;
+        z-index: 1;
     }
-    
-    .star-logo {
-        position: absolute; top: 12px; left: 10px; width: 55px; height: auto;
-        filter: drop-shadow(0px 0px 3px rgba(255,255,255,0.8)); z-index: 5;
-    }
-    .tiny-text {
-        position: absolute; bottom: 15px; left: 10px; color: rgba(255,255,255,0.7);
-        font-size: 10px; transform: scale(0.6); transform-origin: left bottom;
-        white-space: nowrap; z-index: 5; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    @keyframes rollingLiquid {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
     }
 
-    /* 🌟 最终版人物描边：纯黑剪影，精确平移 🌟 */
-    .front-character {
-        position: absolute; bottom: 0; left: -8%; width: 60%; height: 95%;
-        background-image: url('1.png'); background-size: contain;
-        background-position: bottom center; background-repeat: no-repeat;
-        z-index: 2;
+    /* 立绘容器 */
+    .character-container {
+        position: absolute; bottom: 0; left: -10%; width: 65%; height: 100%;
+        z-index: 3; pointer-events: none;
     }
-    .front-character::after {
-        content: '';
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background-image: inherit; background-size: inherit;
-        background-position: inherit; background-repeat: inherit;
-        filter: grayscale(100%) brightness(0);
-        transform: translate(6px, 4px); /* 精细微调，硬朗的描边 */
-        z-index: -1;
+    
+    /* 🌟 终极硬核阴影：复刻参考图 🌟 */
+    .character-img {
+        width: 100%; height: 100%;
+        background: url('1.png') no-repeat bottom center;
+        background-size: contain;
+        /* 第一层：黑色硬核偏移阴影 | 第二层：极细白边增强立体感 */
+        filter: 
+            drop-shadow(6px 6px 0px rgba(0,0,0,0.85)) 
+            drop-shadow(0px 0px 1px rgba(255,255,255,0.5));
     }
 
     .front-content {
-        position: absolute; top: 0; right: 0; width: 65%; height: 100%;
-        padding: 15px 15px 15px 0; box-sizing: border-box; display: flex;
-        flex-direction: column; justify-content: center; align-items: flex-end;
-        text-align: right; z-index: 3;
+        position: absolute; right: 0; width: 60%; height: 100%;
+        padding: 20px; box-sizing: border-box;
+        display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
+        text-align: right; z-index: 4;
     }
-    .name-section h2 { margin: 0 0 5px 0; font-size: 24px; color: var(--text-main); font-weight: 900; }
-    .name-section p { margin: 2px 0; font-size: 9px; color: var(--text-sub); font-weight: bold; }
-    
-    .nfc-section {
-        font-size: 8px; color: #999; margin-top: 10px; margin-bottom: 10px;
-        display: flex; align-items: center; gap: 5px; font-weight: bold;
-        animation: breathing 2.5s infinite;
-    }
-    @keyframes breathing { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; transform: scale(1.02); } }
-    .nfc-icon { color: var(--text-main); font-size: 12px; }
 
-    .socials { font-size: 9px; color: #444; line-height: 1.6; }
-    .socials div { display: flex; justify-content: flex-end; align-items: center; gap: 5px; }
-    .socials span { font-weight: bold; font-style: italic; }
+    /* 文字排版优化 */
+    .name-section h2 { 
+        margin: 0; font-family: 'Orbitron', sans-serif; font-size: 26px; 
+        color: #1a1a1a; letter-spacing: -1px; 
+    }
+    .name-section p { margin: 2px 0; font-size: 10px; color: #666; font-weight: bold; }
+
+    .socials { margin-top: 15px; font-family: 'Roboto Mono', monospace; font-size: 9px; color: #444; }
 
     /* ================================== */
-    /*     名片背面样式 (真实ID卡重构)      */
+    /*   背面：春香关联 ID 卡设计        */
     /* ================================== */
     .card-back {
         transform: rotateY(180deg);
-        display: flex;
-        flex-direction: column;
-        background: #ECEFF1;
-        font-family: 'Roboto Mono', monospace; /* ID卡专用字体 */
+        background: #f0f0f0;
+        display: flex; flex-direction: column;
+    }
+    .back-banner {
+        height: 40px; background: var(--haruka-red);
+        display: flex; align-items: center; padding: 0 15px;
+        color: #fff; font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 900;
+    }
+    .back-info {
+        flex: 1; padding: 15px; display: grid; grid-template-columns: 1fr 1fr;
+        font-family: 'Roboto Mono', monospace; font-size: 10px; color: #333; gap: 10px;
+    }
+    .info-label { color: #999; font-size: 8px; display: block; margin-bottom: 2px; }
+    
+    .motto-bar {
+        background: #e0e0e0; padding: 10px; text-align: center;
+        font-size: 11px; border-top: 1px solid #ccc;
     }
 
-    .back-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 15px;
-        background: var(--card-red);
-        color: white;
+    /* 播放按钮 */
+    .music-btn {
+        position: fixed; top: 20px; right: 20px; width: 50px; height: 50px;
+        background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center;
+        cursor: pointer; z-index: 100; backdrop-filter: blur(10px); transition: 0.3s;
     }
-    .back-header h3 { margin: 0; font-size: 12px; letter-spacing: 1px; }
-    .back-header span { font-size: 10px; opacity: 0.8; }
-
-    .back-content {
-        padding: 10px 15px;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .info-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px 15px;
-        font-size: 10px;
-    }
-    .info-item {
-        color: var(--text-sub);
-    }
-    .info-item span {
-        display: block;
-        font-size: 8px;
-        margin-bottom: 2px;
-        color: #B0BEC5;
-    }
-
-    .motto-section {
-        margin-top: auto; /* 自动推到底部 */
-        text-align: center;
-        font-size: 11px;
-        color: var(--text-main);
-        padding: 8px;
-        border-top: 1px solid #CFD8DC;
-        background: rgba(255,255,255,0.5);
-    }
-
-    .barcode {
-        font-family: "Libre Barcode 39 Text", cursive;
-        font-size: 36px;
-        text-align: center;
-        line-height: 0.8;
-        color: var(--text-main);
-        margin-top: 5px;
-    }
-
+    .music-btn.playing { background: var(--haruka-red); box-shadow: 0 0 20px var(--haruka-red); }
 </style>
 </head>
 <body>
 
-<!-- 全新剧场背景 -->
-<div class="theater-background">
-    <div class="standby-scene"></div>
-    <div id="liveScene" class="live-scene"></div>
-</div>
+<div class="stage-env"></div>
+<div class="stage-floor"></div>
 
-<!-- 音乐播放器 -->
-<audio id="bgMusic" loop>
-    <source src="bgm.mp3" type="audio/mpeg">
-</audio>
-<div id="musicToggle" class="music-btn" title="播放/暂停音乐">🔇</div>
+<div id="musicToggle" class="music-btn">🔇</div>
+<audio id="bgMusic" loop src="bgm.mp3"></audio>
 
-<div class="card-wrapper" id="draggableCard">
+<div class="card-wrapper" id="dragCard">
     <div class="card-inner" id="cardInner">
-        <!-- 名片正面 -->
-        <div class="card-face card-front">
+        <!-- 正面 -->
+        <div class="card-face">
             <div class="front-bg-red"></div>
-            <img src="IDOLMASTER20THLogo.png" class="star-logo" alt="20th Logo">
-            <div class="tiny-text">765 PRODUCTION PRODUCER CARD</div>
-            <div class="front-character"></div>
+            <div class="character-container">
+                <div class="character-img"></div>
+            </div>
             <div class="front-content">
                 <div class="name-section">
                     <h2>SuigyokuP</h2>
-                    <p>765プロデューサー科</p>
-                    <p>天海春香担当プロデューサー</p>
-                </div>
-                <div class="nfc-section">
-                    TAP TO START <span class="nfc-icon">N))</span>
+                    <p>765 PRODUCTION PRODUCER</p>
+                    <p style="color: var(--haruka-red)">天海春香担当プロデューサー</p>
                 </div>
                 <div class="socials">
-                    <div><span>@:</span> Rain Grain</div>
-                    <div><span>📮:</span> 1635786118@QQ.com</div>
-                    <div><span>📺:</span>bangumi.tv/user/922571</div>
+                    <div><span>ID:</span> Rain Grain</div>
+                    <div><span>MAIL:</span> 1635786118@QQ.com</div>
+                    <div><span>WEB:</span> bangumi.tv/user/922571</div>
                 </div>
             </div>
         </div>
-        <!-- 名片背面 (全新ID卡布局) -->
+
+        <!-- 背面 (春香专属ID) -->
         <div class="card-face card-back">
-            <div class="back-header">
-                <h3>PRODUCER IDENTIFICATION</h3>
-                <span>PROJECT: IM@S</span>
+            <div class="back-banner">765PRO ID CARD</div>
+            <div class="back-info">
+                <div><span class="info-label">ASSIGNED IDOL</span>AMAMI HARUKA</div>
+                <div><span class="info-label">BIRTHDAY</span>APRIL 03</div>
+                <div><span class="info-label">BLOOD TYPE</span>TYPE O</div>
+                <div><span class="info-label">HEIGHT</span>158 CM</div>
+                <div><span class="info-label">STAFF ID</span>765-0403-P</div>
+                <div><span class="info-label">RANK</span>S-CLASS</div>
             </div>
-            <div class="back-content">
-                <div class="info-grid">
-                    <div class="info-item"><span>ID Number</span>765-738-0225</div>
-                    <div class="info-item"><span>Name</span>SuigyokuP</div>
-                    <div class="info-item"><span>Affiliation</span>765 Production</div>
-                    <div class="info-item"><span>Rank</span>Top Idol Producer</div>
-                    <div class="info-item"><span>Issue Date</span>2024.03.28</div>
-                    <div class="info-item"><span>Expiry Date</span>N/A</div>
-                </div>
-                <div class="barcode">*765PRO-SUIGYOKUP*</div>
-            </div>
-            <div class="motto-section">
+            <div class="motto-bar">
                 🌸雨粒になって花を驚かすこの世界🌸
             </div>
         </div>
@@ -299,94 +201,71 @@
 </div>
 
 <script>
-    const musicToggle = document.getElementById('musicToggle');
-    const bgMusic = document.getElementById('bgMusic');
-    const liveScene = document.getElementById('liveScene');
-    let isPlaying = false;
-
-    musicToggle.addEventListener('click', (e) => {
-        e.stopPropagation(); 
-        if (isPlaying) {
-            bgMusic.pause();
-            musicToggle.classList.remove('playing');
-            liveScene.classList.remove('active'); 
+    // 音乐逻辑
+    const btn = document.getElementById('musicToggle');
+    const audio = document.getElementById('bgMusic');
+    btn.onclick = () => {
+        if (audio.paused) {
+            audio.play();
+            btn.innerHTML = '🎵';
+            btn.classList.add('playing');
+            document.body.classList.add('is-playing');
         } else {
-            let playPromise = bgMusic.play();
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    musicToggle.classList.add('playing');
-                    liveScene.classList.add('active'); 
-                }).catch(() => liveScene.classList.add('active'));
-            }
+            audio.pause();
+            btn.innerHTML = '🔇';
+            btn.classList.remove('playing');
+            document.body.classList.remove('is-playing');
         }
-        isPlaying = !isPlaying;
-    });
+    };
 
-    const dragItem = document.getElementById('draggableCard');
-    const cardInner = document.getElementById('cardInner');
-    let active = false, currentX, currentY, initialX, initialY, xOffset = -175, yOffset = -100, clickStartTime;
+    // 拖拽与翻转
+    const card = document.getElementById('dragCard');
+    const inner = document.getElementById('cardInner');
+    let isDown = false, startX, startY, xOffset = 0, yOffset = 0, startTime;
 
-    function dragStart(e) {
-        if (e.type === "touchstart") {
-            initialX = e.touches[0].clientX - xOffset;
-            initialY = e.touches[0].clientY - yOffset;
-        } else {
-            initialX = e.clientX - xOffset;
-            initialY = e.clientY - yOffset;
+    card.onmousedown = (e) => {
+        isDown = true;
+        startX = e.clientX - xOffset;
+        startY = e.clientY - yOffset;
+        startTime = Date.now();
+        card.style.transition = 'none';
+    };
+
+    window.onmousemove = (e) => {
+        if (!isDown) return;
+        xOffset = e.clientX - startX;
+        yOffset = e.clientY - startY;
+        card.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+    };
+
+    window.onmouseup = () => {
+        if (!isDown) return;
+        isDown = false;
+        card.style.transition = '0.5s cubic-bezier(0.2, 0, 0.2, 1)';
+        if (Date.now() - startTime < 200) {
+            inner.classList.toggle('is-flipped');
         }
-        if (e.target === dragItem || dragItem.contains(e.target)) {
-            active = true;
-            clickStartTime = Date.now();
-            dragItem.style.transition = 'none';
+    };
+
+    // 适配触摸屏
+    card.ontouchstart = (e) => {
+        isDown = true;
+        startX = e.touches[0].clientX - xOffset;
+        startY = e.touches[0].clientY - yOffset;
+        startTime = Date.now();
+    };
+    window.ontouchmove = (e) => {
+        if (isDown) {
+            xOffset = e.touches[0].clientX - startX;
+            yOffset = e.touches[0].clientY - startY;
+            card.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
         }
-    }
-
-    function dragEnd(e) {
-        if (!active) return;
-        active = false;
-        dragItem.style.transition = '';
-        if (Date.now() - clickStartTime < 200) {
-            cardInner.classList.toggle('is-flipped');
-        }
-    }
-
-    function drag(e) {
-        if (active) {
-            e.preventDefault();
-            if (e.type === "touchmove") {
-                currentX = e.touches[0].clientX - initialX;
-                currentY = e.touches[0].clientY - initialY;
-            } else {
-                currentX = e.clientX - initialX;
-                currentY = e.clientY - initialY;
-            }
-            xOffset = currentX;
-            yOffset = currentY;
-            setTranslate(currentX, currentY, dragItem);
-        }
-    }
-
-    function setTranslate(xPos, yPos, el) {
-        el.style.transform = `translate(${xPos}px, ${yPos}px)`;
-    }
-
-    document.addEventListener("touchstart", dragStart, { passive: false });
-    document.addEventListener("touchend", dragEnd, false);
-    document.addEventListener("touchmove", drag, { passive: false });
-    document.addEventListener("mousedown", dragStart, false);
-    document.addEventListener("mouseup", dragEnd, false);
-    document.addEventListener("mousemove", drag, false);
-
-    // 为了让条形码字体生效，你需要引入一个Google Font。
-    // 这部分我已经写在HTML的<head>里了，但是条形码字体比较特殊，
-    // 我用了一个CSS技巧来模拟，如果想用真实字体，你需要额外引入。
-    // 实际项目中，我们会用一个专门的条形码字体文件。
-    // 为了方便你直接复制，我用了一个公共的条形码字体，但你可能需要自行调整。
-    const barcodeFont = document.createElement('link');
-    barcodeFont.href = 'https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Text&display=swap';
-    barcodeFont.rel = 'stylesheet';
-    document.head.appendChild(barcodeFont);
+    };
+    window.ontouchend = () => {
+        isDown = false;
+        if (Date.now() - startTime < 200) inner.classList.toggle('is-flipped');
+    };
 </script>
 
 </body>
-
+</html>
