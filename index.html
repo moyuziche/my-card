@@ -3,103 +3,93 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>765PRO - Amami Haruka Producer Card</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+<title>765PRO | SuigyokuP Producer Card</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;900&family=Noto+Serif+JP:wght@600&family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
 <style>
     :root {
-        --haruka-red: #e22b30;
-        --shimmer-color: rgba(255, 255, 255, 0.4);
+        --main-red: #e22b30;
+        --accent-gold: #ffd700;
     }
 
     body {
         margin: 0; padding: 0; height: 100vh; width: 100vw;
-        background: #050505; overflow: hidden;
+        background: #020205; overflow: hidden;
         display: flex; justify-content: center; align-items: center;
-        perspective: 1000px;
+        perspective: 1200px;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
     }
 
     /* ================================== */
-    /*   3D 舞台背景 - 拒绝一片漆黑        */
+    /*      3D 剧场舞台背景 - 氛围拉满       */
     /* ================================== */
-    .stage-env {
+    .theater-env {
         position: absolute; width: 100%; height: 100%;
-        background: radial-gradient(circle at 50% -20%, #1a1a2e, #050505);
+        background: radial-gradient(circle at 50% 10%, #1a1a2e 0%, #020205 80%);
         z-index: -1;
     }
-    .stage-floor {
-        position: absolute; bottom: 0; width: 100%; height: 40vh;
+    .stage-perspective {
+        position: absolute; bottom: 0; width: 100%; height: 45vh;
         background: 
-            linear-gradient(to top, rgba(226, 43, 48, 0.1) 0%, transparent 80%),
-            repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 40px),
-            repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 40px);
-        transform: rotateX(60deg); transform-origin: bottom;
-        transition: 1s ease;
+            linear-gradient(to top, rgba(226, 43, 48, 0.1) 0%, transparent 100%),
+            repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 60px),
+            repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 60px);
+        transform: rotateX(65deg); transform-origin: bottom;
     }
-    body.is-playing .stage-floor {
-        background: 
-            linear-gradient(to top, rgba(226, 43, 48, 0.3) 0%, transparent 80%),
-            repeating-linear-gradient(90deg, rgba(226, 43, 48, 0.1) 0, rgba(226, 43, 48, 0.1) 1px, transparent 1px, transparent 40px);
-        box-shadow: 0 0 50px rgba(226, 43, 48, 0.2) inset;
+    /* 音乐启动后的聚光灯氛围 */
+    body.is-playing .theater-env {
+        background: radial-gradient(circle at 50% 0%, rgba(226, 43, 48, 0.2) 0%, #020205 100%);
     }
 
     /* ================================== */
-    /*   核心卡片 - 液体炫彩流光纹理       */
+    /*     核心卡片 - 红色炫彩流光纹理      */
     /* ================================== */
     .card-wrapper {
-        width: 350px; height: 200px; cursor: grab;
-        transform-style: preserve-3d; transition: 0.1s linear;
-        z-index: 10;
+        width: 350px; height: 210px; cursor: grab;
+        transform-style: preserve-3d; transition: 0.1s;
     }
     .card-inner {
         position: relative; width: 100%; height: 100%;
-        transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
     }
     .card-inner.is-flipped { transform: rotateY(180deg); }
 
     .card-face {
         position: absolute; width: 100%; height: 100%;
-        backface-visibility: hidden; border-radius: 12px;
+        backface-visibility: hidden; border-radius: 10px;
         background: #fff; overflow: hidden;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.6);
     }
 
-    /* 🌟 滚动的炫彩流光红色纹理 🌟 */
+    /* 🌟 滚动的液体炫彩纹理 (Liquid Shimmer) 🌟 */
     .front-bg-red {
-        position: absolute; top: 0; left: 0; width: 58%; height: 100%;
-        clip-path: polygon(0 0, 100% 0, 50% 100%, 0 100%);
+        position: absolute; top: 0; left: 0; width: 55%; height: 100%;
+        clip-path: polygon(0 0, 100% 0, 45% 100%, 0 100%);
         background: linear-gradient(
-            135deg, 
-            #b71c1c 0%, 
+            120deg, 
+            #8e1619 0%, 
             #e22b30 25%, 
-            #ff5252 50%, 
-            #e22b30 75%, 
-            #b71c1c 100%
+            #ff5f6d 45%, 
+            #e22b30 65%, 
+            #8e1619 100%
         );
-        background-size: 400% 400%;
-        animation: rollingLiquid 4s ease infinite;
+        background-size: 300% 300%;
+        animation: liquidFlow 6s linear infinite;
         z-index: 1;
     }
-    @keyframes rollingLiquid {
+    @keyframes liquidFlow {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
         100% { background-position: 0% 50%; }
     }
 
-    /* 立绘容器 */
-    .character-container {
-        position: absolute; bottom: 0; left: -10%; width: 65%; height: 100%;
+    /* 🌟 硬核人物描边：完美复刻広（Hiromi）风格 🌟 */
+    .char-box {
+        position: absolute; bottom: 0; left: -12%; width: 70%; height: 105%;
         z-index: 3; pointer-events: none;
-    }
-    
-    /* 🌟 终极硬核阴影：复刻参考图 🌟 */
-    .character-img {
-        width: 100%; height: 100%;
         background: url('1.png') no-repeat bottom center;
         background-size: contain;
-        /* 第一层：黑色硬核偏移阴影 | 第二层：极细白边增强立体感 */
-        filter: 
-            drop-shadow(6px 6px 0px rgba(0,0,0,0.85)) 
-            drop-shadow(0px 0px 1px rgba(255,255,255,0.5));
+        /* 关键：硬核黑影，不遮挡立绘 */
+        filter: drop-shadow(5px 5px 0px rgba(0,0,0,0.9)) drop-shadow(0px 0px 1px #fff);
     }
 
     .front-content {
@@ -108,92 +98,101 @@
         display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
         text-align: right; z-index: 4;
     }
-
-    /* 文字排版优化 */
     .name-section h2 { 
-        margin: 0; font-family: 'Orbitron', sans-serif; font-size: 26px; 
-        color: #1a1a1a; letter-spacing: -1px; 
+        margin: 0; font-family: 'Orbitron', sans-serif; font-size: 28px; 
+        color: #111; letter-spacing: -1px; font-weight: 900;
     }
-    .name-section p { margin: 2px 0; font-size: 10px; color: #666; font-weight: bold; }
-
-    .socials { margin-top: 15px; font-family: 'Roboto Mono', monospace; font-size: 9px; color: #444; }
+    .producer-tag { 
+        background: var(--main-red); color: #fff; font-size: 8px; 
+        padding: 2px 6px; border-radius: 3px; margin: 5px 0; font-weight: bold;
+    }
 
     /* ================================== */
-    /*   背面：春香关联 ID 卡设计        */
+    /*   背面：THE IDOLM@STER 官方认证 ID   */
     /* ================================== */
     .card-back {
         transform: rotateY(180deg);
-        background: #f0f0f0;
+        background: #f4f4f4;
         display: flex; flex-direction: column;
+        border: 4px solid #fff; box-sizing: border-box;
     }
-    .back-banner {
-        height: 40px; background: var(--haruka-red);
-        display: flex; align-items: center; padding: 0 15px;
-        color: #fff; font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 900;
+    .back-header {
+        height: 50px; background: var(--main-red);
+        display: flex; flex-direction: column; justify-content: center; padding: 0 15px;
+        color: #fff; position: relative;
     }
-    .back-info {
+    .back-header h3 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 14px; letter-spacing: 1px; }
+    .back-header .brand { font-size: 7px; opacity: 0.8; font-weight: bold; }
+
+    .back-body {
         flex: 1; padding: 15px; display: grid; grid-template-columns: 1fr 1fr;
-        font-family: 'Roboto Mono', monospace; font-size: 10px; color: #333; gap: 10px;
+        gap: 10px; font-family: 'Roboto Mono', monospace; font-size: 10px; color: #333;
     }
-    .info-label { color: #999; font-size: 8px; display: block; margin-bottom: 2px; }
-    
-    .motto-bar {
-        background: #e0e0e0; padding: 10px; text-align: center;
-        font-size: 11px; border-top: 1px solid #ccc;
+    .data-item span { display: block; font-size: 7px; color: #aaa; text-transform: uppercase; }
+
+    /* 🌟 您的格言：精美呈现 🌟 */
+    .motto-zone {
+        background: #fff; padding: 12px; text-align: center;
+        border-top: 1px dashed #ccc;
+        font-family: 'Noto Serif JP', serif;
+        font-size: 11px; color: var(--main-red);
+        font-weight: 600;
     }
 
-    /* 播放按钮 */
+    /* 音乐控制 */
     .music-btn {
-        position: fixed; top: 20px; right: 20px; width: 50px; height: 50px;
-        background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+        position: fixed; top: 25px; right: 25px; width: 45px; height: 45px;
+        background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);
         border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center;
         cursor: pointer; z-index: 100; backdrop-filter: blur(10px); transition: 0.3s;
     }
-    .music-btn.playing { background: var(--haruka-red); box-shadow: 0 0 20px var(--haruka-red); }
+    .music-btn.playing { background: var(--main-red); animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(226, 43, 48, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(226, 43, 48, 0); } 100% { box-shadow: 0 0 0 0 rgba(226, 43, 48, 0); } }
 </style>
 </head>
 <body>
 
-<div class="stage-env"></div>
-<div class="stage-floor"></div>
+<div class="theater-env"></div>
+<div class="stage-perspective"></div>
 
 <div id="musicToggle" class="music-btn">🔇</div>
 <audio id="bgMusic" loop src="bgm.mp3"></audio>
 
 <div class="card-wrapper" id="dragCard">
     <div class="card-inner" id="cardInner">
-        <!-- 正面 -->
+        <!-- 正面：炫彩与硬核阴影 -->
         <div class="card-face">
             <div class="front-bg-red"></div>
-            <div class="character-container">
-                <div class="character-img"></div>
-            </div>
+            <div class="char-box"></div>
             <div class="front-content">
                 <div class="name-section">
                     <h2>SuigyokuP</h2>
-                    <p>765 PRODUCTION PRODUCER</p>
-                    <p style="color: var(--haruka-red)">天海春香担当プロデューサー</p>
+                    <div class="producer-tag">765PRO OFFICIAL PRODUCER</div>
+                    <p style="color: #666; font-size: 9px;">AMAMI HARUKA TEAM</p>
                 </div>
-                <div class="socials">
-                    <div><span>ID:</span> Rain Grain</div>
-                    <div><span>MAIL:</span> 1635786118@QQ.com</div>
-                    <div><span>WEB:</span> bangumi.tv/user/922571</div>
+                <div style="margin-top: 15px; font-family: 'Roboto Mono', monospace; font-size: 8px; color: #555;">
+                    <div>@Rain Grain</div>
+                    <div>1635786118@QQ.com</div>
+                    <div>bangumi.tv/user/922571</div>
                 </div>
             </div>
         </div>
 
-        <!-- 背面 (春香专属ID) -->
+        <!-- 背面：THE IDOLM@STER 认证信息 -->
         <div class="card-face card-back">
-            <div class="back-banner">765PRO ID CARD</div>
-            <div class="back-info">
-                <div><span class="info-label">ASSIGNED IDOL</span>AMAMI HARUKA</div>
-                <div><span class="info-label">BIRTHDAY</span>APRIL 03</div>
-                <div><span class="info-label">BLOOD TYPE</span>TYPE O</div>
-                <div><span class="info-label">HEIGHT</span>158 CM</div>
-                <div><span class="info-label">STAFF ID</span>765-0403-P</div>
-                <div><span class="info-label">RANK</span>S-CLASS</div>
+            <div class="back-header">
+                <div class="brand">THE IDOLM@STER™ PROJECT</div>
+                <h3>PASS: OFFICIAL STAFF</h3>
             </div>
-            <div class="motto-bar">
+            <div class="back-body">
+                <div class="data-item"><span>Assigned Idol</span>Amami Haruka</div>
+                <div class="data-item"><span>Producer ID</span>765-0403-SGP</div>
+                <div class="data-item"><span>Clearance</span>S-Class</div>
+                <div class="data-item"><span>Unit Color</span>#E22B30</div>
+                <div class="data-item"><span>Birth / Blood</span>04.03 / Type O</div>
+                <div class="data-item"><span>Access</span>765 Theater</div>
+            </div>
+            <div class="motto-zone">
                 🌸雨粒になって花を驚かすこの世界🌸
             </div>
         </div>
@@ -201,70 +200,53 @@
 </div>
 
 <script>
-    // 音乐逻辑
     const btn = document.getElementById('musicToggle');
     const audio = document.getElementById('bgMusic');
     btn.onclick = () => {
         if (audio.paused) {
-            audio.play();
-            btn.innerHTML = '🎵';
-            btn.classList.add('playing');
-            document.body.classList.add('is-playing');
+            audio.play(); btn.innerHTML = '🎵';
+            btn.classList.add('playing'); document.body.classList.add('is-playing');
         } else {
-            audio.pause();
-            btn.innerHTML = '🔇';
-            btn.classList.remove('playing');
-            document.body.classList.remove('is-playing');
+            audio.pause(); btn.innerHTML = '🔇';
+            btn.classList.remove('playing'); document.body.classList.remove('is-playing');
         }
     };
 
-    // 拖拽与翻转
     const card = document.getElementById('dragCard');
     const inner = document.getElementById('cardInner');
     let isDown = false, startX, startY, xOffset = 0, yOffset = 0, startTime;
 
-    card.onmousedown = (e) => {
+    const startDrag = (e) => {
         isDown = true;
-        startX = e.clientX - xOffset;
-        startY = e.clientY - yOffset;
+        const clientX = e.clientX || e.touches[0].clientX;
+        const clientY = e.clientY || e.touches[0].clientY;
+        startX = clientX - xOffset; startY = clientY - yOffset;
         startTime = Date.now();
         card.style.transition = 'none';
     };
 
-    window.onmousemove = (e) => {
+    const doDrag = (e) => {
         if (!isDown) return;
-        xOffset = e.clientX - startX;
-        yOffset = e.clientY - startY;
+        e.preventDefault();
+        const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+        const clientY = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+        xOffset = clientX - startX; yOffset = clientY - startY;
         card.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
     };
 
-    window.onmouseup = () => {
+    const endDrag = () => {
         if (!isDown) return;
         isDown = false;
-        card.style.transition = '0.5s cubic-bezier(0.2, 0, 0.2, 1)';
-        if (Date.now() - startTime < 200) {
-            inner.classList.toggle('is-flipped');
-        }
-    };
-
-    // 适配触摸屏
-    card.ontouchstart = (e) => {
-        isDown = true;
-        startX = e.touches[0].clientX - xOffset;
-        startY = e.touches[0].clientY - yOffset;
-        startTime = Date.now();
-    };
-    window.ontouchmove = (e) => {
-        if (isDown) {
-            xOffset = e.touches[0].clientX - startX;
-            yOffset = e.touches[0].clientY - startY;
-            card.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
-        }
-    };
-    window.ontouchend = () => {
-        isDown = false;
+        card.style.transition = '0.5s cubic-bezier(0.19, 1, 0.22, 1)';
         if (Date.now() - startTime < 200) inner.classList.toggle('is-flipped');
     };
+
+    card.addEventListener('mousedown', startDrag);
+    window.addEventListener('mousemove', doDrag);
+    window.addEventListener('mouseup', endDrag);
+    card.addEventListener('touchstart', startDrag);
+    window.addEventListener('touchmove', doDrag, {passive: false});
+    window.addEventListener('touchend', endDrag);
 </script>
 
 </body>
