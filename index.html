@@ -3,18 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SuigyokuP的专属名片</title>
-    <!-- 引入优雅字体 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>SuigyokuP专属名片 - 最终修正版</title>
+    <!-- 引入高级艺术字体 -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Oswald:wght@500&display=swap" rel="stylesheet">
-
 <style>
     /* ================================== */
-    /*      背景、音乐、卡片容器等 (无改动) */
+    /*      红蓝炫彩流体背景 & 动态星尘     */
     /* ================================== */
     body {
-        font-family: 'Noto Sans JP', 'Helvetica Neue', Arial, sans-serif;
+        font-family: 'Noto Sans JP', sans-serif;
         margin: 0; padding: 0;
         height: 100vh; width: 100vw;
         overflow: hidden;
@@ -22,175 +19,235 @@
     }
     .bg-container {
         position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        z-index: -2; overflow: hidden;
-        transition: background-color 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
+        z-index: -2; transition: background-color 0.8s ease;
     }
-    .orb { position: absolute; border-radius: 50%; filter: blur(100px); transition: all 0.8s cubic-bezier(0.4, 0.2, 0.2, 1); animation-iteration-count: infinite; animation-timing-function: ease-in-out; opacity: 0.8; }
-    .orb-red { width: 70vw; height: 70vw; background: rgba(229, 57, 53, 0.7); top: -10%; left: -10%; animation-name: float-red, breathe-orb; animation-duration: 15s, 8s; animation-delay: 0s, 0s; animation-direction: alternate, alternate; }
-    .orb-blue { width: 80vw; height: 80vw; background: rgba(30, 136, 229, 0.5); bottom: -20%; right: -15%; animation-name: float-blue, breathe-orb; animation-duration: 18s, 10s; animation-delay: 0s, 2s; animation-direction: alternate-reverse, alternate; }
-    .orb-purple { width: 50vw; height: 50vw; background: rgba(142, 36, 170, 0.4); top: 40%; left: 30%; animation-name: float-purple, breathe-orb; animation-duration: 13s, 7s; animation-delay: 0s, 4s; animation-direction: alternate, alternate; }
-    @keyframes float-red { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(10%, 15%) scale(1.1); } }
-    @keyframes float-blue { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-15%, -10%) scale(1.05); } }
-    @keyframes float-purple { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-10%, 20%) scale(1.2); } }
-    @keyframes breathe-orb { 0% { opacity: 0.8; } 50% { opacity: 0.95; } 100% { opacity: 0.8; } }
+    .orb {
+        position: absolute; border-radius: 50%; filter: blur(100px);
+        transition: all 0.8s ease; opacity: 0.8;
+    }
+    .orb-red { width: 70vw; height: 70vw; background: rgba(229, 57, 53, 0.7); top: -10%; left: -10%; animation: float 15s infinite alternate ease-in-out; }
+    .orb-blue { width: 80vw; height: 80vw; background: rgba(30, 136, 229, 0.4); bottom: -20%; right: -15%; animation: float 18s infinite alternate-reverse ease-in-out; }
+    @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(10%, 15%) scale(1.1); } }
+
     .dynamic-stars {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;
-        background-image: radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.7), transparent), radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.6), transparent), radial-gradient(1.5px 1.5px at 50% 10%, rgba(255,255,255,0.8), transparent), radial-gradient(0.8px 0.8px at 90% 40%, rgba(255,255,255,0.5), transparent), radial-gradient(1.2px 1.2px at 10% 60%, rgba(255,255,255,0.7), transparent), radial-gradient(1px 1px at 40% 90%, rgba(255,255,255,0.6), transparent);
-        background-repeat: repeat; background-size: 200px 200px; animation: subtle-drift 60s linear infinite, subtle-twinkle 4s infinite alternate;
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        z-index: -1; pointer-events: none;
+        background-image: radial-gradient(1.5px 1.5px at 20px 30px, #fff, transparent), radial-gradient(1px 1px at 100px 150px, #fff, transparent);
+        background-size: 200px 200px; animation: drift 60s linear infinite;
     }
-    @keyframes subtle-drift { 0% { background-position: 0% 0%; } 100% { background-position: 100% 100%; } }
-    @keyframes subtle-twinkle { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
+    @keyframes drift { from { background-position: 0 0; } to { background-position: 100% 100%; } }
+
+    /* 翻转背景变色 */
     .bg-container.is-flipped-bg { background-color: #020b14; }
-    .bg-container.is-flipped-bg .orb-red { opacity: 0.2; transform: translate(-20%, -20%) scale(0.8); }
-    .bg-container.is-flipped-bg .orb-blue { background: rgba(21, 101, 192, 0.75); transform: translate(-5%, -5%) scale(1.2); }
-    .bg-container.is-flipped-bg .orb-purple { background: rgba(57, 73, 171, 0.5); }
-    .bg-container.is-flipped-bg .dynamic-stars { background-image: radial-gradient(1px 1px at 20% 30%, rgba(180,200,255,0.7), transparent), radial-gradient(1px 1px at 70% 80%, rgba(180,200,255,0.6), transparent), radial-gradient(1.5px 1.5px at 50% 10%, rgba(180,200,255,0.8), transparent), radial-gradient(0.8px 0.8px at 90% 40%, rgba(180,200,255,0.5), transparent), radial-gradient(1.2px 1.2px at 10% 60%, rgba(180,200,255,0.7), transparent), radial-gradient(1px 1px at 40% 90%, rgba(180,200,255,0.6), transparent); }
-    .music-btn { position: fixed; top: 20px; right: 20px; width: 45px; height: 45px; background-color: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; color: white; cursor: pointer; z-index: 100; backdrop-filter: blur(12px); transition: all 0.3s cubic-bezier(0.4, 0.2, 0.2, 1); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-    .music-btn:hover { background-color: rgba(255, 255, 255, 0.3); transform: scale(1.15); }
-    .music-btn.playing { background-color: rgba(211, 47, 47, 0.9); box-shadow: 0 0 18px rgba(211, 47, 47, 0.7); animation: spin 4s linear infinite; }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-    .card-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); cursor: grab; perspective: 1000px; width: 350px; height: 200px; user-select: none; z-index: 10; touch-action: none; }
-    .card-wrapper:active { cursor: grabbing; }
-    .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; border-radius: 15px; box-shadow: 0 25px 50px rgba(0,0,0,0.6), 0 0 30px rgba(255,255,255,0.15); }
+    .bg-container.is-flipped-bg .orb-red { opacity: 0.1; }
+    .bg-container.is-flipped-bg .orb-blue { opacity: 0.8; transform: scale(1.3); }
+
+    /* 音乐按钮 */
+    .music-btn {
+        position: fixed; top: 20px; right: 20px; width: 45px; height: 45px;
+        background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.4);
+        border-radius: 50%; color: white; cursor: pointer; z-index: 100;
+        backdrop-filter: blur(12px); display: flex; justify-content: center; align-items: center;
+    }
+
+    /* ================================== */
+    /*          核心卡片容器                */
+    /* ================================== */
+    .card-wrapper {
+        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        width: 350px; height: 200px; perspective: 1000px; z-index: 10;
+    }
+    .card-inner {
+        position: relative; width: 100%; height: 100%;
+        transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
+        transform-style: preserve-3d; border-radius: 15px;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+    }
     .card-inner.is-flipped { transform: rotateY(180deg); }
-    .card-face { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 15px; background-color: white; overflow: hidden; }
-
-    /* ================================== */
-    /*          名片正面 (无改动)           */
-    /* ================================== */
-    .front-bg-red { position: absolute; top: 0; left: 0; width: 58%; height: 100%; background-color: #d32f2f; clip-path: polygon(0 0, 100% 0, 50% 100%, 0 100%); background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path fill="%23fff" fill-opacity="0.1" d="M10 2a8 8 0 100 16 8 8 0 000-16zM10 0a10 10 0 110 20 10 10 0 010-20z"/></svg>'); background-size: 10px 10px, 10px 10px, 40px 40px; background-position: 0 0, 0 0, 5px 5px; animation: pattern-pulse 10s infinite alternate; }
-    @keyframes pattern-pulse { 0% { background-position: 5px 5px, 0 0, 0 0; opacity: 0.8; } 100% { background-position: 15px 15px, 0 0, 0 0; opacity: 1; } }
-    .star-logo { position: absolute; top: 12px; left: 10px; width: 55px; height: auto; filter: drop-shadow(0px 0px 5px rgba(255,255,255,0.9)); }
-    .tiny-text { position: absolute; bottom: 15px; left: 10px; color: rgba(255,255,255,0.7); font-size: 10px; transform: scale(0.6); transform-origin: left bottom; white-space: nowrap; letter-spacing: 0.5px; }
-    .front-character { position: absolute; bottom: 0; left: -8%; width: 60%; height: 95%; background-image: url('1.png'); background-size: contain; background-position: bottom center; background-repeat: no-repeat; z-index: 2; filter: drop-shadow(6px 6px 8px rgba(0,0,0,0.4)); }
-    .front-content { position: absolute; top: 0; right: 0; width: 65%; height: 100%; padding: 15px 15px 15px 0; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; text-align: right; z-index: 3; }
-    .name-section h2 { margin: 0 0 5px 0; font-size: 28px; color: #0a0a0a; font-weight: 900; letter-spacing: -1px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
-    .name-section p { margin: 2px 0; font-size: 10px; color: #555; font-weight: bold; letter-spacing: 0.2px; }
-    .nfc-section { font-size: 9px; color: #999; margin-top: 10px; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; font-weight: bold; animation: breathing-nfc 2.5s infinite; }
-    @keyframes breathing-nfc { 0% { opacity: 0.7; text-shadow: none; } 50% { opacity: 1; text-shadow: 0 0 5px rgba(153,153,153,0.5); transform: scale(1.02); } 100% { opacity: 0.7; text-shadow: none; } }
-    .nfc-icon { color: #111; font-size: 14px; }
-    .socials { font-size: 10px; color: #444; line-height: 1.6; letter-spacing: 0.1px; }
-    .socials div { display: flex; justify-content: flex-end; align-items: center; gap: 5px; }
-    .socials span { font-weight: bold; font-style: italic; color: #222; }
-
-    /* ================================== */
-    /*      名片背面 (Bug修复 & 布局重构)   */
-    /* ================================== */
-    .card-back {
-        transform: rotateY(180deg);
-        /* 移除flex布局，使用绝对定位，彻底杜绝布局互相干扰 */
+    .card-face {
+        position: absolute; width: 100%; height: 100%;
+        backface-visibility: hidden; border-radius: 15px; background: white; overflow: hidden;
     }
+
+    /* 正面布局 (春香) */
+    .front-bg-red {
+        position: absolute; top: 0; left: 0; width: 58%; height: 100%;
+        background-color: #d32f2f; clip-path: polygon(0 0, 100% 0, 50% 100%, 0 100%);
+    }
+    .front-character {
+        position: absolute; bottom: 0; left: -10%; width: 65%; height: 95%;
+        background: url('1.png') no-repeat bottom center/contain; z-index: 2;
+        filter: drop-shadow(5px 5px 10px rgba(0,0,0,0.3));
+    }
+    .front-content {
+        position: absolute; top: 0; right: 0; width: 60%; height: 100%;
+        padding: 20px; display: flex; flex-direction: column; justify-content: center;
+        align-items: flex-end; text-align: right; z-index: 3;
+    }
+    .front-content h2 { margin: 0; font-size: 26px; color: #111; font-weight: 900; }
+    .front-content p { margin: 2px 0; font-size: 10px; color: #666; font-weight: bold; }
+
+    /* ================================== */
+    /*          名片背面 (Bug修复核心)      */
+    /* ================================== */
+    .card-back { transform: rotateY(180deg); position: relative; }
+
+    /* 背面上部 - 白色区域 */
+    .back-top {
+        position: absolute; top: 0; left: 0; width: 100%; height: 44%;
+        padding: 15px; box-sizing: border-box; z-index: 5;
+    }
+    .back-top p { margin: 2px 0; font-size: 11px; color: #333; font-weight: 700; }
     
-    /* 上半部分白色区域 */
-    .back-top { 
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 44%;
-        padding: 15px; box-sizing: border-box;
-        z-index: 2; /* 保证在千早之上 */
+    /* 关键修复：诗句文字 */
+    .haiku {
+        margin-top: 12px !important;
+        font-size: 11px !important;
+        color: #005a8d !important; /* 加深蓝色 */
+        font-style: italic;
+        font-weight: bold;
+        text-shadow: 0 0 5px rgba(0,90,141,0.2);
     }
-    .back-top p { margin: 3px 0; font-size: 11px; color: #333; font-weight: 700; letter-spacing: 0.2px; }
-    .back-top p:last-child { margin-top: 10px; font-size: 12px; color: #007bb6; font-style: italic; animation: text-glow 3s infinite alternate; }
-    @keyframes text-glow { 0% { text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.2); } 100% { text-shadow: 0 0 8px rgba(0,123,182,0.8), 0 0 5px rgba(0,123,182,0.5); } }
 
-    /* 二维码 (依然绝对定位于右上角) */
     .qr-code {
-        position: absolute; top: 15px; right: 15px; width: 48px; height: 48px;
-        background-image: url('space.bilibili.com_488509701.png');
-        background-size: cover; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3);
-        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        position: absolute; top: 15px; right: 15px; width: 45px; height: 45px;
+        background: url('space.bilibili.com_488509701.png') center/cover;
+        border: 1px solid #eee; border-radius: 4px;
     }
     .qr-code::after {
         content: 'bilibili'; position: absolute; top: 100%; left: 50%;
-        transform: translateX(-50%); margin-top: 5px; color: #fb7299;
-        font-size: 9px; font-weight: 700;
-        letter-spacing: 0.8px; text-shadow: 0 0 5px rgba(255,100,150,0.7);
+        transform: translateX(-50%); color: #fb7299; font-size: 8px; font-weight: 900;
     }
-    
-    /* 蓝色底部区域 */
-    .back-bottom {
-        position: absolute;
-        bottom: 0; left: 0;
-        width: 100%; height: 56%;
-        background-color: #007bb6; color: white;
-        background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,0.08), rgba(0,0,0,0.08) 3px, transparent 3px, transparent 8px), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"><path fill="%23fff" fill-opacity="0.1" d="M15 0L0 30h30L15 0zM15 10L5 25h20L15 10z"/></svg>');
-        background-size: 10px 10px, 60px 60px;
-        background-position: 0 0, 10px 10px;
-        animation: pattern-subtle-move 15s linear infinite;
-        display: flex; justify-content: flex-end; /* 内容沉底 */
-        align-items: flex-start;
-        padding: 20px; box-sizing: border-box;
-        font-family: 'Oswald', 'Arial Black', Impact, sans-serif;
-        font-size: 44px; font-weight: 500;
-        line-height: 0.8; letter-spacing: -1.5px;
-        text-shadow: 4px 4px 0px #0a0a0a;
-    }
-    @keyframes pattern-subtle-move { 0% { background-position: 0 0, 10px 10px; } 100% { background-position: 100% 100%, 70px 70px; } }
 
-    /* === 灵魂！扒墙的千早 === */
-    .peeking-chihaya {
+    /* 关键修复：背面下部 - 蓝色区域 & 大字 */
+    .back-bottom {
+        position: absolute; bottom: 0; left: 0; width: 100%; height: 56%;
+        background: #007bb6;
+        display: flex; align-items: center; justify-content: center; /* 强行居中大字 */
+        z-index: 1;
+    }
+    .producer-card-text {
+        font-family: 'Oswald', sans-serif;
+        font-size: 44px; color: white; font-weight: 500;
+        font-style: italic; line-height: 0.8; letter-spacing: -1.5px;
+        text-shadow: 4px 4px 0px #0a0a0a;
+        margin-top: 10px; /* 稍微下移一点点，视觉更平衡 */
+    }
+
+    /* 关键：扒边缘的 OtherCreatures 图案 */
+    .peeking-creature {
         position: absolute;
-        bottom: 56%; /* 初始位置精准卡在交界线 */
-        left: 50%;
-        transform: translateX(-50%) scaleY(-1); /* 水平居中，垂直翻转 */
-        width: 150px;
-        height: auto;
-        z-index: 1; /* 在白色背景之下，蓝色背景之上 */
+        bottom: 56%; /* 恰好压在蓝白交界线上 */
+        left: 50%; transform: translateX(-50%);
+        width: 140px; height: auto;
+        z-index: 3; /* 在蓝色背景之上，白色文字之下 */
         pointer-events: none;
-        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1); /* 探头动画更Q弹 */
+        transition: transform 0.3s ease;
     }
-    .card-inner:hover .peeking-chihaya {
-        transform: translateX(-50%) scaleY(-1) translateY(-8px); /* 悬浮时千早稍微探出头，幅度加大 */
-    }
+    .card-inner:hover .peeking-creature { transform: translateX(-50%) translateY(-10px); }
 
 </style>
 </head>
 <body>
 
-<!-- 背景层 -->
-<div id="bgContainer" class="bg-container"><div class="orb orb-red"></div><div class="orb orb-blue"></div><div class="orb orb-purple"></div></div>
+<div id="bgContainer" class="bg-container">
+    <div class="orb orb-red"></div><div class="orb orb-blue"></div>
+</div>
 <div class="dynamic-stars"></div>
 
-<!-- 音乐按钮 -->
 <audio id="bgMusic" loop><source src="bgm.mp3" type="audio/mpeg"></audio>
-<div id="musicToggle" class="music-btn" title="播放/暂停音乐">🔇</div>
+<div id="musicToggle" class="music-btn">🔇</div>
 
-<!-- 名片本体 -->
 <div class="card-wrapper" id="draggableCard">
     <div class="card-inner" id="cardInner">
         <!-- 正面 -->
-        <div class="card-face card-front">
-            <div class="front-bg-red"><img src="IDOLMASTER20THLogo.png" class="star-logo" alt="20th Logo"><div class="tiny-text">765 PRODUCTION PRODUCER CARD</div></div>
+        <div class="card-face">
+            <div class="front-bg-red"></div>
             <div class="front-character"></div>
+            <img src="IDOLMASTER20THLogo.png" style="position:absolute; top:12px; left:10px; width:55px;" alt="logo">
             <div class="front-content">
-                <div class="name-section"><h2>SuigyokuP</h2><p>765プロデューサー科</p><p>天海春香担当プロデューサー</p></div>
-                <div class="nfc-section">TAP TO START <span class="nfc-icon">N))</span></div>
-                <div class="socials"><div><span>@:</span> Rain Grain</div><div><span>📮:</span> 1635786118@QQ.com</div><div><span>📺:</span>bangumi.tv/user/922571</div></div>
+                <h2>SuigyokuP</h2>
+                <p>765プロデューサー科</p>
+                <p>天海春香担当プロデューサー</p>
+                <div style="font-size:9px; color:#999; margin:10px 0;">TAP TO START <span style="color:#111">N))</span></div>
+                <div class="socials">
+                    <div><span>@:</span> Rain Grain</div>
+                    <div><span>📮:</span> 1635786118@QQ.com</div>
+                    <div><span>📺:</span> bangumi.tv/user/922571</div>
+                </div>
             </div>
         </div>
         <!-- 背面 -->
         <div class="card-face card-back">
             <div class="back-top">
                 <div class="qr-code"></div>
-                <p>765 PRODUCTION</p><p>AMAMI HARUKA</p><p>AGE 17</p>
-                <p style="margin-top: 15px;">🌸雨粒になって花を驚かす这个世界🌸</p>
+                <p>765 PRODUCTION</p>
+                <p>AMAMI HARUKA</p>
+                <p>AGE 17</p>
+                <!-- 修复后的诗句 -->
+                <p class="haiku">🌸雨粒になって花を驚かす这个世界🌸</p>
             </div>
-            <div class="back-bottom">PRODUCER<br>CARD</div>
-            <!-- Bug修复：把千早图片放在这里，用绝对定位，不影响布局 -->
-            <img src="image_1774637801720470.png" class="peeking-chihaya" alt="Peeking Chihaya">
+            
+            <!-- 替换为 OtherCreatures 扒墙 -->
+            <img src="OtherCreatures.png" class="peeking-creature" alt="creature">
+
+            <div class="back-bottom">
+                <!-- 修复后的 PRODUCER CARD 大字 -->
+                <div class="producer-card-text">PRODUCER<br>CARD</div>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    // JS 逻辑保持不变
-    const musicToggle = document.getElementById('musicToggle'); const bgMusic = document.getElementById('bgMusic'); let isPlaying = false; document.addEventListener('click', () => {}, { once: true }); musicToggle.addEventListener('click', (e) => { e.stopPropagation(); if (isPlaying) { bgMusic.pause(); musicToggle.classList.remove('playing'); musicToggle.innerHTML = '🔇'; } else { bgMusic.play().then(() => { musicToggle.classList.add('playing'); musicToggle.innerHTML = '🎵'; }).catch(e => {}); } isPlaying = !isPlaying; });
-    const dragItem = document.getElementById('draggableCard'), cardInner = document.getElementById('cardInner'), bgContainer = document.getElementById('bgContainer'); let active = false, currentX, currentY, initialX, initialY, xOffset = -175, yOffset = -100, hasDragged = false;
-    function dragStart(e) { if (e.type === "touchstart") { initialX = e.touches[0].clientX - xOffset; initialY = e.touches[0].clientY - yOffset; } else { initialX = e.clientX - xOffset; initialY = e.clientY - yOffset; } if (dragItem.contains(e.target) && !e.target.closest('.music-btn')) { active = true; hasDragged = false; dragItem.style.transition = 'none'; } }
-    function dragEnd(e) { if (!active) return; active = false; dragItem.style.transition = ''; if (!hasDragged && e.target && dragItem.contains(e.target)) { cardInner.classList.toggle('is-flipped'); bgContainer.classList.toggle('is-flipped-bg'); } }
-    function drag(e) { if (active) { if (!hasDragged && (Math.abs((e.touches ? e.touches[0].clientX : e.clientX) - (initialX + xOffset)) > 5 || Math.abs((e.touches ? e.touches[0].clientY : e.clientY) - (initialY + yOffset)) > 5)) { hasDragged = true; } e.preventDefault(); if (e.type === "touchmove") { currentX = e.touches[0].clientX - initialX; currentY = e.touches[0].clientY - initialY; } else { currentX = e.clientX - initialX; currentY = e.clientY - initialY; } xOffset = currentX; yOffset = currentY; dragItem.style.transform = `translate(${xOffset}px, ${yOffset}px)`; } }
-    function setTranslate(xPos, yPos, el) { el.style.transform = `translate(${xPos}px, ${yPos}px)`; }
-    document.addEventListener("touchstart", dragStart, { passive: false }); document.addEventListener("touchend", dragEnd, false); document.addEventListener("touchmove", drag, { passive: false }); document.addEventListener("mousedown", dragStart, false); document.addEventListener("mouseup", dragEnd, false); document.addEventListener("mousemove", drag, false);
+    const musicToggle = document.getElementById('musicToggle');
+    const bgMusic = document.getElementById('bgMusic');
+    let isPlaying = false;
+
+    musicToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (isPlaying) { bgMusic.pause(); musicToggle.innerHTML = '🔇'; }
+        else { bgMusic.play().then(() => { musicToggle.innerHTML = '🎵'; }); }
+        isPlaying = !isPlaying;
+    });
+
+    const dragItem = document.getElementById('draggableCard');
+    const cardInner = document.getElementById('cardInner');
+    const bgContainer = document.getElementById('bgContainer');
+    
+    let active = false, hasDragged = false, initialX, initialY, xOffset = -175, yOffset = -100;
+
+    function dragStart(e) {
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        initialX = clientX - xOffset;
+        initialY = clientY - yOffset;
+        if (dragItem.contains(e.target) && !e.target.closest('.music-btn')) {
+            active = true; hasDragged = false;
+        }
+    }
+    function dragEnd(e) {
+        if (!active) return;
+        active = false;
+        if (!hasDragged) {
+            cardInner.classList.toggle('is-flipped');
+            bgContainer.classList.toggle('is-flipped-bg');
+        }
+    }
+    function drag(e) {
+        if (active) {
+            e.preventDefault();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            if (Math.abs(clientX - (initialX + xOffset)) > 5) hasDragged = true;
+            xOffset = clientX - initialX;
+            yOffset = clientY - initialY;
+            dragItem.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+        }
+    }
+
+    document.addEventListener("mousedown", dragStart); document.addEventListener("mouseup", dragEnd); document.addEventListener("mousemove", drag);
+    document.addEventListener("touchstart", dragStart, {passive:false}); document.addEventListener("touchend", dragEnd); document.addEventListener("touchmove", drag, {passive:false});
 </script>
 </body>
 </html>
