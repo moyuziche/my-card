@@ -3,45 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>765PRO | SuigyokuP Producer Card</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;900&family=Noto+Serif+JP:wght@600&family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
+<title>765PRO | SuigyokuP Producer PASS</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Noto+Serif+JP:wght@700&family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
 <style>
     :root {
-        --main-red: #e22b30;
-        --accent-gold: #ffd700;
+        --haruka-red: #e22b30;
+        --stage-blue: #020b1a;
     }
 
     body {
         margin: 0; padding: 0; height: 100vh; width: 100vw;
-        background: #020205; overflow: hidden;
+        background: #000; overflow: hidden;
         display: flex; justify-content: center; align-items: center;
-        perspective: 1200px;
-        font-family: 'Helvetica Neue', Arial, sans-serif;
+        perspective: 1200px; font-family: 'Helvetica Neue', Arial, sans-serif;
     }
 
     /* ================================== */
-    /*      3D 剧场舞台背景 - 氛围拉满       */
+    /*      真正的偶像舞台背景 (Live!)      */
     /* ================================== */
-    .theater-env {
-        position: absolute; width: 100%; height: 100%;
-        background: radial-gradient(circle at 50% 10%, #1a1a2e 0%, #020205 80%);
-        z-index: -1;
+    .stage-background {
+        position: absolute; inset: 0; z-index: -1;
+        background: radial-gradient(circle at 50% 20%, #1a1a2e 0%, #000 80%);
+        overflow: hidden;
     }
-    .stage-perspective {
-        position: absolute; bottom: 0; width: 100%; height: 45vh;
+    /* 动态扫掠的聚光灯 */
+    .beam {
+        position: absolute; top: -100px; left: 50%;
+        width: 300px; height: 150%;
+        background: linear-gradient(to bottom, rgba(255,255,255,0.08), transparent);
+        transform-origin: top center;
+        clip-path: polygon(45% 0, 55% 0, 100% 100%, 0 100%);
+        animation: beamSweep 10s ease-in-out infinite alternate;
+    }
+    .beam-1 { margin-left: -500px; animation-delay: 0s; }
+    .beam-2 { margin-left: 200px; animation-delay: -5s; }
+    
+    @keyframes beamSweep {
+        0% { transform: rotate(-15deg); opacity: 0.3; }
+        100% { transform: rotate(15deg); opacity: 0.6; }
+    }
+
+    /* 舞台发光地板 */
+    .stage-floor {
+        position: absolute; bottom: 0; width: 100%; height: 40vh;
         background: 
-            linear-gradient(to top, rgba(226, 43, 48, 0.1) 0%, transparent 100%),
-            repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 60px),
-            repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 60px);
-        transform: rotateX(65deg); transform-origin: bottom;
-    }
-    /* 音乐启动后的聚光灯氛围 */
-    body.is-playing .theater-env {
-        background: radial-gradient(circle at 50% 0%, rgba(226, 43, 48, 0.2) 0%, #020205 100%);
+            linear-gradient(to top, rgba(226, 43, 48, 0.2) 0%, transparent 100%),
+            repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 50px),
+            repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 50px);
+        transform: rotateX(60deg); transform-origin: bottom;
     }
 
     /* ================================== */
-    /*     核心卡片 - 红色炫彩流光纹理      */
+    /*   核心卡片 - 炫彩流动纹理与 20th Logo  */
     /* ================================== */
     .card-wrapper {
         width: 350px; height: 210px; cursor: grab;
@@ -49,150 +62,152 @@
     }
     .card-inner {
         position: relative; width: 100%; height: 100%;
-        transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+        transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
     }
     .card-inner.is-flipped { transform: rotateY(180deg); }
 
     .card-face {
         position: absolute; width: 100%; height: 100%;
-        backface-visibility: hidden; border-radius: 10px;
+        backface-visibility: hidden; border-radius: 12px;
         background: #fff; overflow: hidden;
-        box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+        box-shadow: 0 40px 80px rgba(0,0,0,0.8);
     }
 
-    /* 🌟 滚动的液体炫彩纹理 (Liquid Shimmer) 🌟 */
+    /* 🌟 炫彩流动纹理 (Liquid Holographic) 🌟 */
     .front-bg-red {
-        position: absolute; top: 0; left: 0; width: 55%; height: 100%;
+        position: absolute; inset: 0; width: 55%;
         clip-path: polygon(0 0, 100% 0, 45% 100%, 0 100%);
-        background: linear-gradient(
-            120deg, 
-            #8e1619 0%, 
-            #e22b30 25%, 
-            #ff5f6d 45%, 
-            #e22b30 65%, 
-            #8e1619 100%
-        );
-        background-size: 300% 300%;
-        animation: liquidFlow 6s linear infinite;
+        background: linear-gradient(135deg, #8e1619, #e22b30, #ff5f6d, #e22b30, #8e1619);
+        background-size: 400% 400%;
+        animation: laserFlow 5s ease infinite;
         z-index: 1;
     }
-    @keyframes liquidFlow {
+    /* 叠加菱形网格纹理，让卡面不“素” */
+    .front-bg-red::after {
+        content: ''; position: absolute; inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg width='10' height='10' viewBox='0 0 10 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l5 5L0 10V0z' fill='%23ffffff' fill-opacity='0.05'/%3E%3C/svg%3E");
+    }
+    @keyframes laserFlow {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
         100% { background-position: 0% 50%; }
     }
 
-    /* 🌟 硬核人物描边：完美复刻広（Hiromi）风格 🌟 */
-    .char-box {
-        position: absolute; bottom: 0; left: -12%; width: 70%; height: 105%;
-        z-index: 3; pointer-events: none;
-        background: url('1.png') no-repeat bottom center;
-        background-size: contain;
-        /* 关键：硬核黑影，不遮挡立绘 */
-        filter: drop-shadow(5px 5px 0px rgba(0,0,0,0.9)) drop-shadow(0px 0px 1px #fff);
+    /* 🌟 20周年 Logo 强力回归 🌟 */
+    .star-logo-20th {
+        position: absolute; top: 15px; left: 12px; width: 60px; z-index: 5;
+        filter: drop-shadow(0 0 5px rgba(255,255,255,0.8));
+    }
+
+    /* 🌟 硬核阴影：复刻広（Hiromi）风格 🌟 */
+    .char-sprite {
+        position: absolute; bottom: 0; left: -10%; width: 68%; height: 100%;
+        background: url('1.png') no-repeat bottom center; background-size: contain;
+        z-index: 3;
+        /* 关键：8px 硬边缘纯黑偏移 */
+        filter: drop-shadow(8px 8px 0px rgba(0,0,0,1));
     }
 
     .front-content {
         position: absolute; right: 0; width: 60%; height: 100%;
-        padding: 20px; box-sizing: border-box;
-        display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
-        text-align: right; z-index: 4;
+        padding: 20px; display: flex; flex-direction: column; 
+        align-items: flex-end; justify-content: center; text-align: right; z-index: 4;
     }
     .name-section h2 { 
-        margin: 0; font-family: 'Orbitron', sans-serif; font-size: 28px; 
-        color: #111; letter-spacing: -1px; font-weight: 900;
+        margin: 0; font-family: 'Orbitron', sans-serif; font-size: 30px; 
+        color: #111; letter-spacing: -1.5px; font-weight: 900;
     }
-    .producer-tag { 
-        background: var(--main-red); color: #fff; font-size: 8px; 
-        padding: 2px 6px; border-radius: 3px; margin: 5px 0; font-weight: bold;
+    .producer-rank {
+        background: #000; color: #fff; font-size: 8px; padding: 2px 8px;
+        border-radius: 20px; margin-top: 5px; font-family: 'Roboto Mono';
     }
 
     /* ================================== */
-    /*   背面：THE IDOLM@STER 官方认证 ID   */
+    /*      背面：真正的 Staff Pass 布局     */
     /* ================================== */
     .card-back {
-        transform: rotateY(180deg);
-        background: #f4f4f4;
+        transform: rotateY(180deg); background: #eee;
         display: flex; flex-direction: column;
-        border: 4px solid #fff; box-sizing: border-box;
     }
-    .back-header {
-        height: 50px; background: var(--main-red);
-        display: flex; flex-direction: column; justify-content: center; padding: 0 15px;
-        color: #fff; position: relative;
+    .back-top {
+        height: 60px; background: var(--haruka-red); color: #fff;
+        padding: 0 15px; display: flex; align-items: center; justify-content: space-between;
     }
-    .back-header h3 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 14px; letter-spacing: 1px; }
-    .back-header .brand { font-size: 7px; opacity: 0.8; font-weight: bold; }
-
+    .back-top .brand-text { font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 900; line-height: 1; }
+    
     .back-body {
         flex: 1; padding: 15px; display: grid; grid-template-columns: 1fr 1fr;
-        gap: 10px; font-family: 'Roboto Mono', monospace; font-size: 10px; color: #333;
+        font-family: 'Roboto Mono', monospace; font-size: 10px; gap: 8px;
     }
-    .data-item span { display: block; font-size: 7px; color: #aaa; text-transform: uppercase; }
+    .data-row span { color: #999; font-size: 7px; display: block; }
 
-    /* 🌟 您的格言：精美呈现 🌟 */
-    .motto-zone {
+    /* 🌟 格言尊享位置 🌟 */
+    .motto-banner {
         background: #fff; padding: 12px; text-align: center;
-        border-top: 1px dashed #ccc;
-        font-family: 'Noto Serif JP', serif;
-        font-size: 11px; color: var(--main-red);
-        font-weight: 600;
+        font-family: 'Noto Serif JP', serif; font-size: 11px;
+        color: var(--haruka-red); border-top: 2px solid var(--haruka-red);
+        letter-spacing: 0.5px;
     }
 
     /* 音乐控制 */
     .music-btn {
-        position: fixed; top: 25px; right: 25px; width: 45px; height: 45px;
-        background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);
+        position: fixed; top: 30px; right: 30px; width: 45px; height: 45px;
+        background: rgba(255,255,255,0.1); border: 2px solid #fff;
         border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center;
-        cursor: pointer; z-index: 100; backdrop-filter: blur(10px); transition: 0.3s;
+        cursor: pointer; z-index: 100; backdrop-filter: blur(10px);
     }
-    .music-btn.playing { background: var(--main-red); animation: pulse 2s infinite; }
-    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(226, 43, 48, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(226, 43, 48, 0); } 100% { box-shadow: 0 0 0 0 rgba(226, 43, 48, 0); } }
 </style>
 </head>
 <body>
 
-<div class="theater-env"></div>
-<div class="stage-perspective"></div>
+<div class="stage-background">
+    <div class="beam beam-1"></div>
+    <div class="beam beam-2"></div>
+    <div class="stage-floor"></div>
+</div>
 
 <div id="musicToggle" class="music-btn">🔇</div>
 <audio id="bgMusic" loop src="bgm.mp3"></audio>
 
 <div class="card-wrapper" id="dragCard">
     <div class="card-inner" id="cardInner">
-        <!-- 正面：炫彩与硬核阴影 -->
+        <!-- 正面 -->
         <div class="card-face">
             <div class="front-bg-red"></div>
-            <div class="char-box"></div>
+            <img src="IDOLMASTER20THLogo.png" class="star-logo-20th" alt="20th Logo">
+            <div class="char-sprite"></div>
             <div class="front-content">
                 <div class="name-section">
                     <h2>SuigyokuP</h2>
-                    <div class="producer-tag">765PRO OFFICIAL PRODUCER</div>
-                    <p style="color: #666; font-size: 9px;">AMAMI HARUKA TEAM</p>
+                    <div class="producer-rank">S-CLASS PRODUCER</div>
+                    <p style="color: var(--haruka-red); font-size: 9px; font-weight: 900; margin-top: 10px;">TEAM AMAMI HARUKA</p>
                 </div>
-                <div style="margin-top: 15px; font-family: 'Roboto Mono', monospace; font-size: 8px; color: #555;">
-                    <div>@Rain Grain</div>
+                <div style="margin-top: 20px; font-family: 'Roboto Mono', monospace; font-size: 8px; color: #444;">
+                    <div>Rain Grain</div>
                     <div>1635786118@QQ.com</div>
                     <div>bangumi.tv/user/922571</div>
                 </div>
             </div>
         </div>
 
-        <!-- 背面：THE IDOLM@STER 认证信息 -->
+        <!-- 背面 -->
         <div class="card-face card-back">
-            <div class="back-header">
-                <div class="brand">THE IDOLM@STER™ PROJECT</div>
-                <h3>PASS: OFFICIAL STAFF</h3>
+            <div class="back-top">
+                <div class="brand-text">THE IDOLM@STER™<br>765PRO PRODUCTION</div>
+                <div style="font-size: 20px;">★</div>
             </div>
             <div class="back-body">
-                <div class="data-item"><span>Assigned Idol</span>Amami Haruka</div>
-                <div class="data-item"><span>Producer ID</span>765-0403-SGP</div>
-                <div class="data-item"><span>Clearance</span>S-Class</div>
-                <div class="data-item"><span>Unit Color</span>#E22B30</div>
-                <div class="data-item"><span>Birth / Blood</span>04.03 / Type O</div>
-                <div class="data-item"><span>Access</span>765 Theater</div>
+                <div class="data-row"><span>Assigned</span>Amami Haruka</div>
+                <div class="data-row"><span>Staff ID</span>765-P0403</div>
+                <div class="data-row"><span>Birthday</span>April 03</div>
+                <div class="data-row"><span>Blood</span>Type O</div>
+                <div class="data-row"><span>Dept.</span>Producer Section</div>
+                <div class="data-row"><span>Auth.</span>ALL ACCESS</div>
+                <div style="grid-column: span 2; border-top: 1px solid #ccc; padding-top: 5px; font-size: 8px;">
+                    PROJECT: IM@S 20th ANNIVERSARY OFFICIAL PASS
+                </div>
             </div>
-            <div class="motto-zone">
+            <div class="motto-banner">
                 🌸雨粒になって花を驚かすこの世界🌸
             </div>
         </div>
@@ -204,23 +219,21 @@
     const audio = document.getElementById('bgMusic');
     btn.onclick = () => {
         if (audio.paused) {
-            audio.play(); btn.innerHTML = '🎵';
-            btn.classList.add('playing'); document.body.classList.add('is-playing');
+            audio.play(); btn.innerHTML = '🎵'; btn.style.background = '#e22b30';
         } else {
-            audio.pause(); btn.innerHTML = '🔇';
-            btn.classList.remove('playing'); document.body.classList.remove('is-playing');
+            audio.pause(); btn.innerHTML = '🔇'; btn.style.background = 'rgba(255,255,255,0.1)';
         }
     };
 
     const card = document.getElementById('dragCard');
     const inner = document.getElementById('cardInner');
-    let isDown = false, startX, startY, xOffset = 0, yOffset = 0, startTime;
+    let isDown = false, xOffset = 0, yOffset = 0, startX, startY, startTime;
 
     const startDrag = (e) => {
         isDown = true;
-        const clientX = e.clientX || e.touches[0].clientX;
-        const clientY = e.clientY || e.touches[0].clientY;
-        startX = clientX - xOffset; startY = clientY - yOffset;
+        const c = e.clientX || e.touches[0].clientX;
+        const r = e.clientY || e.touches[0].clientY;
+        startX = c - xOffset; startY = r - yOffset;
         startTime = Date.now();
         card.style.transition = 'none';
     };
@@ -228,16 +241,15 @@
     const doDrag = (e) => {
         if (!isDown) return;
         e.preventDefault();
-        const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
-        const clientY = e.clientY || (e.touches ? e.touches[0].clientY : 0);
-        xOffset = clientX - startX; yOffset = clientY - startY;
+        const c = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+        const r = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+        xOffset = c - startX; yOffset = r - startY;
         card.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
     };
 
     const endDrag = () => {
-        if (!isDown) return;
-        isDown = false;
-        card.style.transition = '0.5s cubic-bezier(0.19, 1, 0.22, 1)';
+        if (!isDown) return; isDown = false;
+        card.style.transition = '0.5s cubic-bezier(0.23, 1, 0.32, 1)';
         if (Date.now() - startTime < 200) inner.classList.toggle('is-flipped');
     };
 
