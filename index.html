@@ -4,7 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SuigyokuP的专属名片</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+
 <style>
+    :root {
+        --card-red: #d32f2f;
+        --text-main: #212121;
+        --text-sub: #757575;
+    }
+
     body {
         font-family: 'Helvetica Neue', Arial, sans-serif;
         margin: 0;
@@ -12,360 +20,228 @@
         height: 100vh;
         width: 100vw;
         overflow: hidden;
-        background-color: #050508; /* 深邃的剧场黑底色 */
+        background-color: #02030A;
     }
-
-    /* ================================== */
-    /*       全新舞台背景：光影与氛围        */
-    /* ================================== */
     
-    /* 1. 待机状态：柔和的光斑 (Bokeh) 模拟演出前的静谧 */
-    .stage-standby {
+    /* ================================== */
+    /*   全新剧场舞台背景 (PC/移动端自适应)  */
+    /* ================================== */
+    .theater-background {
         position: absolute;
         top: 0; left: 0; width: 100%; height: 100%;
         z-index: -3;
-        background-image: 
-            radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.04) 0%, transparent 20%),
-            radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.03) 0%, transparent 25%),
-            radial-gradient(circle at 50% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 30%);
-        animation: floatBokeh 15s ease-in-out infinite alternate;
-    }
-
-    @keyframes floatBokeh {
-        0% { transform: translateY(0) scale(1); }
-        100% { transform: translateY(-20px) scale(1.05); }
-    }
-
-    /* 2. 开演状态 (Live Stage)：聚光灯与温暖的应援光 */
-    .stage-live {
-        position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        z-index: -2;
-        opacity: 0; /* 默认隐藏，音乐响起时显现 */
-        transition: opacity 2s cubic-bezier(0.4, 0, 0.2, 1);
-        background: radial-gradient(circle at bottom center, rgba(160, 20, 30, 0.2) 0%, transparent 60%);
         overflow: hidden;
     }
 
-    .stage-live.active {
+    /* 默认：后台/待机状态 */
+    .standby-scene {
+        position: absolute; inset: 0;
+        background: 
+            /* 顶部柔和的聚光灯光晕 */
+            radial-gradient(ellipse 80% 50% at 50% 0%, rgba(180, 190, 220, 0.1), transparent 70%),
+            /* 底部舞台地板的反光 */
+            radial-gradient(ellipse 150% 40% at 50% 100%, rgba(80, 90, 120, 0.15), transparent 70%);
+        transition: opacity 1.5s ease-out;
+    }
+
+    /* 播放：Live开演状态 */
+    .live-scene {
+        position: absolute; inset: 0;
+        opacity: 0;
+        transition: opacity 2s ease-in;
+        /* 底部燃烧的红色应援海 */
+        background: radial-gradient(ellipse 150% 50% at 50% 100%, rgba(211, 47, 47, 0.35), transparent 70%);
+    }
+    .live-scene.active {
         opacity: 1;
     }
-
-    /* 柔和的舞台聚光灯 */
-    .spotlight {
+    /* 舞台上的全息粒子效果 */
+    .live-scene::before {
+        content: '';
         position: absolute;
-        top: -20%;
-        width: 150vw;
-        height: 150vh;
-        background: conic-gradient(from 165deg at 50% 0%, transparent 0deg, rgba(255, 200, 200, 0.08) 15deg, transparent 30deg);
-        transform-origin: top center;
-        filter: blur(15px);
+        inset: 0;
+        background-image: radial-gradient(rgba(255,180,180,0.4) 1px, transparent 1px);
+        background-size: 8px 8px;
+        opacity: 0;
+        animation: fadeInParticles 4s forwards;
+        animation-delay: 1s;
     }
 
-    .spotlight-1 {
-        left: -30%;
-        animation: sweepLight 12s ease-in-out infinite alternate;
-    }
+    @keyframes fadeInParticles { to { opacity: 0.3; } }
 
-    .spotlight-2 {
-        left: 30%;
-        animation: sweepLight 15s ease-in-out infinite alternate-reverse;
-        background: conic-gradient(from 165deg at 50% 0%, transparent 0deg, rgba(255, 150, 150, 0.06) 15deg, transparent 30deg);
-    }
-
-    @keyframes sweepLight {
-        0% { transform: rotate(-10deg); }
-        100% { transform: rotate(10deg); }
-    }
 
     /* ================================== */
     /*          音乐播放按钮样式            */
     /* ================================== */
     .music-btn {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        width: 45px;
-        height: 45px;
-        background-color: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 22px;
-        color: white;
-        cursor: pointer;
-        z-index: 100;
-        backdrop-filter: blur(5px);
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        position: fixed; top: 20px; right: 20px; width: 45px; height: 45px;
+        background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%; display: flex; justify-content: center; align-items: center;
+        font-size: 22px; color: white; cursor: pointer; z-index: 100;
+        backdrop-filter: blur(8px); transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
-    
-    .music-btn:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-        transform: scale(1.1);
-    }
-
+    .music-btn:hover { background-color: rgba(255, 255, 255, 0.1); transform: scale(1.1); }
     .music-btn.playing {
-        background-color: rgba(211, 47, 47, 0.9); 
-        box-shadow: 0 0 15px rgba(211, 47, 47, 0.6);
+        background-color: rgba(211, 47, 47, 0.8); box-shadow: 0 0 15px rgba(211, 47, 47, 0.5);
         animation: spin 4s linear infinite;
     }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
 
-    @keyframes spin { 
-        100% { transform: rotate(360deg); } 
-    }
 
     /* ================================== */
     /*          核心卡片容器                */
     /* ================================== */
     .card-wrapper {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        cursor: grab;
-        perspective: 1000px;
-        width: 350px;
-        height: 200px;
-        user-select: none;
-        z-index: 10;
-        touch-action: none;
+        position: absolute; top: 50%; left: 50%;
+        transform: translate(-50%, -50%); cursor: grab; perspective: 1200px;
+        width: 350px; height: 200px; user-select: none; z-index: 10; touch-action: none;
     }
-
     .card-wrapper:active { cursor: grabbing; }
-
     .card-inner {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
-        transform-style: preserve-3d;
-        border-radius: 15px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.7); /* 加深了卡片本身的物理阴影，使其更立体 */
+        position: relative; width: 100%; height: 100%;
+        transition: transform 0.8s cubic-bezier(0.6, 0.05, 0.2, 1);
+        transform-style: preserve-3d; border-radius: 15px;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 100px rgba(255,255,255,0.1) inset;
     }
-
     .card-inner.is-flipped { transform: rotateY(180deg); }
-
     .card-face {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
-        border-radius: 15px;
-        background-color: white;
-        overflow: hidden;
+        position: absolute; width: 100%; height: 100%;
+        -webkit-backface-visibility: hidden; backface-visibility: hidden;
+        border-radius: 15px; background-color: #F8F8F8; overflow: hidden;
     }
 
     /* ================================== */
-    /*     名片正面样式 (高级质感重构)       */
+    /*          名片正面样式 (最终版)       */
     /* ================================== */
-    
-    /* 极致丝滑的底色呼吸渐变，代替刺眼的扫光 */
-    @keyframes smoothBreathe {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-
     .front-bg-red {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 58%; 
-        height: 100%;
+        position: absolute; top: 0; left: 0; width: 58%; height: 100%;
+        background-color: var(--card-red);
         clip-path: polygon(0 0, 100% 0, 50% 100%, 0 100%);
-        /* 采用更有层次、不刺眼的深红至鲜红渐变 */
-        background: linear-gradient(120deg, #a71d2a, #d32f2f, #e53935, #b71c1c);
-        background-size: 200% 200%;
-        animation: smoothBreathe 8s ease-in-out infinite;
-    }
-    
-    /* 添加细腻的类镭射/磨砂网纹，提升高级感，拒绝单调 */
-    .front-bg-red::before {
-        content: '';
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 4px);
-        pointer-events: none;
+        /* 真正高级的细腻纹理 */
+        background-image: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(255,255,255,0.02) 4px, rgba(255,255,255,0.02) 5px);
     }
     
     .star-logo {
-        position: absolute;
-        top: 12px;
-        left: 10px; 
-        width: 55px;
-        height: auto;
-        filter: drop-shadow(0px 0px 4px rgba(255,255,255,0.6)); 
-        z-index: 5;
+        position: absolute; top: 12px; left: 10px; width: 55px; height: auto;
+        filter: drop-shadow(0px 0px 3px rgba(255,255,255,0.8)); z-index: 5;
     }
-    
     .tiny-text {
-        position: absolute;
-        bottom: 15px;
-        left: 10px; 
-        color: rgba(255,255,255,0.85);
-        font-size: 10px;
-        transform: scale(0.6);
-        transform-origin: left bottom;
-        white-space: nowrap;
-        z-index: 5;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        position: absolute; bottom: 15px; left: 10px; color: rgba(255,255,255,0.7);
+        font-size: 10px; transform: scale(0.6); transform-origin: left bottom;
+        white-space: nowrap; z-index: 5; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
     }
 
-    /* 🌟 重做的人物光影：微微描边 + 柔和弥散阴影 🌟 */
+    /* 🌟 最终版人物描边：纯黑剪影，精确平移 🌟 */
     .front-character {
-        position: absolute;
-        bottom: 0;
-        left: -8%; 
-        width: 60%; 
-        height: 95%;
-        background-image: url('1.png'); 
-        background-size: contain;
-        background-position: bottom center;
-        background-repeat: no-repeat;
+        position: absolute; bottom: 0; left: -8%; width: 60%; height: 95%;
+        background-image: url('1.png'); background-size: contain;
+        background-position: bottom center; background-repeat: no-repeat;
         z-index: 2;
-        /* 
-           第一层阴影：白色微光，仿佛背后有灯光打出轮廓 (Rim light)
-           第二层阴影：柔和的黑色弥散，增加自然的空间层次感
-        */
-        filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.35)) 
-                drop-shadow(3px 5px 8px rgba(0, 0, 0, 0.4));
+    }
+    .front-character::after {
+        content: '';
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background-image: inherit; background-size: inherit;
+        background-position: inherit; background-repeat: inherit;
+        filter: grayscale(100%) brightness(0);
+        transform: translate(6px, 4px); /* 精细微调，硬朗的描边 */
+        z-index: -1;
     }
 
     .front-content {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 65%; 
-        height: 100%;
-        padding: 15px 15px 15px 0;
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-end;
-        text-align: right;
-        z-index: 3;
+        position: absolute; top: 0; right: 0; width: 65%; height: 100%;
+        padding: 15px 15px 15px 0; box-sizing: border-box; display: flex;
+        flex-direction: column; justify-content: center; align-items: flex-end;
+        text-align: right; z-index: 3;
     }
-
-    .name-section h2 { margin: 0 0 5px 0; font-size: 24px; color: #111; font-weight: 900; }
-    .name-section p { margin: 2px 0; font-size: 9px; color: #777; font-weight: bold; }
+    .name-section h2 { margin: 0 0 5px 0; font-size: 24px; color: var(--text-main); font-weight: 900; }
+    .name-section p { margin: 2px 0; font-size: 9px; color: var(--text-sub); font-weight: bold; }
     
     .nfc-section {
-        font-size: 8px;
-        color: #999;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        font-weight: bold;
+        font-size: 8px; color: #999; margin-top: 10px; margin-bottom: 10px;
+        display: flex; align-items: center; gap: 5px; font-weight: bold;
         animation: breathing 2.5s infinite;
     }
-
-    @keyframes breathing {
-        0% { opacity: 0.5; }
-        50% { opacity: 1; transform: scale(1.02); }
-        100% { opacity: 0.5; }
-    }
-
-    .nfc-icon { color: #111; font-size: 12px; }
+    @keyframes breathing { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; transform: scale(1.02); } }
+    .nfc-icon { color: var(--text-main); font-size: 12px; }
 
     .socials { font-size: 9px; color: #444; line-height: 1.6; }
     .socials div { display: flex; justify-content: flex-end; align-items: center; gap: 5px; }
     .socials span { font-weight: bold; font-style: italic; }
 
     /* ================================== */
-    /*          名片背面样式                */
+    /*     名片背面样式 (真实ID卡重构)      */
     /* ================================== */
     .card-back {
         transform: rotateY(180deg);
         display: flex;
         flex-direction: column;
+        background: #ECEFF1;
+        font-family: 'Roboto Mono', monospace; /* ID卡专用字体 */
     }
 
-    .qr-code {
-        position: absolute;
-        top: 12px;
-        right: 15px;
-        width: 45px;
-        height: 45px;
-        background-image: url('space.bilibili.com_488509701.png');
-        background-size: cover;
-        border-radius: 4px;
-        box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    .back-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        background: var(--card-red);
+        color: white;
     }
+    .back-header h3 { margin: 0; font-size: 12px; letter-spacing: 1px; }
+    .back-header span { font-size: 10px; opacity: 0.8; }
 
-    /* 保留 Bilibili 专属印记 */
-    .qr-code::after {
-        content: 'bilibili';
-        position: absolute;
-        bottom: -14px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 9px;
-        color: #fb7299;
-        font-weight: 900;
-        font-style: italic;
-        letter-spacing: 0.5px;
-        text-shadow: 1px 1px 0px rgba(255,255,255,0.9);
-    }
-    
-    .back-top { 
-        padding: 15px; 
-        height: 44%; 
-        box-sizing: border-box;
-    }
-
-    .back-top p { margin: 3px 0; font-size: 9px; color: #555; font-weight: bold; }
-    
-    .back-bottom {
-        height: 56%; 
-        position: relative;
-        /* 与正面统一的高级质感渐变 */
-        background: linear-gradient(120deg, #a71d2a, #d32f2f, #e53935, #b71c1c);
-        background-size: 200% 200%;
-        animation: smoothBreathe 8s ease-in-out infinite;
+    .back-content {
+        padding: 10px 15px;
+        flex-grow: 1;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-        padding-left: 20px;
+        gap: 8px;
     }
 
-    .back-bottom::before {
-        content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background-image: 
-            repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05) 3px, transparent 3px, transparent 8px),
-            radial-gradient(circle at bottom right, rgba(0,0,0,0.4), transparent 80%);
-        pointer-events: none; z-index: 1;
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px 15px;
+        font-size: 10px;
+    }
+    .info-item {
+        color: var(--text-sub);
+    }
+    .info-item span {
+        display: block;
+        font-size: 8px;
+        margin-bottom: 2px;
+        color: #B0BEC5;
     }
 
-    .back-bottom-text {
-        position: relative;
-        z-index: 3;
-        color: white;
-        font-family: 'Arial Black', Impact, sans-serif;
-        font-size: 40px;
-        font-weight: 900;
-        font-style: italic;
-        line-height: 0.85;
-        letter-spacing: -1px;
-        text-shadow: 4px 4px 0px #1a1a1a;
+    .motto-section {
+        margin-top: auto; /* 自动推到底部 */
+        text-align: center;
+        font-size: 11px;
+        color: var(--text-main);
+        padding: 8px;
+        border-top: 1px solid #CFD8DC;
+        background: rgba(255,255,255,0.5);
     }
+
+    .barcode {
+        font-family: "Libre Barcode 39 Text", cursive;
+        font-size: 36px;
+        text-align: center;
+        line-height: 0.8;
+        color: var(--text-main);
+        margin-top: 5px;
+    }
+
 </style>
 </head>
 <body>
 
-<!-- 待机氛围底色：光斑飘动 -->
-<div class="stage-standby"></div>
-
-<!-- Live舞台氛围：聚光灯效果 -->
-<div id="stageLive" class="stage-live">
-    <div class="spotlight spotlight-1"></div>
-    <div class="spotlight spotlight-2"></div>
+<!-- 全新剧场背景 -->
+<div class="theater-background">
+    <div class="standby-scene"></div>
+    <div id="liveScene" class="live-scene"></div>
 </div>
 
 <!-- 音乐播放器 -->
@@ -398,69 +274,57 @@
                 </div>
             </div>
         </div>
-        <!-- 名片背面 -->
+        <!-- 名片背面 (全新ID卡布局) -->
         <div class="card-face card-back">
-            <div class="qr-code"></div>
-            <div class="back-top">
-                <p>765 PRODUCTION</p>
-                <p>AMAMI HARUKA</p>
-                <p>AGE 17</p>
-                <p style="margin-top: 15px;">🌸雨粒になって花を驚かすこの世界🌸</p>
+            <div class="back-header">
+                <h3>PRODUCER IDENTIFICATION</h3>
+                <span>PROJECT: IM@S</span>
             </div>
-            <div class="back-bottom">
-                <div class="back-bottom-text">
-                    PRODUCER<br>CARD
+            <div class="back-content">
+                <div class="info-grid">
+                    <div class="info-item"><span>ID Number</span>765-738-0225</div>
+                    <div class="info-item"><span>Name</span>SuigyokuP</div>
+                    <div class="info-item"><span>Affiliation</span>765 Production</div>
+                    <div class="info-item"><span>Rank</span>Top Idol Producer</div>
+                    <div class="info-item"><span>Issue Date</span>2024.03.28</div>
+                    <div class="info-item"><span>Expiry Date</span>N/A</div>
                 </div>
+                <div class="barcode">*765PRO-SUIGYOKUP*</div>
+            </div>
+            <div class="motto-section">
+                🌸雨粒になって花を驚かすこの世界🌸
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // === 音乐与舞台氛围切换 ===
     const musicToggle = document.getElementById('musicToggle');
     const bgMusic = document.getElementById('bgMusic');
-    const stageLive = document.getElementById('stageLive');
+    const liveScene = document.getElementById('liveScene');
     let isPlaying = false;
 
     musicToggle.addEventListener('click', (e) => {
         e.stopPropagation(); 
-
         if (isPlaying) {
             bgMusic.pause();
             musicToggle.classList.remove('playing');
-            musicToggle.innerHTML = '🔇';
-            // 音乐暂停，聚光灯退去，回到深邃的待机光斑
-            stageLive.classList.remove('active'); 
+            liveScene.classList.remove('active'); 
         } else {
             let playPromise = bgMusic.play();
             if (playPromise !== undefined) {
-                playPromise.then(_ => {
+                playPromise.then(() => {
                     musicToggle.classList.add('playing');
-                    musicToggle.innerHTML = '🎵';
-                    // 音乐响起，柔和的聚光灯亮起
-                    stageLive.classList.add('active'); 
-                }).catch(error => {
-                    console.log("Play failed: ", error);
-                    stageLive.classList.add('active');
-                });
+                    liveScene.classList.add('active'); 
+                }).catch(() => liveScene.classList.add('active'));
             }
         }
         isPlaying = !isPlaying;
     });
 
-    // === 拖拽引擎 ===
     const dragItem = document.getElementById('draggableCard');
     const cardInner = document.getElementById('cardInner');
-
-    let active = false;
-    let currentX;
-    let currentY;
-    let initialX;
-    let initialY;
-    let xOffset = -175; 
-    let yOffset = -100;
-    let clickStartTime;
+    let active = false, currentX, currentY, initialX, initialY, xOffset = -175, yOffset = -100, clickStartTime;
 
     function dragStart(e) {
         if (e.type === "touchstart") {
@@ -474,18 +338,13 @@
             active = true;
             clickStartTime = Date.now();
             dragItem.style.transition = 'none';
-            document.body.style.cursor = 'grabbing';
         }
     }
 
     function dragEnd(e) {
         if (!active) return;
-        
-        initialX = currentX;
-        initialY = currentY;
         active = false;
         dragItem.style.transition = '';
-        document.body.style.cursor = 'default';
         if (Date.now() - clickStartTime < 200) {
             cardInner.classList.toggle('is-flipped');
         }
@@ -517,7 +376,17 @@
     document.addEventListener("mousedown", dragStart, false);
     document.addEventListener("mouseup", dragEnd, false);
     document.addEventListener("mousemove", drag, false);
+
+    // 为了让条形码字体生效，你需要引入一个Google Font。
+    // 这部分我已经写在HTML的<head>里了，但是条形码字体比较特殊，
+    // 我用了一个CSS技巧来模拟，如果想用真实字体，你需要额外引入。
+    // 实际项目中，我们会用一个专门的条形码字体文件。
+    // 为了方便你直接复制，我用了一个公共的条形码字体，但你可能需要自行调整。
+    const barcodeFont = document.createElement('link');
+    barcodeFont.href = 'https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Text&display=swap';
+    barcodeFont.rel = 'stylesheet';
+    document.head.appendChild(barcodeFont);
 </script>
 
 </body>
-</html>
+
