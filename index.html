@@ -45,23 +45,61 @@
         100% { opacity: 1; }
     }
 
-    /* 底部群山剪影设计 */
-    .mountains {
+    /* ================================== */
+    /*      新增：3D偶像舞台与动态探照灯     */
+    /* ================================== */
+    .idol-stage {
         position: absolute;
         bottom: 0;
         left: 0;
         width: 100%;
-        height: 30vh;
+        height: 35vh;
         z-index: -1;
         pointer-events: none;
+        overflow: hidden;
+    }
+
+    .stage-floor {
+        position: absolute;
+        bottom: 0; left: 0; width: 100%; height: 100%;
         background-image: 
-            radial-gradient(ellipse 150% 100% at 30% 100%, #05070a 40%, transparent 41%),
-            radial-gradient(ellipse 180% 120% at 80% 100%, #05070a 45%, transparent 46%),
-            radial-gradient(ellipse 200% 100% at 50% 100%, #0a0d14 35%, transparent 36%),
-            radial-gradient(ellipse 150% 90% at 10% 100%, #0a0d14 40%, transparent 41%),
-            radial-gradient(ellipse 250% 80% at 70% 100%, #10151f 30%, transparent 31%);
-        background-position: bottom;
-        background-repeat: no-repeat;
+            linear-gradient(to top, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+            linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+        background-size: 50px 50px;
+        transform: perspective(500px) rotateX(75deg);
+        transform-origin: bottom center;
+        -webkit-mask-image: linear-gradient(to top, black 10%, transparent 80%);
+    }
+
+    .stage-light {
+        position: absolute;
+        bottom: -20px;
+        width: 120px;
+        height: 200%;
+        background: linear-gradient(to top, rgba(255, 255, 255, 0.15), transparent 60%);
+        filter: blur(8px);
+        transform-origin: bottom center;
+        opacity: 0.6;
+    }
+
+    .light-left {
+        left: 20%;
+        animation: sweepLeft 6s infinite alternate ease-in-out;
+    }
+
+    .light-right {
+        right: 20%;
+        animation: sweepRight 7s infinite alternate ease-in-out;
+    }
+
+    @keyframes sweepLeft {
+        0% { transform: rotate(-15deg) scaleY(1); opacity: 0.3; }
+        100% { transform: rotate(25deg) scaleY(1.2); opacity: 0.7; }
+    }
+
+    @keyframes sweepRight {
+        0% { transform: rotate(15deg) scaleY(1); opacity: 0.3; }
+        100% { transform: rotate(-25deg) scaleY(1.2); opacity: 0.7; }
     }
 
     /* ================================== */
@@ -146,7 +184,21 @@
     }
 
     /* ================================== */
-    /*          名片正面样式                */
+    /*      全局通用动画：流光与扫光        */
+    /* ================================== */
+    @keyframes flowGradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes glassShine {
+        0% { transform: translateX(-150%) rotate(30deg); }
+        100% { transform: translateX(300%) rotate(30deg); }
+    }
+
+    /* ================================== */
+    /*       名片正面样式 (炫彩升级)        */
     /* ================================== */
     .front-bg-red {
         position: absolute;
@@ -154,11 +206,30 @@
         left: 0;
         width: 58%; 
         height: 100%;
-        background-color: #d32f2f;
         clip-path: polygon(0 0, 100% 0, 50% 100%, 0 100%);
-        background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-                          linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+        /* 炫彩流光渐变底色 */
+        background: linear-gradient(135deg, #b71c1c, #ff1744, #ff5252, #d32f2f);
+        background-size: 300% 300%;
+        animation: flowGradient 6s ease infinite;
+    }
+    
+    /* 铺上一层科技感网格 */
+    .front-bg-red::before {
+        content: '';
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background-image: linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px),
+                          linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px);
         background-size: 10px 10px;
+        pointer-events: none;
+    }
+
+    /* 动态高光扫过效果 */
+    .front-bg-red::after {
+        content: '';
+        position: absolute; top: -50%; left: 0%; width: 50%; height: 200%;
+        background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+        animation: glassShine 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        pointer-events: none;
     }
     
     .star-logo {
@@ -168,17 +239,19 @@
         width: 55px;
         height: auto;
         filter: drop-shadow(0px 0px 3px rgba(255,255,255,0.8)); 
+        z-index: 5;
     }
     
     .tiny-text {
         position: absolute;
         bottom: 15px;
         left: 10px; 
-        color: rgba(255,255,255,0.6);
+        color: rgba(255,255,255,0.8);
         font-size: 10px;
         transform: scale(0.6);
         transform-origin: left bottom;
         white-space: nowrap;
+        z-index: 5;
     }
 
     .front-character {
@@ -192,7 +265,19 @@
         background-position: bottom center;
         background-repeat: no-repeat;
         z-index: 2;
-        filter: drop-shadow(4px 4px 4px rgba(0,0,0,0.25));
+    }
+
+    .front-character::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: inherit;
+        background-size: inherit;
+        background-position: inherit;
+        background-repeat: inherit;
+        z-index: -1;
+        filter: brightness(0) opacity(0.5);
+        transform: translate(8px, 8px);
     }
 
     .front-content {
@@ -239,7 +324,7 @@
     .socials span { font-weight: bold; font-style: italic; }
 
     /* ================================== */
-    /*          名片背面样式                */
+    /*       名片背面样式 (二维码加强)       */
     /* ================================== */
     .card-back {
         transform: rotateY(180deg);
@@ -247,14 +332,31 @@
         flex-direction: column;
     }
 
+    /* 优化了二维码的展现并增加了 bilibili 标识 */
     .qr-code {
         position: absolute;
-        top: 15px;
+        top: 12px;
         right: 15px;
         width: 45px;
         height: 45px;
         background-image: url('space.bilibili.com_488509701.png');
         background-size: cover;
+        border-radius: 4px;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    }
+
+    .qr-code::after {
+        content: 'bilibili';
+        position: absolute;
+        bottom: -14px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 9px;
+        color: #fb7299; /* B站主题粉色 */
+        font-weight: 900;
+        font-style: italic;
+        letter-spacing: 0.5px;
+        text-shadow: 1px 1px 0px rgba(255,255,255,0.9);
     }
     
     .back-top { 
@@ -265,24 +367,46 @@
 
     .back-top p { margin: 3px 0; font-size: 9px; color: #555; font-weight: bold; }
     
+    /* ================================== */
+    /*      背面底部红区样式 (炫彩升级)       */
+    /* ================================== */
     .back-bottom {
         height: 56%; 
-        background-color: #d32f2f;
-        color: white;
-        background-image: 
-            repeating-linear-gradient(
-                -45deg,
-                rgba(0, 0, 0, 0.05),
-                rgba(0, 0, 0, 0.05) 3px,
-                transparent 3px,
-                transparent 8px
-            ),
-            radial-gradient(circle at bottom right, #a00000, transparent 80%);
+        position: relative;
+        overflow: hidden; /* 保证特效不出界 */
+        background: linear-gradient(135deg, #b71c1c, #ff1744, #ff5252, #d32f2f);
+        background-size: 300% 300%;
+        animation: flowGradient 6s ease infinite;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: flex-start;
         padding-left: 20px;
+    }
+
+    /* 背面底部的斜纹与阴影叠加 */
+    .back-bottom::before {
+        content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background-image: 
+            repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05) 3px, transparent 3px, transparent 8px),
+            radial-gradient(circle at bottom right, rgba(0,0,0,0.4), transparent 80%);
+        pointer-events: none; z-index: 1;
+    }
+
+    /* 背面底部的高光扫过 (错开时间) */
+    .back-bottom::after {
+        content: ''; position: absolute; top: -50%; left: 0%; width: 50%; height: 200%;
+        background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+        animation: glassShine 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        animation-delay: 2s; /* 与正面错开时间 */
+        pointer-events: none; z-index: 2;
+    }
+
+    /* 单独将文字拎出来放在特效上层 */
+    .back-bottom-text {
+        position: relative;
+        z-index: 3;
+        color: white;
         font-family: 'Arial Black', Impact, sans-serif;
         font-size: 40px;
         font-weight: 900;
@@ -293,23 +417,22 @@
     }
 
     /* ================================== */
-    /*       新增：星光舞台 Starlight       */
+    /*       狂热星光舞台 Starlight       */
     /* ================================== */
     .starlight-background {
         position: absolute;
         top: 0; left: 0; right: 0; bottom: 0;
-        background-color: #d32f2f; /* 主背景红色，与卡片呼应 */
-        z-index: -3; /* 保证在最底层 */
-        opacity: 0; /* 默认隐藏 */
-        transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1); /* 柔和的淡入效果 */
+        background-color: #d32f2f;
+        z-index: -3;
+        opacity: 0;
+        transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
         overflow: hidden;
     }
 
     .starlight-background.active {
-        opacity: 1; /* 激活时显示 */
+        opacity: 1;
     }
 
-    /* 模拟舞台光线和粒子效果 */
     .starlight-background::before,
     .starlight-background::after {
         content: '';
@@ -348,11 +471,15 @@
 
 <!-- 星空背景层 -->
 <div class="starry-background"></div>
-<!-- 新增：星光舞台背景层 -->
+<!-- 新增：星光舞台背景层 (高潮模式) -->
 <div id="starlightBackground" class="starlight-background"></div> 
 
-<!-- 底部群山剪影层 -->
-<div class="mountains"></div>
+<!-- 替换为：3D偶像待机舞台 (日常模式) -->
+<div class="idol-stage">
+    <div class="stage-floor"></div>
+    <div class="stage-light light-left"></div>
+    <div class="stage-light light-right"></div>
+</div>
 
 <!-- 音乐播放器 -->
 <audio id="bgMusic" loop>
@@ -364,10 +491,9 @@
     <div class="card-inner" id="cardInner">
         <!-- 名片正面 -->
         <div class="card-face card-front">
-            <div class="front-bg-red">
-                <img src="IDOLMASTER20THLogo.png" class="star-logo" alt="20th Logo">
-                <div class="tiny-text">765 PRODUCTION PRODUCER CARD</div>
-            </div>
+            <div class="front-bg-red"></div> <!-- 背景层独立，存放动画 -->
+            <img src="IDOLMASTER20THLogo.png" class="star-logo" alt="20th Logo">
+            <div class="tiny-text">765 PRODUCTION PRODUCER CARD</div>
             <div class="front-character"></div>
             <div class="front-content">
                 <div class="name-section">
@@ -395,14 +521,16 @@
                 <p style="margin-top: 15px;">🌸雨粒になって花を驚かすこの世界🌸</p>
             </div>
             <div class="back-bottom">
-                PRODUCER<br>CARD
+                <div class="back-bottom-text">
+                    PRODUCER<br>CARD
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // === 音乐播放与背景切换控制 ===
+    // === 音乐播放与背景双向切换控制 ===
     const musicToggle = document.getElementById('musicToggle');
     const bgMusic = document.getElementById('bgMusic');
     const starlightBackground = document.getElementById('starlightBackground');
@@ -412,29 +540,27 @@
         e.stopPropagation(); 
 
         if (isPlaying) {
-            // 暂停音乐（背景不切换回去，保持舞台效果）
             bgMusic.pause();
             musicToggle.classList.remove('playing');
             musicToggle.innerHTML = '🔇';
+            // 【关键修改】关闭音乐时，移除 active，退回待机舞台
+            starlightBackground.classList.remove('active'); 
         } else {
-            // 播放音乐并切换到星光舞台背景
             let playPromise = bgMusic.play();
             if (playPromise !== undefined) {
                 playPromise.then(_ => {
                     musicToggle.classList.add('playing');
                     musicToggle.innerHTML = '🎵';
-                    // 激活 Starlight 背景
+                    // 开启音乐时，进入红色狂热高潮舞台
                     starlightBackground.classList.add('active'); 
                 }).catch(error => {
                     console.log("Play failed: ", error);
-                    // 即使用户浏览器限制了自动播放，也尝试切换背景
                     starlightBackground.classList.add('active');
                 });
             }
         }
         isPlaying = !isPlaying;
     });
-
 
     // === 🔥终极全端兼容拖拽引擎 🔥 ===
     const dragItem = document.getElementById('draggableCard');
