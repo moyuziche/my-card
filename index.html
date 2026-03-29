@@ -12,167 +12,176 @@
         height: 100vh;
         width: 100vw;
         overflow: hidden;
-        background: radial-gradient(ellipse at center, #1f1833 0%, #0c081f 100%);
+        background: radial-gradient(ellipse at bottom, #2a1b3d 0%, #0f0a1f 100%);
         position: relative;
     }
 
-    /* 伪3D舞台容器 */
+    /* ==================== 严格参照偶像演唱会舞台重做 ==================== */
     .stage-wrapper {
         position: absolute;
         inset: 0;
         z-index: -2;
-        perspective: 1400px;
-        perspective-origin: 50% 25%;
+        perspective: 1600px;
+        perspective-origin: 50% 20%;
         pointer-events: none;
     }
 
-    /* 顶部灯架 */
+    /* 顶部灯架（真实演唱会结构） */
     .stage-top {
         position: absolute;
-        top: -5%;
+        top: -8%;
         left: 0;
         width: 100%;
-        height: 32%;
-        background: linear-gradient(#2a233f, #16122b);
-        box-shadow: 0 40px 80px rgba(0,0,0,0.85);
-        transform: rotateX(22deg);
+        height: 35%;
+        background: linear-gradient(#1f1833, #0f0c22);
+        box-shadow: 0 50px 90px rgba(0,0,0,0.9);
+        transform: rotateX(26deg);
         transform-origin: top center;
-        z-index: 2;
+        z-index: 3;
         display: flex;
         align-items: flex-end;
         justify-content: center;
-        gap: 5.5%;
-        padding-bottom: 8%;
+        padding-bottom: 12%;
+        overflow: hidden;
     }
 
-    /* 聚光灯 - 左右对称分布 */
-    .spotlight {
-        position: relative;
-        width: 68px;
-        height: 260%;
-        background: radial-gradient(ellipse at 50% 10%, rgba(255,245,210,0.75) 0%, rgba(255,200,255,0.45) 35%, transparent 68%);
-        filter: blur(14px);
-        opacity: 0.48;
-        transform-origin: top center;
-        animation: spotlight-sway 9s infinite ease-in-out;
-        z-index: 3;
-    }
-    .spotlight:nth-child(1) { animation-delay: 0s; transform: rotate(-19deg); }
-    .spotlight:nth-child(2) { animation-delay: 1.4s; transform: rotate(-7deg); background: radial-gradient(ellipse at 50% 10%, rgba(255,180,255,0.78) 0%, transparent 65%); }
-    .spotlight:nth-child(3) { animation-delay: 0.5s; transform: rotate(11deg); }
-    .spotlight:nth-child(4) { animation-delay: 2.2s; transform: rotate(-13deg); background: radial-gradient(ellipse at 50% 10%, rgba(180,255,255,0.68) 0%, transparent 70%); }
-    .spotlight:nth-child(5) { animation-delay: 0.8s; transform: rotate(15deg); }
-    .spotlight:nth-child(6) { animation-delay: 1.9s; transform: rotate(-20deg); background: radial-gradient(ellipse at 50% 10%, rgba(255,255,180,0.65) 0%, transparent 68%); }
-    .spotlight:nth-child(7) { animation-delay: 0.3s; transform: rotate(8deg); }
-
-    @keyframes spotlight-sway {
-        0%, 100% { transform: rotate(var(--rot, -19deg)) scaleY(1); opacity: 0.42; }
-        50% { transform: rotate(calc(var(--rot, -19deg) * 1.55)) scaleY(1.17); opacity: 0.81; }
-    }
-
-    body.music-active .spotlight {
-        filter: blur(11px);
-        opacity: 0.78;
-        animation-duration: 4.8s;
-    }
-
-    /* 底部舞台地板 */
-    .stage-floor {
+    /* 垂直光柱 - 严格模仿你参考图里的高耸光束 */
+    .vertical-beams {
         position: absolute;
-        bottom: -8%;
+        top: 0;
         left: 0;
         width: 100%;
-        height: 58%;
-        background: linear-gradient(to top, #110d24 0%, #1f1a35 38%, #2a2440 75%, transparent 92%);
-        box-shadow: 0 0 140px rgba(255, 210, 255, 0.45), inset 0 80px 100px rgba(255,255,255,0.18);
-        transform: rotateX(62deg);
+        height: 100%;
+        z-index: 2;
+        pointer-events: none;
+    }
+    .vertical-beam {
+        position: absolute;
+        top: -10%;
+        width: 14px;
+        height: 110%;
+        background: linear-gradient(transparent, rgba(255, 240, 200, 0.75), transparent);
+        filter: blur(18px);
+        opacity: 0.55;
+        animation: beam-pulse 3.8s infinite alternate ease-in-out;
+        transform-origin: top center;
+    }
+    .vertical-beam:nth-child(1) { left: 8%;  animation-delay: 0s;   background: linear-gradient(transparent, rgba(255,180,255,0.85), transparent); }
+    .vertical-beam:nth-child(2) { left: 18%; animation-delay: 0.7s; }
+    .vertical-beam:nth-child(3) { left: 29%; animation-delay: 1.4s;  background: linear-gradient(transparent, rgba(180,255,255,0.8), transparent); }
+    .vertical-beam:nth-child(4) { left: 41%; animation-delay: 0.3s; }
+    .vertical-beam:nth-child(5) { left: 53%; animation-delay: 1.1s; }
+    .vertical-beam:nth-child(6) { left: 67%; animation-delay: 0.9s;  background: linear-gradient(transparent, rgba(255,255,180,0.75), transparent); }
+    .vertical-beam:nth-child(7) { left: 79%; animation-delay: 0.5s; }
+    .vertical-beam:nth-child(8) { left: 91%; animation-delay: 1.6s; }
+
+    @keyframes beam-pulse {
+        0%, 100% { opacity: 0.45; transform: scaleY(0.95) rotate(-2deg); }
+        50%      { opacity: 0.92; transform: scaleY(1.12) rotate(2deg); }
+    }
+
+    /* 音乐开启时光柱更亮更强 */
+    body.music-active .vertical-beam {
+        filter: blur(12px);
+        opacity: 0.9;
+        animation-duration: 2.4s;
+    }
+
+    /* 底部反光舞台地板（完全参照参考图的反光蓝紫地板） */
+    .stage-floor {
+        position: absolute;
+        bottom: -12%;
+        left: 0;
+        width: 100%;
+        height: 62%;
+        background: linear-gradient(to top, #0f0a22 0%, #1a1433 42%, #2a1f44 78%, transparent 95%);
+        box-shadow: 
+            0 0 160px rgba(180, 220, 255, 0.6),
+            inset 0 120px 140px rgba(255,255,255,0.25);
+        transform: rotateX(64deg);
         transform-origin: bottom center;
         z-index: 1;
         overflow: hidden;
     }
 
+    /* 地板透视反光网格 + 高光 */
     .stage-floor::before {
         content: '';
         position: absolute;
         inset: 0;
-        background: repeating-linear-gradient(88deg, transparent 0px, transparent 32px, rgba(255,255,255,0.16) 33px, rgba(255,255,255,0.16) 34px);
-        opacity: 0.75;
+        background: repeating-linear-gradient(
+            82deg,
+            transparent 0px,
+            transparent 38px,
+            rgba(255,255,255,0.18) 39px,
+            rgba(255,255,255,0.18) 40px
+        );
+        opacity: 0.65;
     }
-
     .stage-floor::after {
         content: '';
         position: absolute;
-        bottom: 10%;
+        bottom: 15%;
         left: 50%;
         transform: translateX(-50%);
-        width: 65%;
-        height: 45%;
-        background: radial-gradient(ellipse at center, rgba(255,240,220,0.55) 0%, transparent 65%);
-        animation: floor-glow 7s infinite ease-in-out;
-        filter: blur(8px);
+        width: 78%;
+        height: 52%;
+        background: radial-gradient(ellipse at center, rgba(200,240,255,0.65) 0%, transparent 70%);
+        filter: blur(12px);
+        animation: floor-reflect 4s infinite ease-in-out;
     }
 
-    @keyframes floor-glow {
-        0%, 100% { opacity: 0.35; transform: translateX(-50%) scale(0.92); }
-        50% { opacity: 0.68; transform: translateX(-50%) scale(1.08); }
+    @keyframes floor-reflect {
+        0%, 100% { opacity: 0.4; transform: translateX(-50%) scale(0.95); }
+        50%      { opacity: 0.85; transform: translateX(-50%) scale(1.12); }
     }
 
     body.music-active .stage-floor {
-        box-shadow: 0 0 180px rgba(255, 210, 255, 0.75), inset 0 80px 100px rgba(255,255,255,0.38);
+        box-shadow: 0 0 220px rgba(180, 220, 255, 0.9), inset 0 120px 140px rgba(255,255,255,0.45);
     }
 
-    /* 新增：左右两侧应援棒（Glow Sticks） */
+    /* 左右应援棒（轻微，不会抢戏） */
     .cheer-sticks {
         position: absolute;
-        top: 0;
-        width: 100%;
-        height: 100%;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
         z-index: 4;
         pointer-events: none;
-        overflow: hidden;
     }
-
     .stick-group {
         position: absolute;
-        top: 18%;
-        width: 28px;
+        top: 22%;
+        width: 26px;
         display: flex;
         flex-direction: column;
-        gap: 42px;
-        animation: cheer-sway 3.8s infinite ease-in-out;
+        gap: 38px;
+        animation: cheer-sway 4s infinite ease-in-out;
     }
-
-    .left-sticks  { left: 6%; }
-    .right-sticks { right: 6%; animation-delay: 0.8s; }
+    .left-sticks  { left: 5%; }
+    .right-sticks { right: 5%; animation-delay: 1.2s; }
 
     .stick {
         width: 100%;
-        height: 68px;
-        background: linear-gradient(to bottom, #ff6be8, #a855f7, #67e8f9);
-        border-radius: 12px;
-        box-shadow: 0 0 18px #ff6be8, 0 0 28px #67e8f9;
-        opacity: 0.85;
-        animation: stick-glow 2.4s infinite alternate ease-in-out;
+        height: 62px;
+        background: linear-gradient(to bottom, #ff6be8, #67e8f9);
+        border-radius: 10px;
+        box-shadow: 0 0 22px #ff6be8, 0 0 32px #67e8f9;
+        opacity: 0.82;
+        animation: stick-glow 2.2s infinite alternate;
     }
-
-    .right-sticks .stick { background: linear-gradient(to bottom, #67e8f9, #a855f7, #ff6be8); box-shadow: 0 0 18px #67e8f9, 0 0 28px #ff6be8; }
+    .right-sticks .stick { background: linear-gradient(to bottom, #67e8f9, #ff6be8); }
 
     @keyframes cheer-sway {
-        0%, 100% { transform: rotate(-6deg); }
-        50% { transform: rotate(6deg); }
+        0%,100% { transform: rotate(-5deg); }
+        50%     { transform: rotate(5deg); }
     }
-
     @keyframes stick-glow {
-        from { opacity: 0.75; box-shadow: 0 0 14px #ff6be8; }
-        to   { opacity: 0.98; box-shadow: 0 0 26px #ff6be8, 0 0 38px #67e8f9; }
+        from { opacity: 0.78; }
+        to   { opacity: 0.98; }
     }
+    body.music-active .stick { animation-duration: 1.4s; }
 
-    body.music-active .stick {
-        animation-duration: 1.6s;
-        opacity: 0.95;
-    }
-
-    /* 音乐按钮和卡片样式（保持不变） */
+    /* 音乐按钮 */
     .music-btn {
         position: fixed; top: 20px; right: 20px; width: 45px; height: 45px;
         background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);
@@ -184,6 +193,7 @@
     .music-btn.playing { background-color: rgba(211,47,47,0.9); box-shadow: 0 0 15px rgba(211,47,47,0.6); animation: spin 4s linear infinite; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
 
+    /* 原卡片完全不变 */
     .card-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); cursor: grab; perspective: 1000px; width: 350px; height: 200px; user-select: none; z-index: 10; touch-action: none; }
     .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4,0.2,0.2,1); transform-style: preserve-3d; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
     .card-inner.is-flipped { transform: rotateY(180deg); }
@@ -212,33 +222,31 @@
 <body>
 
 <div class="stage-wrapper">
-    <!-- 顶部灯架（左右对称） -->
-    <div class="stage-top">
-        <div class="spotlight"></div>
-        <div class="spotlight"></div>
-        <div class="spotlight"></div>
-        <div class="spotlight"></div>
-        <div class="spotlight"></div>
-        <div class="spotlight"></div>
-        <div class="spotlight"></div>
+    <!-- 垂直光柱层（核心：完全参照你那张偶像舞台图） -->
+    <div class="vertical-beams">
+        <div class="vertical-beam"></div>
+        <div class="vertical-beam"></div>
+        <div class="vertical-beam"></div>
+        <div class="vertical-beam"></div>
+        <div class="vertical-beam"></div>
+        <div class="vertical-beam"></div>
+        <div class="vertical-beam"></div>
+        <div class="vertical-beam"></div>
     </div>
 
-    <!-- 底部地板 -->
+    <!-- 顶部灯架 -->
+    <div class="stage-top"></div>
+
+    <!-- 底部反光地板 -->
     <div class="stage-floor"></div>
 
     <!-- 左右应援棒 -->
     <div class="cheer-sticks">
         <div class="stick-group left-sticks">
-            <div class="stick"></div>
-            <div class="stick"></div>
-            <div class="stick"></div>
-            <div class="stick"></div>
+            <div class="stick"></div><div class="stick"></div><div class="stick"></div><div class="stick"></div>
         </div>
         <div class="stick-group right-sticks">
-            <div class="stick"></div>
-            <div class="stick"></div>
-            <div class="stick"></div>
-            <div class="stick"></div>
+            <div class="stick"></div><div class="stick"></div><div class="stick"></div><div class="stick"></div>
         </div>
     </div>
 </div>
@@ -249,9 +257,10 @@
 </audio>
 <div id="musicToggle" class="music-btn" title="播放/暂停音乐">🔇</div>
 
-<!-- 原名片（不变） -->
+<!-- 原名片（一点没动） -->
 <div class="card-wrapper" id="draggableCard">
     <div class="card-inner" id="cardInner">
+        <!-- 正面 -->
         <div class="card-face card-front">
             <div class="front-bg-red">
                 <img src="IDOLMASTER20THLogo.png" class="star-logo" alt="20th Logo">
@@ -275,6 +284,7 @@
             </div>
         </div>
 
+        <!-- 背面 -->
         <div class="card-face card-back">
             <div class="qr-code"></div>
             <div class="back-top">
@@ -315,7 +325,7 @@
         isPlaying = !isPlaying;
     });
 
-    // 卡片拖拽（原版）
+    // 卡片拖拽翻转（完全保留你最初的）
     const dragItem = document.getElementById('draggableCard');
     const cardInner = document.getElementById('cardInner');
     let active = false, currentX, currentY, initialX, initialY, xOffset = -175, yOffset = -100, clickStartTime;
@@ -334,14 +344,12 @@
             dragItem.style.transition = 'none';
         }
     }
-
     function dragEnd(e) {
         if (!active) return;
         initialX = currentX; initialY = currentY; active = false;
         dragItem.style.transition = '';
         if (Date.now() - clickStartTime < 200) cardInner.classList.toggle('is-flipped');
     }
-
     function drag(e) {
         if (!active) return;
         e.preventDefault();
