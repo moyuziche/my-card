@@ -16,7 +16,7 @@
         position: relative;
     }
 
-    /* ==================== 新增：动态舞台背景 ==================== */
+    /* ==================== 舞台背景 + 新增偶像元素 ==================== */
     #stageCanvas {
         position: absolute;
         top: 0; left: 0;
@@ -35,7 +35,7 @@
         pointer-events: none;
     }
 
-    /* 聚光灯束 */
+    /* 聚光灯束（保持原样） */
     .light-beams {
         position: absolute;
         top: 0; left: 0;
@@ -67,18 +67,86 @@
         50% { opacity: 0.85; transform: rotate(var(--rot, -25deg)) scaleY(1.15); }
     }
 
-    /* 原有音乐按钮、卡片样式保持不变（略微精简） */
-    .music-btn { position: fixed; top: 20px; right: 20px; width: 45px; height: 45px; background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; color: white; cursor: pointer; z-index: 100; backdrop-filter: blur(5px); transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    /* 新增：顶部演唱会横幅（紧凑偶像感） */
+    .live-header {
+        position: absolute;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 20;
+        background: rgba(20, 10, 40, 0.85);
+        color: #fff;
+        padding: 6px 24px;
+        border-radius: 50px;
+        font-size: 15px;
+        font-weight: 900;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        box-shadow: 0 0 25px rgba(255, 180, 255, 0.7);
+        backdrop-filter: blur(8px);
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation: header-pulse 3s infinite ease-in-out;
+    }
+    .live-header::before {
+        content: "★";
+        color: #ffd700;
+        animation: star-twinkle 1.2s infinite;
+    }
+    .live-header::after {
+        content: "★";
+        color: #ffd700;
+        animation: star-twinkle 1.2s infinite 0.6s;
+    }
+    @keyframes header-pulse {
+        0%,100% { transform: translateX(-50%) scale(1); }
+        50% { transform: translateX(-50%) scale(1.06); }
+    }
+    @keyframes star-twinkle {
+        0%,100% { opacity: 0.4; }
+        50% { opacity: 1; }
+    }
+
+    /* 新增：右上角“正在播放”条（音乐同步） */
+    #nowPlaying {
+        position: fixed;
+        top: 75px;
+        right: 80px;
+        z-index: 100;
+        background: rgba(211, 47, 47, 0.9);
+        color: white;
+        font-size: 13px;
+        padding: 6px 14px;
+        border-radius: 30px;
+        box-shadow: 0 4px 15px rgba(211,47,47,0.5);
+        display: none;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+        backdrop-filter: blur(6px);
+    }
+    #nowPlaying.show { display: flex; animation: nowPlayingPop 0.4s ease; }
+
+    /* 音乐按钮（保持） */
+    .music-btn { 
+        position: fixed; top: 20px; right: 20px; width: 45px; height: 45px; 
+        background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); 
+        border-radius: 50%; display: flex; justify-content: center; align-items: center; 
+        font-size: 22px; color: white; cursor: pointer; z-index: 101; 
+        backdrop-filter: blur(5px); transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+    }
     .music-btn:hover { background-color: rgba(255,255,255,0.2); transform: scale(1.1); }
     .music-btn.playing { background-color: rgba(211,47,47,0.9); box-shadow: 0 0 15px rgba(211,47,47,0.6); animation: spin 4s linear infinite; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
 
+    /* 卡片样式（完全不变） */
     .card-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); cursor: grab; perspective: 1000px; width: 350px; height: 200px; user-select: none; z-index: 10; touch-action: none; }
     .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4,0.2,0.2,1); transform-style: preserve-3d; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
     .card-inner.is-flipped { transform: rotateY(180deg); }
     .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 15px; background-color: white; overflow: hidden; }
 
-    /* 正面、背面样式保持不变 */
     .front-bg-red { position: absolute; top: 0; left: 0; width: 58%; height: 100%; background-color: #d32f2f; clip-path: polygon(0 0, 100% 0, 50% 100%, 0 100%); background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 10px 10px; }
     .star-logo { position: absolute; top: 12px; left: 10px; width: 55px; height: auto; filter: drop-shadow(0 0 3px rgba(255,255,255,0.8)); }
     .tiny-text { position: absolute; bottom: 15px; left: 10px; color: rgba(255,255,255,0.6); font-size: 10px; transform: scale(0.6); transform-origin: left bottom; white-space: nowrap; }
@@ -104,23 +172,35 @@
 <canvas id="stageCanvas"></canvas>
 <div class="stage-floor"></div>
 
-<!-- 聚光灯束层 -->
+<!-- 聚光灯 -->
 <div class="light-beams">
-    <div class="beam"></div>
-    <div class="beam"></div>
-    <div class="beam"></div>
-    <div class="beam"></div>
-    <div class="beam"></div>
-    <div class="beam"></div>
+    <div class="beam"></div><div class="beam"></div><div class="beam"></div>
+    <div class="beam"></div><div class="beam"></div><div class="beam"></div>
 </div>
 
-<!-- 音乐播放器 -->
+<!-- 新增：演唱会顶部横幅 -->
+<div class="live-header">
+    <span>765 PRODUCTION</span>
+    <span style="color:#ffd700; font-size:18px;">LIVE STAGE</span>
+    <span>20TH ANNIVERSARY</span>
+</div>
+
+<!-- 新增：正在播放条 -->
+<div id="nowPlaying">
+    <span style="font-size:18px;">♪</span>
+    <div>
+        <strong>天海春香 - 雨粒になって</strong><br>
+        <small>SuigyokuP Special Stage</small>
+    </div>
+</div>
+
+<!-- 音乐按钮 -->
 <audio id="bgMusic" loop>
     <source src="bgm.mp3" type="audio/mpeg">
 </audio>
 <div id="musicToggle" class="music-btn" title="播放/暂停音乐">🔇</div>
 
-<!-- 原有卡片 -->
+<!-- 卡片（保持原样） -->
 <div class="card-wrapper" id="draggableCard">
     <div class="card-inner" id="cardInner">
         <!-- 正面 -->
@@ -164,9 +244,10 @@
 </div>
 
 <script>
-    // === 音乐播放控制 + 舞台可视化 ===
+    // === 音乐 + 舞台可视化（已大幅增强） ===
     const musicToggle = document.getElementById('musicToggle');
     const bgMusic = document.getElementById('bgMusic');
+    const nowPlaying = document.getElementById('nowPlaying');
     let isPlaying = false;
     let audioContext, analyser, source, dataArray, bufferLength;
 
@@ -175,32 +256,50 @@
     let particles = [];
     let animationFrame;
 
+    // 新增：粒子类型（偶像感满满）
     class Particle {
         constructor() {
+            this.type = Math.random() < 0.6 ? 'star' : (Math.random() < 0.7 ? 'note' : 'heart');
             this.reset();
         }
         reset() {
             this.x = Math.random() * canvas.width;
-            this.y = canvas.height + Math.random() * 80;
-            this.size = Math.random() * 4.5 + 1.5;
-            this.speed = Math.random() * 2.8 + 1.8;
+            this.y = canvas.height + Math.random() * 100;
+            this.size = this.type === 'note' || this.type === 'heart' ? Math.random() * 18 + 12 : Math.random() * 5 + 2;
+            this.speed = Math.random() * 3.5 + 2.2;
             this.alpha = 1;
-            this.hue = Math.random() * 80 + 280; // 紫→粉金
-            this.vx = (Math.random() - 0.5) * 1.2;
+            this.hue = this.type === 'heart' ? 330 : (this.type === 'note' ? 280 : 260);
+            this.vx = (Math.random() - 0.5) * 1.8;
+            this.rotation = Math.random() * Math.PI * 2;
+            this.rotSpeed = (Math.random() - 0.5) * 0.08;
         }
         update(intensity) {
-            this.y -= this.speed + intensity * 4;
+            this.y -= this.speed + intensity * 5;
             this.x += this.vx;
-            this.alpha -= 0.008 + intensity * 0.012;
-            if (this.alpha <= 0 || this.y < 0) this.reset();
+            this.alpha -= 0.009 + intensity * 0.015;
+            this.rotation += this.rotSpeed;
+            if (this.alpha <= 0 || this.y < -50) this.reset();
         }
         draw() {
             ctx.save();
             ctx.globalAlpha = this.alpha;
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = `hsl(${this.hue}, 100%, 85%)`;
-            ctx.fillStyle = `hsl(${this.hue}, 100%, 90%)`;
-            ctx.fillRect(this.x, this.y, this.size, this.size);
+            ctx.shadowBlur = 18;
+            ctx.shadowColor = `hsl(${this.hue}, 100%, 88%)`;
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.rotation);
+
+            if (this.type === 'star') {
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
+            } else if (this.type === 'note') {
+                ctx.font = `${this.size}px Arial`;
+                ctx.fillStyle = `hsl(${this.hue}, 100%, 90%)`;
+                ctx.fillText('♪', -this.size/2, this.size/2);
+            } else if (this.type === 'heart') {
+                ctx.font = `${this.size}px Arial`;
+                ctx.fillStyle = '#ff6bc4';
+                ctx.fillText('🌸', -this.size/2, this.size/2);
+            }
             ctx.restore();
         }
     }
@@ -223,26 +322,26 @@
     }
 
     function getIntensity() {
-        if (!analyser) return 0;
+        if (!analyser) return 0.3;
         analyser.getByteFrequencyData(dataArray);
         let sum = dataArray.reduce((a, b) => a + b, 0);
-        return sum / (bufferLength * 255); // 0~1
+        return Math.min(sum / (bufferLength * 255), 1);
     }
 
     function animateStage() {
         const intensity = getIntensity();
 
-        // 半透明拖尾
-        ctx.fillStyle = 'rgba(15, 10, 35, 0.12)';
+        // 舞台拖尾（更梦幻）
+        ctx.fillStyle = 'rgba(15, 10, 35, 0.13)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // 动态生成粒子（音乐越响越多）
-        const numNew = Math.floor(4 + intensity * 28);
+        // 音乐越强，粒子越多（偶像舞台感爆炸）
+        const numNew = Math.floor(6 + intensity * 38);
         for (let i = 0; i < numNew; i++) {
-            if (particles.length < 220) particles.push(new Particle());
+            if (particles.length < 280) particles.push(new Particle());
         }
 
-        // 更新并绘制粒子
+        // 更新粒子
         for (let i = particles.length - 1; i >= 0; i--) {
             particles[i].update(intensity);
             particles[i].draw();
@@ -251,20 +350,22 @@
         animationFrame = requestAnimationFrame(animateStage);
     }
 
-    // 音乐按钮
+    // 音乐控制 + 新增“正在播放”显示
     musicToggle.addEventListener('click', (e) => {
         e.stopPropagation();
         if (isPlaying) {
             bgMusic.pause();
             musicToggle.classList.remove('playing');
             musicToggle.innerHTML = '🔇';
+            nowPlaying.classList.remove('show');
         } else {
-            initVisualizer(); // 第一次播放时初始化音频分析
+            initVisualizer();
             let playPromise = bgMusic.play();
             if (playPromise !== undefined) {
                 playPromise.then(() => {
                     musicToggle.classList.add('playing');
                     musicToggle.innerHTML = '🎵';
+                    nowPlaying.classList.add('show');
                     if (!animationFrame) animateStage();
                 }).catch(err => console.log("Play failed:", err));
             }
@@ -272,7 +373,7 @@
         isPlaying = !isPlaying;
     });
 
-    // 卡片拖拽翻转（保持原样）
+    // 卡片拖拽翻转（完全保留）
     const dragItem = document.getElementById('draggableCard');
     const cardInner = document.getElementById('cardInner');
     let active = false, currentX, currentY, initialX, initialY, xOffset = -175, yOffset = -100, clickStartTime;
@@ -321,8 +422,8 @@
     // 初始化
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
-    // 页面加载时先启动一次轻粒子（无音乐时也有氛围）
-    for (let i = 0; i < 60; i++) particles.push(new Particle());
+    // 初始轻粒子（无音乐时也有偶像氛围）
+    for (let i = 0; i < 80; i++) particles.push(new Particle());
     animateStage();
 </script>
 </body>
