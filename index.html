@@ -12,165 +12,144 @@
         height: 100vh;
         width: 100vw;
         overflow: hidden;
-        background: radial-gradient(ellipse at bottom, #1a1328 0%, #0a0818 100%);
+        background: radial-gradient(ellipse at center, #1f1833 0%, #0c081f 100%);
         position: relative;
     }
 
-    /* ==================== 伪3D舞台核心层 ==================== */
+    /* ==================== 高品质伪3D舞台 ==================== */
     .stage-wrapper {
         position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
+        inset: 0;
         z-index: -2;
-        perspective: 1200px;
-        perspective-origin: 50% 30%;
+        perspective: 1400px;
+        perspective-origin: 50% 25%;
         pointer-events: none;
     }
 
-    /* 舞台顶部灯架（带透视） */
+    /* 顶部灯架（更真实结构） */
     .stage-top {
         position: absolute;
-        top: 0;
+        top: -5%;
         left: 0;
         width: 100%;
-        height: 28%;
-        background: linear-gradient(#1f1a2e, #0f0c1f);
-        box-shadow: 0 30px 60px rgba(0,0,0,0.8);
-        transform: rotateX(18deg);
-        transform-origin: top;
-        z-index: 1;
+        height: 32%;
+        background: linear-gradient(#2a233f, #16122b);
+        box-shadow: 0 40px 80px rgba(0,0,0,0.85);
+        transform: rotateX(22deg);
+        transform-origin: top center;
+        z-index: 2;
         display: flex;
         align-items: flex-end;
-        justify-content: space-between;
-        padding: 0 8%;
-        box-sizing: border-box;
-    }
-    .stage-top::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 5%;
-        right: 5%;
-        height: 8px;
-        background: #2a2538;
-        box-shadow: 0 0 20px #000;
+        justify-content: center;
+        gap: 6%;
+        padding-bottom: 8%;
     }
 
-    /* 聚光灯组（全部置于顶部，每盏独立晃动） */
+    /* 单个聚光灯 - 体积光效果升级 */
     .spotlight {
         position: relative;
-        width: 90px;
-        height: 220%;
-        background: radial-gradient(circle at 50% 0%, rgba(255,240,200,0.65) 0%, transparent 70%);
-        filter: blur(18px);
-        opacity: 0.45;
+        width: 68px;
+        height: 260%;
+        background: radial-gradient(ellipse at 50% 10%, rgba(255,245,210,0.75) 0%, rgba(255,200,255,0.45) 35%, transparent 68%);
+        filter: blur(14px);
+        opacity: 0.48;
         transform-origin: top center;
-        animation: spotlight-sway 8s infinite ease-in-out;
-        z-index: 2;
+        animation: spotlight-sway 9s infinite ease-in-out;
+        z-index: 3;
     }
-    .spotlight:nth-child(1) { left: -2%; animation-delay: 0s; background: radial-gradient(circle at 50% 0%, rgba(255,180,255,0.7) 0%, transparent 68%); }
-    .spotlight:nth-child(2) { left: 8%; animation-delay: 1.1s; }
-    .spotlight:nth-child(3) { left: 22%; animation-delay: 0.4s; background: radial-gradient(circle at 50% 0%, rgba(180,255,255,0.65) 0%, transparent 70%); }
-    .spotlight:nth-child(4) { left: 38%; animation-delay: 2.3s; }
-    .spotlight:nth-child(5) { left: 55%; animation-delay: 0.9s; }
-    .spotlight:nth-child(6) { left: 70%; animation-delay: 1.7s; background: radial-gradient(circle at 50% 0%, rgba(255,255,180,0.6) 0%, transparent 72%); }
-    .spotlight:nth-child(7) { left: 85%; animation-delay: 0.6s; }
+    .spotlight:nth-child(1) { animation-delay: 0s; transform: rotate(-18deg); background: radial-gradient(ellipse at 50% 10%, rgba(255,180,255,0.78) 0%, transparent 65%); }
+    .spotlight:nth-child(2) { animation-delay: 1.3s; transform: rotate(-8deg); }
+    .spotlight:nth-child(3) { animation-delay: 0.6s; transform: rotate(12deg); background: radial-gradient(ellipse at 50% 10%, rgba(180,255,255,0.68) 0%, transparent 70%); }
+    .spotlight:nth-child(4) { animation-delay: 2.4s; transform: rotate(-14deg); }
+    .spotlight:nth-child(5) { animation-delay: 0.9s; transform: rotate(16deg); }
+    .spotlight:nth-child(6) { animation-delay: 1.8s; transform: rotate(-22deg); background: radial-gradient(ellipse at 50% 10%, rgba(255,255,180,0.65) 0%, transparent 68%); }
+    .spotlight:nth-child(7) { animation-delay: 0.4s; transform: rotate(9deg); }
 
     @keyframes spotlight-sway {
-        0%, 100% { transform: rotate(-14deg) scaleY(1); opacity: 0.38; }
-        50% { transform: rotate(14deg) scaleY(1.12); opacity: 0.78; }
+        0%, 100% { transform: rotate(var(--rot, -18deg)) scaleY(1); opacity: 0.42; }
+        50% { transform: rotate(calc(var(--rot, -18deg) * 1.6)) scaleY(1.18); opacity: 0.82; }
     }
 
-    /* 音乐开启时增强灯光 */
+    /* 音乐激活时灯光升级 */
     body.music-active .spotlight {
-        opacity: 0.75;
-        filter: blur(14px);
-        animation-duration: 4.5s;
+        filter: blur(11px);
+        opacity: 0.78;
+        animation-duration: 4.8s;
     }
 
-    /* 舞台底部地板（伪3D透视） */
+    /* 底部舞台地板（强透视 + 反射） */
     .stage-floor {
         position: absolute;
-        bottom: 0;
+        bottom: -8%;
         left: 0;
         width: 100%;
-        height: 52%;
-        background: linear-gradient(to top, #120d22 0%, #1f1833 45%, transparent 85%);
+        height: 58%;
+        background: linear-gradient(to top, #110d24 0%, #1f1a35 38%, #2a2440 75%, transparent 92%);
         box-shadow: 
-            0 0 120px rgba(255,200,255,0.4),
-            inset 0 60px 80px rgba(255,255,255,0.15);
-        transform: rotateX(58deg);
-        transform-origin: bottom;
-        z-index: 0;
+            0 0 140px rgba(255, 210, 255, 0.45),
+            inset 0 80px 100px rgba(255,255,255,0.18);
+        transform: rotateX(62deg);
+        transform-origin: bottom center;
+        z-index: 1;
         overflow: hidden;
     }
 
-    /* 地板透视线条（增强3D深度） */
+    /* 地板透视网格线 */
     .stage-floor::before {
         content: '';
         position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
+        inset: 0;
         background: repeating-linear-gradient(
-            90deg,
+            88deg,
             transparent 0px,
-            transparent 28px,
-            rgba(255,255,255,0.12) 29px,
-            rgba(255,255,255,0.12) 30px
+            transparent 32px,
+            rgba(255,255,255,0.16) 33px,
+            rgba(255,255,255,0.16) 34px
         );
-        background-size: 120px 100%;
-        transform: perspective(800px) rotateX(68deg);
-        opacity: 0.6;
+        opacity: 0.75;
     }
+
+    /* 地板中央高光反射 */
     .stage-floor::after {
         content: '';
         position: absolute;
-        bottom: 0; left: 0; right: 0;
-        height: 100%;
-        background: radial-gradient(ellipse at center bottom, rgba(255,240,200,0.35) 0%, transparent 70%);
-        animation: floor-glow 6s infinite ease-in-out;
+        bottom: 10%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 65%;
+        height: 45%;
+        background: radial-gradient(ellipse at center, rgba(255,240,220,0.55) 0%, transparent 65%);
+        animation: floor-glow 7s infinite ease-in-out;
+        filter: blur(8px);
     }
 
     @keyframes floor-glow {
-        0%,100% { opacity: 0.25; }
-        50% { opacity: 0.55; }
+        0%, 100% { opacity: 0.35; transform: translateX(-50%) scale(0.92); }
+        50% { opacity: 0.68; transform: translateX(-50%) scale(1.08); }
     }
 
-    /* 音乐开启时地板更亮 */
     body.music-active .stage-floor {
         box-shadow: 
-            0 0 160px rgba(255,200,255,0.7),
-            inset 0 60px 80px rgba(255,255,255,0.35);
+            0 0 180px rgba(255, 210, 255, 0.75),
+            inset 0 80px 100px rgba(255,255,255,0.38);
     }
     body.music-active .stage-floor::after {
-        animation-duration: 3s;
+        animation-duration: 3.5s;
     }
 
-    /* 音乐按钮（保持原样） */
+    /* 音乐按钮 */
     .music-btn {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        width: 45px;
-        height: 45px;
-        background-color: rgba(255,255,255,0.1);
-        border: 1px solid rgba(255,255,255,0.3);
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 22px;
-        color: white;
-        cursor: pointer;
-        z-index: 100;
-        backdrop-filter: blur(5px);
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        position: fixed; top: 20px; right: 20px; width: 45px; height: 45px;
+        background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);
+        border-radius: 50%; display: flex; justify-content: center; align-items: center;
+        font-size: 22px; color: white; cursor: pointer; z-index: 100;
+        backdrop-filter: blur(5px); transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
     .music-btn:hover { background-color: rgba(255,255,255,0.2); transform: scale(1.1); }
     .music-btn.playing { background-color: rgba(211,47,47,0.9); box-shadow: 0 0 15px rgba(211,47,47,0.6); animation: spin 4s linear infinite; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
 
-    /* 卡片完全保持你最初的样式（未做任何修改） */
+    /* 原卡片样式（完全未修改） */
     .card-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); cursor: grab; perspective: 1000px; width: 350px; height: 200px; user-select: none; z-index: 10; touch-action: none; }
     .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4,0.2,0.2,1); transform-style: preserve-3d; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
     .card-inner.is-flipped { transform: rotateY(180deg); }
@@ -210,7 +189,7 @@
         <div class="spotlight"></div>
     </div>
 
-    <!-- 底部透视舞台地板 -->
+    <!-- 底部透视地板 -->
     <div class="stage-floor"></div>
 </div>
 
@@ -220,7 +199,7 @@
 </audio>
 <div id="musicToggle" class="music-btn" title="播放/暂停音乐">🔇</div>
 
-<!-- 原名片（完全不变） -->
+<!-- 原名片 -->
 <div class="card-wrapper" id="draggableCard">
     <div class="card-inner" id="cardInner">
         <!-- 正面 -->
@@ -264,42 +243,35 @@
 </div>
 
 <script>
-    // === 音乐控制 + 背景切换 ===
+    // 音乐控制 + 舞台切换
     const musicToggle = document.getElementById('musicToggle');
     const bgMusic = document.getElementById('bgMusic');
     let isPlaying = false;
 
     musicToggle.addEventListener('click', (e) => {
         e.stopPropagation();
-        
         if (isPlaying) {
             bgMusic.pause();
             musicToggle.classList.remove('playing');
             musicToggle.innerHTML = '🔇';
-            document.body.classList.remove('music-active');   // 关闭音乐 → 恢复安静舞台
+            document.body.classList.remove('music-active');
         } else {
             let playPromise = bgMusic.play();
             if (playPromise !== undefined) {
                 playPromise.then(() => {
                     musicToggle.classList.add('playing');
                     musicToggle.innerHTML = '🎵';
-                    document.body.classList.add('music-active'); // 开启音乐 → 舞台灯光增强
-                }).catch(error => {
-                    console.log("Play failed: ", error);
-                });
+                    document.body.classList.add('music-active');
+                }).catch(err => console.log("Play failed:", err));
             }
         }
         isPlaying = !isPlaying;
     });
 
-    // 卡片拖拽翻转（完全保留你最初的代码）
+    // 卡片拖拽翻转（原版保留）
     const dragItem = document.getElementById('draggableCard');
     const cardInner = document.getElementById('cardInner');
-    let active = false;
-    let currentX, currentY, initialX, initialY;
-    let xOffset = -175;
-    let yOffset = -100;
-    let clickStartTime;
+    let active = false, currentX, currentY, initialX, initialY, xOffset = -175, yOffset = -100, clickStartTime;
 
     function dragStart(e) {
         if (e.type === "touchstart") {
@@ -318,29 +290,23 @@
 
     function dragEnd(e) {
         if (!active) return;
-        initialX = currentX;
-        initialY = currentY;
-        active = false;
+        initialX = currentX; initialY = currentY; active = false;
         dragItem.style.transition = '';
-        if (Date.now() - clickStartTime < 200) {
-            cardInner.classList.toggle('is-flipped');
-        }
+        if (Date.now() - clickStartTime < 200) cardInner.classList.toggle('is-flipped');
     }
 
     function drag(e) {
-        if (active) {
-            e.preventDefault();
-            if (e.type === "touchmove") {
-                currentX = e.touches[0].clientX - initialX;
-                currentY = e.touches[0].clientY - initialY;
-            } else {
-                currentX = e.clientX - initialX;
-                currentY = e.clientY - initialY;
-            }
-            xOffset = currentX;
-            yOffset = currentY;
-            dragItem.style.transform = `translate(${currentX}px, ${currentY}px)`;
+        if (!active) return;
+        e.preventDefault();
+        if (e.type === "touchmove") {
+            currentX = e.touches[0].clientX - initialX;
+            currentY = e.touches[0].clientY - initialY;
+        } else {
+            currentX = e.clientX - initialX;
+            currentY = e.clientY - initialY;
         }
+        xOffset = currentX; yOffset = currentY;
+        dragItem.style.transform = `translate(${currentX}px, ${currentY}px)`;
     }
 
     document.addEventListener("touchstart", dragStart, { passive: false });
@@ -350,6 +316,5 @@
     document.addEventListener("mouseup", dragEnd, false);
     document.addEventListener("mousemove", drag, false);
 </script>
-
 </body>
 </html>
