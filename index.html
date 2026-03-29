@@ -3,273 +3,327 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SuigyokuP的赛博名片</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
+<title>SuigyokuP的专属名片</title>
 <style>
-    :root {
-        --haruka-red: #e22b30;
-        --cyber-black: #020205;
-        --line-glow: rgba(226, 43, 48, 0.3);
-    }
-
     body {
-        margin: 0; padding: 0; height: 100vh; width: 100vw;
-        background-color: var(--cyber-black); overflow: hidden;
-        display: flex; justify-content: center; align-items: center;
-        perspective: 1500px; font-family: 'Helvetica Neue', Arial, sans-serif;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        background: radial-gradient(ellipse at bottom, #2a1b3d 0%, #0f0a1f 100%);
+        position: relative;
     }
 
-    /* ================================== */
-    /*      几何动感舞台背景 (Cyber Space)   */
-    /* ================================== */
-    .geometric-stage {
-        position: absolute; inset: 0; z-index: -1;
-        background: radial-gradient(circle at center, #101020 0%, #000 100%);
-    }
-    /* 滚动的几何线条与块 */
-    .geo-element {
-        position: absolute; background: var(--line-glow);
-        filter: blur(1px); pointer-events: none;
-    }
-    .line-v { width: 1px; height: 100%; top: 0; animation: moveV 8s linear infinite; }
-    .block-h { height: 100px; width: 200px; opacity: 0.1; animation: moveH 12s linear infinite alternate; }
-
-    @keyframes moveV { 0% { transform: translateX(-100vw); } 100% { transform: translateX(100vw); } }
-    @keyframes moveH { 0% { transform: translate(-20%, -20%); } 100% { transform: translate(120%, 120%); } }
-
-    /* ================================== */
-    /*          核心赛博名片容器            */
-    /* ================================== */
-    .card-wrapper {
-        width: 350px; height: 200px; cursor: grab;
-        transform-style: preserve-3d; transition: 0.1s;
-    }
-    .card-inner {
-        position: relative; width: 100%; height: 100%;
-        transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-    .card-inner.is-flipped { transform: rotateY(180deg); }
-
-    .card-face {
-        position: absolute; width: 100%; height: 100%;
-        backface-visibility: hidden; border-radius: 12px;
-        background: #fff; overflow: hidden;
-        box-shadow: 0 30px 60px rgba(0,0,0,0.7);
-    }
-
-    /* 🌟 正面：炫彩几何流动纹理 🌟 */
-    .front-bg-red {
-        position: absolute; top: 0; left: 0; width: 58%; height: 100%;
-        clip-path: polygon(0 0, 100% 0, 50% 100%, 0 100%);
-        background: linear-gradient(135deg, #8e1619, #e22b30, #ff5252, #e22b30);
-        background-size: 300% 300%;
-        animation: gradientShift 5s ease infinite;
-        z-index: 1;
-    }
-    /* 动态滚动的斜向几何线层 */
-    .front-bg-red::after {
-        content: ''; position: absolute; inset: 0;
-        background: repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0, rgba(255,255,255,0.1) 2px, transparent 2px, transparent 10px);
-        animation: textureMove 10s linear infinite;
-    }
-    @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-    @keyframes textureMove { from { background-position: 0 0; } to { background-position: 100px 100px; } }
-
-    .star-logo {
-        position: absolute; top: 12px; left: 10px; width: 55px; z-index: 5;
-        filter: drop-shadow(0 0 5px rgba(255,255,255,0.6));
-    }
-    
-    .label-765 {
-        position: absolute; bottom: 15px; left: 10px; color: rgba(255,255,255,0.7);
-        font-family: 'Roboto Mono', monospace; font-size: 8px; z-index: 5; letter-spacing: 1px;
-    }
-
-    /* 🌟 核心：硬核偏移阴影 (完全复刻参考图) 🌟 */
-    .char-container {
-        position: absolute; bottom: 0; left: -8%; width: 60%; height: 95%;
-        background: url('1.png') no-repeat bottom center; background-size: contain;
-        z-index: 3;
-        filter: drop-shadow(8px 8px 0px #000);
-    }
-
-    .front-content {
-        position: absolute; right: 0; width: 65%; height: 100%;
-        padding: 15px; display: flex; flex-direction: column; 
-        align-items: flex-end; justify-content: center; text-align: right; z-index: 4;
-    }
-    .name-section h2 { 
-        margin: 0; font-family: 'Helvetica Neue', sans-serif; font-size: 26px; 
-        color: #111; font-weight: 900; letter-spacing: -1px; 
-    }
-    .name-section p { margin: 2px 0; font-size: 9px; color: #666; font-weight: bold; }
-    
-    .nfc-hint {
-        font-family: 'Orbitron', sans-serif; font-size: 8px; color: #999;
-        margin: 10px 0; font-weight: 700;
-    }
-
-    .socials-list { font-family: 'Roboto Mono', monospace; font-size: 8px; color: #444; line-height: 1.6; }
-
-    /* ================================== */
-    /*     背面：鸭子兔子与经典排版重构      */
-    /* ================================== */
-    .card-back {
-        transform: rotateY(180deg); background: #fdfdfd;
-        display: flex; flex-direction: column;
-    }
-    .qr-box {
-        position: absolute; top: 15px; right: 15px; text-align: center;
-    }
-    .qr-img {
-        width: 45px; height: 45px; border-radius: 4px;
-        background: url('space.bilibili.com_488509701.png') center/cover;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .bili-tag { color: #fb7299; font-weight: bold; font-size: 8px; margin-top: 4px; display: block; }
-
-    .back-text-left {
-        padding: 20px; flex: 1; display: flex; flex-direction: column;
-        justify-content: flex-start; gap: 4px;
-        font-family: 'Roboto Mono', monospace; font-size: 9px; color: #333; font-weight: bold;
-    }
-    
-    /* 🌟 鸭子与兔子图片位置 🌟 */
-    .creatures-img {
-        position: absolute; top: 50%; left: 55%; transform: translate(-50%, -50%);
-        width: 140px; height: auto; opacity: 0.9;
+    /* ==================== 新增：动态舞台背景 ==================== */
+    #stageCanvas {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        z-index: -3;
         pointer-events: none;
     }
 
-    .back-motto {
-        margin-top: auto; padding: 12px; text-align: left; padding-left: 20px;
-        font-size: 10px; color: var(--haruka-red); font-weight: bold;
-        border-top: 1px solid #eee; background: rgba(0,0,0,0.02);
-    }
-    
-    .back-footer-title {
-        height: 55px; background: var(--haruka-red); color: #fff;
-        display: flex; align-items: center; padding-left: 20px;
-        font-family: 'Arial Black', sans-serif; font-size: 38px; font-weight: 900;
-        font-style: italic; letter-spacing: -2px;
+    .stage-floor {
+        position: absolute;
+        bottom: 0; left: 0;
+        width: 100%; height: 45%;
+        z-index: -2;
+        background: linear-gradient(to top, #1a0f2e 30%, transparent 80%);
+        box-shadow: 0 0 80px rgba(255, 200, 255, 0.6);
+        pointer-events: none;
     }
 
-    /* 音乐控制 */
-    .music-btn {
-        position: fixed; top: 20px; right: 20px; width: 45px; height: 45px;
-        background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center;
-        cursor: pointer; z-index: 100; backdrop-filter: blur(10px);
+    /* 聚光灯束 */
+    .light-beams {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        z-index: -1;
+        pointer-events: none;
+        overflow: hidden;
     }
+    .beam {
+        position: absolute;
+        top: -30%;
+        width: 120px;
+        height: 160%;
+        background: linear-gradient(transparent, rgba(255, 240, 200, 0.45), transparent);
+        filter: blur(12px);
+        opacity: 0.55;
+        animation: beam-sway 6s infinite ease-in-out;
+        transform-origin: top center;
+    }
+    .beam:nth-child(1) { left: 8%; transform: rotate(-28deg); animation-delay: 0s; background: linear-gradient(transparent, rgba(255, 180, 255, 0.5), transparent); }
+    .beam:nth-child(2) { left: 22%; transform: rotate(-12deg); animation-delay: 1.2s; }
+    .beam:nth-child(3) { left: 38%; transform: rotate(18deg); animation-delay: 0.8s; background: linear-gradient(transparent, rgba(180, 255, 255, 0.45), transparent); }
+    .beam:nth-child(4) { left: 55%; transform: rotate(-22deg); animation-delay: 2.5s; }
+    .beam:nth-child(5) { left: 72%; transform: rotate(15deg); animation-delay: 0.4s; }
+    .beam:nth-child(6) { left: 85%; transform: rotate(-30deg); animation-delay: 1.8s; background: linear-gradient(transparent, rgba(255, 255, 180, 0.4), transparent); }
+
+    @keyframes beam-sway {
+        0%, 100% { opacity: 0.4; transform: rotate(var(--rot, -25deg)) scaleY(1); }
+        50% { opacity: 0.85; transform: rotate(var(--rot, -25deg)) scaleY(1.15); }
+    }
+
+    /* 原有音乐按钮、卡片样式保持不变（略微精简） */
+    .music-btn { position: fixed; top: 20px; right: 20px; width: 45px; height: 45px; background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; color: white; cursor: pointer; z-index: 100; backdrop-filter: blur(5px); transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    .music-btn:hover { background-color: rgba(255,255,255,0.2); transform: scale(1.1); }
+    .music-btn.playing { background-color: rgba(211,47,47,0.9); box-shadow: 0 0 15px rgba(211,47,47,0.6); animation: spin 4s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    .card-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); cursor: grab; perspective: 1000px; width: 350px; height: 200px; user-select: none; z-index: 10; touch-action: none; }
+    .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4,0.2,0.2,1); transform-style: preserve-3d; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
+    .card-inner.is-flipped { transform: rotateY(180deg); }
+    .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 15px; background-color: white; overflow: hidden; }
+
+    /* 正面、背面样式保持不变 */
+    .front-bg-red { position: absolute; top: 0; left: 0; width: 58%; height: 100%; background-color: #d32f2f; clip-path: polygon(0 0, 100% 0, 50% 100%, 0 100%); background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 10px 10px; }
+    .star-logo { position: absolute; top: 12px; left: 10px; width: 55px; height: auto; filter: drop-shadow(0 0 3px rgba(255,255,255,0.8)); }
+    .tiny-text { position: absolute; bottom: 15px; left: 10px; color: rgba(255,255,255,0.6); font-size: 10px; transform: scale(0.6); transform-origin: left bottom; white-space: nowrap; }
+    .front-character { position: absolute; bottom: 0; left: -8%; width: 60%; height: 95%; background-image: url('1.png'); background-size: contain; background-position: bottom center; background-repeat: no-repeat; z-index: 2; filter: drop-shadow(4px 4px 4px rgba(0,0,0,0.25)); }
+    .front-content { position: absolute; top: 0; right: 0; width: 65%; height: 100%; padding: 15px 15px 15px 0; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; text-align: right; z-index: 3; }
+    .name-section h2 { margin: 0 0 5px 0; font-size: 24px; color: #111; font-weight: 900; }
+    .name-section p { margin: 2px 0; font-size: 9px; color: #777; font-weight: bold; }
+    .nfc-section { font-size: 8px; color: #999; margin-top: 10px; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; font-weight: bold; animation: breathing 2.5s infinite; }
+    @keyframes breathing { 0% { opacity: 0.5; } 50% { opacity: 1; transform: scale(1.02); } 100% { opacity: 0.5; } }
+    .socials { font-size: 9px; color: #444; line-height: 1.6; }
+    .socials div { display: flex; justify-content: flex-end; align-items: center; gap: 5px; }
+    .socials span { font-weight: bold; font-style: italic; }
+
+    .card-back { transform: rotateY(180deg); display: flex; flex-direction: column; }
+    .qr-code { position: absolute; top: 15px; right: 15px; width: 45px; height: 45px; background-image: url('space.bilibili.com_488509701.png'); background-size: cover; }
+    .back-top { padding: 15px; height: 44%; box-sizing: border-box; }
+    .back-top p { margin: 3px 0; font-size: 9px; color: #555; font-weight: bold; }
+    .back-bottom { height: 56%; background-color: #d32f2f; color: white; background-image: repeating-linear-gradient(-45deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 3px, transparent 3px, transparent 8px), radial-gradient(circle at bottom right, #a00000, transparent 80%); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding-left: 20px; font-family: 'Arial Black', Impact, sans-serif; font-size: 40px; font-weight: 900; font-style: italic; line-height: 0.85; letter-spacing: -1px; text-shadow: 4px 4px 0px #1a1a1a; }
 </style>
 </head>
 <body>
 
-<!-- 几何动感舞台背景 -->
-<div class="geometric-stage">
-    <div class="geo-element line-v" style="left: 20%;"></div>
-    <div class="geo-element line-v" style="left: 50%; animation-delay: -2s;"></div>
-    <div class="geo-element line-v" style="left: 80%; animation-delay: -4s;"></div>
-    <div class="geo-element block-h" style="top: 10%; left: 10%;"></div>
-    <div class="geo-element block-h" style="top: 60%; left: 70%; animation-delay: -3s;"></div>
+<canvas id="stageCanvas"></canvas>
+<div class="stage-floor"></div>
+
+<!-- 聚光灯束层 -->
+<div class="light-beams">
+    <div class="beam"></div>
+    <div class="beam"></div>
+    <div class="beam"></div>
+    <div class="beam"></div>
+    <div class="beam"></div>
+    <div class="beam"></div>
 </div>
 
-<div id="musicToggle" class="music-btn">🔇</div>
-<audio id="bgMusic" loop src="bgm.mp3"></audio>
+<!-- 音乐播放器 -->
+<audio id="bgMusic" loop>
+    <source src="bgm.mp3" type="audio/mpeg">
+</audio>
+<div id="musicToggle" class="music-btn" title="播放/暂停音乐">🔇</div>
 
-<div class="card-wrapper" id="dragCard">
+<!-- 原有卡片 -->
+<div class="card-wrapper" id="draggableCard">
     <div class="card-inner" id="cardInner">
-        <!-- 正面：炫彩几何与硬核阴影 -->
-        <div class="card-face">
-            <div class="front-bg-red"></div>
-            <img src="IDOLMASTER20THLogo.png" class="star-logo" alt="20th Logo">
-            <div class="label-765">765 PRODUCTION PRODUCER CARD</div>
-            <div class="char-container"></div>
+        <!-- 正面 -->
+        <div class="card-face card-front">
+            <div class="front-bg-red">
+                <img src="IDOLMASTER20THLogo.png" class="star-logo" alt="20th Logo">
+                <div class="tiny-text">765 PRODUCTION PRODUCER CARD</div>
+            </div>
+            <div class="front-character"></div>
             <div class="front-content">
                 <div class="name-section">
                     <h2>SuigyokuP</h2>
                     <p>765プロデューサー科</p>
-                    <p style="color: var(--haruka-red)">天海春香担当プロデューサー</p>
+                    <p>天海春香担当プロデューサー</p>
                 </div>
-                <div class="nfc-hint">TAP TO START <span style="color:#000">N))</span></div>
-                <div class="socials-list">
-                    <div>@: Rain Grain</div>
-                    <div>📮: 1635786118@QQ.com</div>
-                    <div>📺: bangumi.tv/user/922571</div>
+                <div class="nfc-section">
+                    TAP TO START <span class="nfc-icon">N))</span>
+                </div>
+                <div class="socials">
+                    <div><span>@:</span> Rain Grain</div>
+                    <div><span>📮:</span> 1635786118@QQ.com</div>
+                    <div><span>📺:</span> bangumi.tv/user/922571</div>
                 </div>
             </div>
         </div>
 
-        <!-- 背面：经典排版与鸭子兔子 -->
+        <!-- 背面 -->
         <div class="card-face card-back">
-            <div class="qr-box">
-                <div class="qr-img"></div>
-                <span class="bili-tag">bilibili</span>
+            <div class="qr-code"></div>
+            <div class="back-top">
+                <p>765 PRODUCTION</p>
+                <p>AMAMI HARUKA</p>
+                <p>AGE 17</p>
+                <p style="margin-top: 15px;">🌸雨粒になって花を驚かすこの世界🌸</p>
             </div>
-            <div class="back-text-left">
-                <div>765 PRODUCTION</div>
-                <div>AMAMI HARUKA</div>
-                <div>AGE 17</div>
-            </div>
-            <!-- 鸭子与兔子图像 -->
-            <img src="OtherCreatures.png" class="creatures-img" alt="Creatures">
-            
-            <div class="back-motto">
-                🌸雨粒になって花を惊かすこの世界🌸
-            </div>
-            <div class="back-footer-title">
-                PRODUCER CARD
+            <div class="back-bottom">
+                PRODUCER<br>CARD
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    const btn = document.getElementById('musicToggle');
-    const audio = document.getElementById('bgMusic');
-    btn.onclick = () => {
-        if (audio.paused) {
-            audio.play(); btn.innerHTML = '🎵'; btn.style.background = '#e22b30';
-        } else {
-            audio.pause(); btn.innerHTML = '🔇'; btn.style.background = 'rgba(255,255,255,0.05)';
+    // === 音乐播放控制 + 舞台可视化 ===
+    const musicToggle = document.getElementById('musicToggle');
+    const bgMusic = document.getElementById('bgMusic');
+    let isPlaying = false;
+    let audioContext, analyser, source, dataArray, bufferLength;
+
+    const canvas = document.getElementById('stageCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let animationFrame;
+
+    class Particle {
+        constructor() {
+            this.reset();
         }
-    };
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = canvas.height + Math.random() * 80;
+            this.size = Math.random() * 4.5 + 1.5;
+            this.speed = Math.random() * 2.8 + 1.8;
+            this.alpha = 1;
+            this.hue = Math.random() * 80 + 280; // 紫→粉金
+            this.vx = (Math.random() - 0.5) * 1.2;
+        }
+        update(intensity) {
+            this.y -= this.speed + intensity * 4;
+            this.x += this.vx;
+            this.alpha -= 0.008 + intensity * 0.012;
+            if (this.alpha <= 0 || this.y < 0) this.reset();
+        }
+        draw() {
+            ctx.save();
+            ctx.globalAlpha = this.alpha;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = `hsl(${this.hue}, 100%, 85%)`;
+            ctx.fillStyle = `hsl(${this.hue}, 100%, 90%)`;
+            ctx.fillRect(this.x, this.y, this.size, this.size);
+            ctx.restore();
+        }
+    }
 
-    const card = document.getElementById('dragCard');
-    const inner = document.getElementById('cardInner');
-    let isDown = false, xOffset = 0, yOffset = 0, startX, startY, startTime;
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
 
-    const startDrag = (e) => {
-        isDown = true;
-        const c = e.clientX || e.touches[0].clientX;
-        const r = e.clientY || e.touches[0].clientY;
-        startX = c - xOffset; startY = r - yOffset;
-        startTime = Date.now();
-        card.style.transition = 'none';
-    };
+    function initVisualizer() {
+        if (audioContext) return;
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        source = audioContext.createMediaElementSource(bgMusic);
+        analyser = audioContext.createAnalyser();
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+        analyser.fftSize = 128;
+        bufferLength = analyser.frequencyBinCount;
+        dataArray = new Uint8Array(bufferLength);
+    }
 
-    const doDrag = (e) => {
-        if (!isDown) return;
+    function getIntensity() {
+        if (!analyser) return 0;
+        analyser.getByteFrequencyData(dataArray);
+        let sum = dataArray.reduce((a, b) => a + b, 0);
+        return sum / (bufferLength * 255); // 0~1
+    }
+
+    function animateStage() {
+        const intensity = getIntensity();
+
+        // 半透明拖尾
+        ctx.fillStyle = 'rgba(15, 10, 35, 0.12)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // 动态生成粒子（音乐越响越多）
+        const numNew = Math.floor(4 + intensity * 28);
+        for (let i = 0; i < numNew; i++) {
+            if (particles.length < 220) particles.push(new Particle());
+        }
+
+        // 更新并绘制粒子
+        for (let i = particles.length - 1; i >= 0; i--) {
+            particles[i].update(intensity);
+            particles[i].draw();
+        }
+
+        animationFrame = requestAnimationFrame(animateStage);
+    }
+
+    // 音乐按钮
+    musicToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (isPlaying) {
+            bgMusic.pause();
+            musicToggle.classList.remove('playing');
+            musicToggle.innerHTML = '🔇';
+        } else {
+            initVisualizer(); // 第一次播放时初始化音频分析
+            let playPromise = bgMusic.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    musicToggle.classList.add('playing');
+                    musicToggle.innerHTML = '🎵';
+                    if (!animationFrame) animateStage();
+                }).catch(err => console.log("Play failed:", err));
+            }
+        }
+        isPlaying = !isPlaying;
+    });
+
+    // 卡片拖拽翻转（保持原样）
+    const dragItem = document.getElementById('draggableCard');
+    const cardInner = document.getElementById('cardInner');
+    let active = false, currentX, currentY, initialX, initialY, xOffset = -175, yOffset = -100, clickStartTime;
+
+    function dragStart(e) {
+        if (e.type === "touchstart") {
+            initialX = e.touches[0].clientX - xOffset;
+            initialY = e.touches[0].clientY - yOffset;
+        } else {
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
+        }
+        if (e.target === dragItem || dragItem.contains(e.target)) {
+            active = true;
+            clickStartTime = Date.now();
+            dragItem.style.transition = 'none';
+        }
+    }
+    function dragEnd(e) {
+        if (!active) return;
+        initialX = currentX; initialY = currentY; active = false;
+        dragItem.style.transition = '';
+        if (Date.now() - clickStartTime < 200) cardInner.classList.toggle('is-flipped');
+    }
+    function drag(e) {
+        if (!active) return;
         e.preventDefault();
-        const c = e.clientX || (e.touches ? e.touches[0].clientX : 0);
-        const r = e.clientY || (e.touches ? e.touches[0].clientY : 0);
-        xOffset = c - startX; yOffset = r - startY;
-        card.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
-    };
+        if (e.type === "touchmove") {
+            currentX = e.touches[0].clientX - initialX;
+            currentY = e.touches[0].clientY - initialY;
+        } else {
+            currentX = e.clientX - initialX;
+            currentY = e.clientY - initialY;
+        }
+        xOffset = currentX; yOffset = currentY;
+        dragItem.style.transform = `translate(${currentX}px, ${currentY}px)`;
+    }
 
-    const endDrag = () => {
-        if (!isDown) return; isDown = false;
-        card.style.transition = '0.5s cubic-bezier(0.23, 1, 0.32, 1)';
-        if (Date.now() - startTime < 200) inner.classList.toggle('is-flipped');
-    };
+    document.addEventListener("touchstart", dragStart, { passive: false });
+    document.addEventListener("touchend", dragEnd, false);
+    document.addEventListener("touchmove", drag, { passive: false });
+    document.addEventListener("mousedown", dragStart, false);
+    document.addEventListener("mouseup", dragEnd, false);
+    document.addEventListener("mousemove", drag, false);
 
-    card.addEventListener('mousedown', startDrag);
-    window.addEventListener('mousemove', doDrag);
-    window.addEventListener('mouseup', endDrag);
-    card.addEventListener('touchstart', startDrag);
-    window.addEventListener('touchmove', doDrag, {passive: false});
-    window.addEventListener('touchend', endDrag);
+    // 初始化
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    // 页面加载时先启动一次轻粒子（无音乐时也有氛围）
+    for (let i = 0; i < 60; i++) particles.push(new Particle());
+    animateStage();
 </script>
-
 </body>
 </html>
